@@ -1,0 +1,2 @@
+# Clue
+Cluedo boardgame repository
