@@ -36,3 +36,5 @@ jobs:
         pytest
     - name: Sphinx Build
       uses: ammaraskar/sphinx-action@0.4
+      with:
+        pre-build-command: pip install -r requirements.txt
