@@ -1,10 +1,13 @@
 import unittest
+from src.board import Board
 
 
 class MyTestCase(unittest.TestCase):
-   def test_something(self):
-       self.assertEqual(True, True)
+    def test_create_save_folder(self):
+        board = Board()
+        board.create_save_folder()
+        self.assertEqual(False, True)
 
 
 if __name__ == '__main__':
-   unittest.main()
+    unittest.main()
