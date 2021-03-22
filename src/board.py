@@ -1,19 +1,16 @@
+import shutil
 from pathlib import Path
-import os.path
+import os
 
 
 class Board:
-    data_dir = str(Path.home()) + "/Clue"
-    # def __init__(self):
-    #     print('todo')
+    config_dir = str(Path.home()) + "/Clue"
 
-    def create_save_folder(self):
-        if not os.path.isdir(self.data_dir):
-            os.mkdir(self.data_dir)
-        print(self.data_dir)
+    def setup_config_folder(self):
+        Path(self.config_dir).mkdir(parents=True, exist_ok=True)
+        if not Path(self.config_dir + '/map.json').is_file():
+            shutil.copy(os.path.dirname(__file__) + '/resources/map.json', self.config_dir + '/map.json')
 
-    def create_default_map(self):
-        print('todo')
 
     def parse_map_data(self):
         print('todo')
