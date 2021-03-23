@@ -7,17 +7,20 @@ from pathlib import Path
 
 
 class Board:
+    """[summary]
+
+    Returns:
+        [type]: [description]
+    """
     config_dir = str(Path.home()) + "/Clue"
     tile_map = []
-    all_rooms = []
-    all_players = []
-    all_weapons = []
 
     def __init__(self):
         self.setup_config_folder()
         parsed_correctly, data = self.parse_map_data()
         if parsed_correctly:
-            print('Yay!')
+            self.tile_map = data
+            print(*self.tile_map, sep='\n')
 
     def setup_config_folder(self):
         Path(self.config_dir).mkdir(parents=True, exist_ok=True)
@@ -25,6 +28,8 @@ class Board:
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
     def parse_map_data(self):
+        print("here " + os.path.dirname(__file__))
+        print("here " + __file__)
         try:
             with open(self.config_dir + '/clue.json', encoding='UTF-8') as file:
                 data = json.loads(file.read())
@@ -37,7 +42,6 @@ class Board:
         # Validate the users json config file against the schema
         try:
             validate(instance=data, schema=data_schema)
-            print('Valid json')
         except jsonschema.exceptions.ValidationError as e:
             print(e)
             return False, 'Schema Error'
@@ -50,12 +54,9 @@ class Board:
             valid_row_count = 0
             while valid_row_count < validate_y and len(data['map']['tiles'][valid_row_count]) == validate_x:
                 valid_row_count += 1
-            if validate_y == valid_row_count:
-                print('Valid dimensions')
-            else:
+            if validate_y != valid_row_count:
                 return False, 'Incorrect X dimension'
         else:
             return False, 'Incorrect Y dimension'
 
-
-
+        return True, data['map']['tiles']

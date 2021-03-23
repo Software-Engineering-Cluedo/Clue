@@ -1,12 +1,11 @@
 import unittest
 from src.board import Board
 
-
 class MyTestCase(unittest.TestCase):
-    def test_create_save_folder(self):
+    def test_parse_map_data(self):
         board = Board()
-        board.parse_map_data()
-        self.assertEqual(False, True)
+        result, data = board.parse_map_data()
+        self.assertEqual(result, True)
 
 
 if __name__ == '__main__':
