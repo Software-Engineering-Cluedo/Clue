@@ -11,7 +11,9 @@
 6. Run `pip install -r requirements.txt` to install the requirements
 7. In the root directory, run `pip install -e .`
 
-Tah-dah, now you can develop code
+Tah-dah, now you can develop code. 
+Your IDE should automatically switch to using the venv, or show a prompt to switch to it, do that and it should run well.
+PyCharm automatically switches to it, while in VS Code you need to accept it from a prompt.
 
 <!--
     At the top, maybe a logo centered?
