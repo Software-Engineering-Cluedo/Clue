@@ -4,7 +4,7 @@
 # Development
 
 1. Clone the repo
-2. Open up cmd / terminal
+2. Open up powershell / terminal
 3. Navigate to the folder, e.g. `F:\Repositories\Clue`
 4. Create the venv: `python -m venv venv`
 5. Activate the venv: `./venv/bin/activate` (Linux) or `./venv/Scripts/activate` (Win)
