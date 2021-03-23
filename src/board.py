@@ -1,6 +1,8 @@
 import os
 import json
 import shutil
+import jsonschema
+from jsonschema import validate
 from pathlib import Path
 
 
@@ -18,6 +20,17 @@ class Board:
                 data = json.loads(file.read())
         except IOError as e:
             return False
+
+        try:
+            with open(os.path.dirname(__file__) + '/resources/json/clue.schema', encoding='UTF-8') as file:
+                data_schema = json.loads(file.read())
+        except IOError as e:
+            return False
+
+        print(data)
+        print(data_schema)
+
+        validate(instance=data, schema=data_schema)
 
         # validate size to dimensions attribute
         validate_x = data['map']['dimensions']['x']
