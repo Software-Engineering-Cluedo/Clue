@@ -5,11 +5,11 @@
     "type": "object",
     "properties": {
         "map": {
-            "description": "Contains the tiles and the dimensions it should be",
+            "description": "Contains the tiles and, the dimensions it should be",
             "type": "object",
             "properties": {
                 "dimensions": {
-                    "description": "Contains the tiles and the dimensions it should be",
+                    "description": "The dimensions it should be",
                     "type": "object",
                     "properties": {
                         "x": {
