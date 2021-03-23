@@ -1,0 +1,78 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Clue Configuration File",
+    "description": "Used to configure what the map layout, the players, the rooms and the weapons",
+    "type": "object",
+    "properties": {
+        "map": {
+            "description": "Contains the tiles and the dimensions it should be",
+            "type": "object",
+            "properties": {
+                "dimensions": {
+                    "description": "Contains the tiles and the dimensions it should be",
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "description": "Size of x dimension",
+                            "type": "integer"
+                        },
+                        "y": {
+                            "description": "Size of x dimension",
+                            "type": "integer"
+                        }
+                    }
+                },
+                "tiles": {
+                    "description": "Contains the tile map",
+                    "type": "array"
+                }
+            },
+            "required": ["dimensions", "tiles"]
+
+        },
+
+        "simple tiles": {
+            "description": "Array of the characters with associated objects",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "char": {
+                        "description": "The character to associate the object to",
+                        "type": "string"
+                    },
+                    "obj": {
+                        "description": "The object type, could be: none, tile, door or secret door",
+                        "type": "string"
+                    }
+                },
+                "required": ["char", "obj"]
+            }
+        },
+
+        "game tiles": {
+            "description": "Array of the characters with associated objects",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "char": {
+                        "description": "The character to associate the object to",
+                        "type": "string"
+                    },
+                    "obj": {
+                        "description": "The object type, could be: weapon, room or player",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The objects name",
+                        "type": "string"
+                    }
+                },
+                "required": ["char", "obj", "name"]
+            }
+        }
+
+        
+    }
+}

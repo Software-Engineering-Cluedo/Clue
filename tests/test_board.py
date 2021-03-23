@@ -6,6 +6,7 @@ class MyTestCase(unittest.TestCase):
     def test_create_save_folder(self):
         board = Board()
         board.setup_config_folder()
+        board.parse_map_data()
         self.assertEqual(False, True)
 
 
