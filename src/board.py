@@ -28,8 +28,7 @@ class Board:
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
     def parse_map_data(self):
-        print("here " + os.path.dirname(__file__))
-        print("here " + __file__)
+        # Load users config file and the schema into vars
         try:
             with open(self.config_dir + '/clue.json', encoding='UTF-8') as file:
                 data = json.loads(file.read())
