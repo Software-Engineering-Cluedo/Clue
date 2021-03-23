@@ -1,10 +1,12 @@
 import unittest
-
+from src.board import Board
 
 class MyTestCase(unittest.TestCase):
-   def test_something(self):
-       self.assertEqual(True, True)
+    def test_parse_map_data(self):
+        board = Board()
+        result, data = board.parse_map_data()
+        self.assertEqual(result, True)
 
 
 if __name__ == '__main__':
-   unittest.main()
+    unittest.main()
