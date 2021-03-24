@@ -7,13 +7,17 @@ from pathlib import Path
 
 
 class Board:
-    """[summary]
-
-    Returns:
-        [type]: [description]
+    """The representation of the Clue board.
+    
+    Attributes:
+        config_dir: A string which is the path to the Clue config directory
+        tile_map: An two dimensional array which stores the tile map for the board where each object is
+        symbols: An dictionary with each unique symbol from the tile map storing the associated class
     """
+
     config_dir = str(Path.home()) + "/Clue"
     tile_map = []
+    symbols = {}
 
     def __init__(self):
         self.setup_config_folder()
@@ -28,6 +32,16 @@ class Board:
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
     def parse_map_data(self):
+        """Parses map json data to create the board and associated classes
+
+        Checks if the json is valid, and then creates the board with the data 
+        and creates objects from the config too
+
+        Returns:
+            bool: Determines if ran successfully
+            array: Array of data created from the config, includes the tile map (more to be added in the future)
+        """
+
         # Load users config file and the schema into vars
         try:
             with open(self.config_dir + '/clue.json', encoding='UTF-8') as file:
