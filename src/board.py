@@ -39,7 +39,7 @@ class Board:
 
         Returns:
             bool: Determines if ran successfully
-            array: Array of data created from the config, includes the tile map (more to be added in the future)
+            array: An array of data created from the config, includes the tile map (more to be added in the future)
         """
 
         # Load users config file and the schema into vars
