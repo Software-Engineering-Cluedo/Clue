@@ -49,7 +49,7 @@ class Board:
 
 
     def generate_objects_from_tiles(self, data):
-        generated_board_objects = {tile['char']:tile['obj'] for tile in data['simple tile']}
+        generated_objects = {tile['char']:tile['obj'] for tile in data['simple tiles']}
         
         rooms = {}
         weapons = {}
@@ -63,23 +63,25 @@ class Board:
             name = tile['name']
             symbol = tile['char']
 
-            if lower(tile['obj']) == 'room':
+            if tile['obj'].lower() == 'room':
                 r = Room(name, obj_id, symbol)
                 generated_objects[symbol] = r
-                room[symbol] = r
+                rooms[symbol] = r
 
-            else if lower(tile['obj']) == 'weapon':
+            elif tile['obj'].lower() == 'weapon':
                 w = Weapon(name, obj_id, symbol)
                 generated_objects[symbol] = w
                 player_cards = w
 
-            else if lower(tile['obj']) == 'player':
+            elif tile['obj'].lower() == 'player':
                 player = Player(name, player_count, symbol)
-                players.append(player)
+                players[symbol] = player
 
                 pc = PlayerCard(name, obj_id, symbol, player)
                 generated_objects[symbol] = pc
                 player_cards = pc
+
+                player_count += 1
 
             else:
                 return False, False, False, False, False
