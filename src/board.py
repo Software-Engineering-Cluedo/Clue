@@ -31,6 +31,13 @@ class Board:
         if not Path(self.config_dir + '/clue.json').is_file():
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
+    def is_unique_tiles(self, tiles):
+        unique_symbols = {s['char'] for s in tiles}
+        return len(unique_symbols) == len(tiles)
+
+    def generate_objects_from_tiles(self, data):
+        print('todo')
+
     def parse_map_data(self):
         """Parses map json data to create the board and associated classes
 
@@ -71,5 +78,13 @@ class Board:
                 return False, 'Incorrect X dimension'
         else:
             return False, 'Incorrect Y dimension'
+
+        simple_tiles = data['simple tiles']
+        game_tiles = data['game tiles']
+
+        if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
+            self.generate_objects_from_tiles(data)
+        else:
+            return False, 'Tile symols are not unique'
 
         return True, data['map']['tiles']
