@@ -2,8 +2,14 @@ import os
 import json
 import shutil
 import jsonschema
-from jsonschema import validate
+
 from pathlib import Path
+from jsonschema import validate
+
+from src.room import Room
+from src.player import Player
+from src.weapon import Weapon
+from src.playercard import PlayerCard
 
 
 class Board:
@@ -19,6 +25,7 @@ class Board:
     tile_map = []
     symbols = {}
 
+
     def __init__(self):
         self.setup_config_folder()
         parsed_correctly, data = self.parse_map_data()
@@ -26,17 +33,59 @@ class Board:
             self.tile_map = data
             print(*self.tile_map, sep='\n')
 
+
     def setup_config_folder(self):
         Path(self.config_dir).mkdir(parents=True, exist_ok=True)
         if not Path(self.config_dir + '/clue.json').is_file():
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
+
     def is_unique_tiles(self, tiles):
         unique_symbols = {s['char'] for s in tiles}
         return len(unique_symbols) == len(tiles)
 
+    def place_weapons_in_rooms(self, weapons, rooms, tile_map):
+        print()
+
+
     def generate_objects_from_tiles(self, data):
-        print('todo')
+        generated_board_objects = {tile['char']:tile['obj'] for tile in data['simple tile']}
+        
+        rooms = {}
+        weapons = {}
+        players = {}
+        player_cards = {}
+
+        player_count = 0
+
+        for obj_id, tile in enumerate(data['game tiles']):
+            current_tile = tile['char']
+            name = tile['name']
+            symbol = tile['char']
+
+            if lower(tile['obj']) == 'room':
+                r = Room(name, obj_id, symbol)
+                generated_objects[symbol] = r
+                room[symbol] = r
+
+            else if lower(tile['obj']) == 'weapon':
+                w = Weapon(name, obj_id, symbol)
+                generated_objects[symbol] = w
+                player_cards = w
+
+            else if lower(tile['obj']) == 'player':
+                player = Player(name, player_count, symbol)
+                players.append(player)
+
+                pc = PlayerCard(name, obj_id, symbol, player)
+                generated_objects[symbol] = pc
+                player_cards = pc
+
+            else:
+                return False, False, False, False, False
+            
+        return generated_objects, rooms, weapons, players, player_cards
+
 
     def parse_map_data(self):
         """Parses map json data to create the board and associated classes
@@ -55,6 +104,7 @@ class Board:
                 data = json.loads(file.read())
             with open(os.path.dirname(__file__) + '/resources/json/clue.schema', encoding='UTF-8') as file:
                 data_schema = json.loads(file.read())
+
         except IOError as e:
             print(e)
             return False, 'IO Error'
@@ -83,8 +133,13 @@ class Board:
         game_tiles = data['game tiles']
 
         if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
-            self.generate_objects_from_tiles(data)
+            board_objects, weapons, rooms, players, player_cards = self.generate_objects_from_tiles(data)
+            if board_objects != False:
+                self.place_weapons_in_rooms(weapons, rooms, data['map']['tiles'])
+            else:
+                return False, 'Contains unidentified descriptor for a tile entry'
+
         else:
             return False, 'Tile symols are not unique'
 
-        return True, data['map']['tiles']
+        return True, [board_objects, weapons, rooms, players, player_cards]
