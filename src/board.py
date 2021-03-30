@@ -38,6 +38,7 @@ class Board:
 
     def setup_config_folder(self):
         """ Creates the config directory for Clue and copies the default clue map to the folder if doesn't exist """
+
         Path(self.config_dir).mkdir(parents=True, exist_ok=True)
         if not Path(self.config_dir + '/clue.json').is_file():
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
@@ -63,12 +64,12 @@ class Board:
             for entry in simple_tiles:
                 if entry['char'] in unique_chars:
                     del unique_chars[entry['char']]
-            
+
             current_largest = list(unique_chars.keys())[0]
             for char, count in unique_chars.items():
                 if unique_chars[current_largest] < count:
                     current_largest = char
-            
+
             room = rooms[current_largest]
             room.set_weapon_token(val)
 
@@ -83,7 +84,7 @@ class Board:
             if symbol in tile_map[i]:
                 return tile_map[i].find(symbol), i
             i += 1
-        
+
         return False, False
 
     def find_all_instances(self, symbol, tile_map):
@@ -92,6 +93,7 @@ class Board:
             for x in range(len(tile_map[0])):
                 if tile_map[y][x] == symbol:
                     arr.append([x, y])
+
         if arr == None:
             return False
         return arr
@@ -111,7 +113,7 @@ class Board:
                 else:
                     temp.append(None)
             surrounding.append(temp)
-        
+
         return surrounding
 
 
@@ -167,12 +169,12 @@ class Board:
         combo_tiles = {tile['char']:tile['obj'] for tile in data['simple tiles'] + data['game tiles']}
         unique_chars = self.get_unique_char_count(data['map']['tiles'])
 
-        # Rules
+        # Rules, could be stored in dict
         weapon = 1
         player = 1
         secret_door = 2
 
-        # This can be shortened
+        # This can be shortened using a for loop
         for char, val in unique_chars.items():
             if combo_tiles[char].lower() == 'weapon':
                 if val != weapon:
@@ -197,7 +199,11 @@ class Board:
             print(unique_chars)
             print()
 
-            # needs a minimum of 3 of tiles / empty tile and the remainer being one type of room and the door itself
+            """
+            needs a minimum of 3 of tiles / empty tile 
+            (if at edge, check if to left / right or up / down count None as apart of the three)
+            and the remainer being one type of room and the door itself
+            """
 
         # TODO
         return True
@@ -262,6 +268,6 @@ class Board:
                 return False, 'Used a single use character multiple times'
 
         else:
-            return False, 'Tile symols are not unique'
+            return False, 'Tile symbols are not unique'
 
         return True, [board_objects, weapons, rooms, players, player_cards]
