@@ -1,11 +1,12 @@
 import os
 import json
 import shutil
+import itertools
 import jsonschema
-import numpy as np
 
 from pathlib import Path
 from jsonschema import validate
+from collections import Counter
 
 from src.room import Room
 from src.player import Player
@@ -46,12 +47,25 @@ class Board:
         return len(unique_symbols) == len(tiles)
 
 
-    def place_weapons_in_rooms(self, weapons, rooms, tile_map):
-        print("weapons:", weapons)
+    def place_weapons_in_rooms(self, weapons, rooms, simple_tiles, tile_map):
         for key, val in weapons.items():
             x, y = self.find_first_instance(key, tile_map)
-            self.get_surrounding(x, y, tile_map)
+            surrounding = self.get_surrounding(x, y, tile_map)
+            unique_chars = dict(Counter(i for i in list(itertools.chain.from_iterable(surrounding))).items())
+
+            if None in unique_chars:
+                del unique_chars[None]
+            for entry in simple_tiles:
+                if entry['char'] in unique_chars:
+                    del unique_chars[entry['char']]
             
+            current_largest = list(unique_chars.keys())[0]
+            for char, count in unique_chars.items():
+                if unique_chars[current_largest] < unique_chars[char]:
+                    current_largest = unique_chars[char]
+            
+            room = rooms[current_largest]
+            room.set_weapon_token(val)
 
 
     def find_first_instance(self, symbol, tile_map):
@@ -67,7 +81,7 @@ class Board:
 
 
     def get_surrounding(self, x, y, tile_map):
-        print(x, y)
+        # print(x, y)
         max_y = len(tile_map)
         max_x = len(tile_map[0])
         surrounding = []
@@ -80,9 +94,8 @@ class Board:
                     temp.append(None)
             surrounding.append(temp)
         
-        print(*surrounding, sep='\n')
+        # print(*surrounding, sep='\n')
         return surrounding
-
 
     def generate_objects_from_tiles(self, data):
         generated_objects = {tile['char']:tile['obj'] for tile in data['simple tiles']}
@@ -178,7 +191,7 @@ class Board:
             if self.correct_count_object_ref(data):
                 board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
                 if board_objects != False:
-                    self.place_weapons_in_rooms(weapons, rooms, data['map']['tiles'])
+                    self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                 else:
                     return False, 'Contains unidentified descriptor for a tile entry'
             else:
