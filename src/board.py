@@ -33,25 +33,30 @@ class Board:
         parsed_correctly, data = self.parse_map_data()
         if parsed_correctly:
             self.tile_map = data
-            print(*self.tile_map, sep='\n')
+            # print(*self.tile_map, sep='\n')
 
 
     def setup_config_folder(self):
+        """ Creates the config directory for Clue and copies the default clue map to the folder if doesn't exist """
         Path(self.config_dir).mkdir(parents=True, exist_ok=True)
         if not Path(self.config_dir + '/clue.json').is_file():
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
 
     def is_unique_tiles(self, tiles):
+        """ Checks if there are duplicate uses of a symbol for different contexts """
+
         unique_symbols = {s['char'] for s in tiles}
         return len(unique_symbols) == len(tiles)
 
 
     def place_weapons_in_rooms(self, weapons, rooms, simple_tiles, tile_map):
+        """ Finds the location of the weapons in relation to the room, and adds it to the room class of the prodominately surrounding room symbol """
+
         for key, val in weapons.items():
             x, y = self.find_first_instance(key, tile_map)
             surrounding = self.get_surrounding(x, y, tile_map)
-            unique_chars = dict(Counter(i for i in list(itertools.chain.from_iterable(surrounding))).items())
+            unique_chars = self.get_unique_char_count(surrounding)
 
             if None in unique_chars:
                 del unique_chars[None]
@@ -61,14 +66,16 @@ class Board:
             
             current_largest = list(unique_chars.keys())[0]
             for char, count in unique_chars.items():
-                if unique_chars[current_largest] < unique_chars[char]:
-                    current_largest = unique_chars[char]
+                if unique_chars[current_largest] < count:
+                    current_largest = char
             
             room = rooms[current_largest]
             room.set_weapon_token(val)
 
 
     def find_first_instance(self, symbol, tile_map):
+        """ Finds the first instance of a symbol from the tile map """
+
         found = False
         i = 0
         
@@ -79,9 +86,20 @@ class Board:
         
         return False, False
 
+    def find_all_instances(self, symbol, tile_map):
+        arr = []
+        for y in range(len(tile_map)):
+            for x in range(len(tile_map[0])):
+                if tile_map[y][x] == symbol:
+                    arr.append([x, y])
+        if arr == None:
+            return False
+        return arr
+
 
     def get_surrounding(self, x, y, tile_map):
-        # print(x, y)
+        """ Finds the surrounding tiles around a set of coordanates """
+
         max_y = len(tile_map)
         max_x = len(tile_map[0])
         surrounding = []
@@ -94,10 +112,12 @@ class Board:
                     temp.append(None)
             surrounding.append(temp)
         
-        # print(*surrounding, sep='\n')
         return surrounding
 
+
     def generate_objects_from_tiles(self, data):
+        """ Creates objects from the game tiles data """
+
         generated_objects = {tile['char']:tile['obj'] for tile in data['simple tiles']}
         
         rooms = {}
@@ -108,7 +128,6 @@ class Board:
         player_count = 0
 
         for obj_id, tile in enumerate(data['game tiles']):
-            current_tile = tile['char']
             name = tile['name']
             symbol = tile['char']
 
@@ -138,7 +157,49 @@ class Board:
         return generated_objects, rooms, weapons, players, player_cards
 
 
+    def get_unique_char_count(self, arr):
+        return dict(Counter(i for i in list(itertools.chain.from_iterable(arr))).items())
+
+
     def correct_count_object_ref(self, data):
+        """ Checks if the object type appears the correct amount of times """
+
+        combo_tiles = {tile['char']:tile['obj'] for tile in data['simple tiles'] + data['game tiles']}
+        unique_chars = self.get_unique_char_count(data['map']['tiles'])
+
+        # Rules
+        weapon = 1
+        player = 1
+        secret_door = 2
+
+        # This can be shortened
+        for char, val in unique_chars.items():
+            if combo_tiles[char].lower() == 'weapon':
+                if val != weapon:
+                    return False
+            elif combo_tiles[char].lower() == 'player':
+                if val != player:
+                    return False
+            elif combo_tiles[char].lower() == 'secret door':
+                if val != secret_door:
+                    return False
+
+        return True
+
+
+    def check_valid_doors(self, tile_map):
+        """ Checks if the doors are in valid positions """
+        door_locations = self.find_all_instances('D', tile_map)
+        for x, y in door_locations:
+            surrounding = self.get_surrounding(x, y, tile_map)
+            print(*surrounding, sep='\n')
+            unique_chars = self.get_unique_char_count(surrounding)
+            print(unique_chars)
+            print()
+
+            # needs a minimum of 3 of tiles / empty tile and the remainer being one type of room and the door itself
+
+        # TODO
         return True
 
 
@@ -189,11 +250,14 @@ class Board:
 
         if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
             if self.correct_count_object_ref(data):
-                board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
-                if board_objects != False:
-                    self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
+                if self.check_valid_doors(data['map']['tiles']):
+                    board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
+                    if board_objects != False:
+                        self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
+                    else:
+                        return False, 'Contains unidentified descriptor for a tile entry'
                 else:
-                    return False, 'Contains unidentified descriptor for a tile entry'
+                    return False, 'A door or multiple doors are at an invalid position'
             else:
                 return False, 'Used a single use character multiple times'
 
