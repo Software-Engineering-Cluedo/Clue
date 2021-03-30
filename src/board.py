@@ -2,6 +2,7 @@ import os
 import json
 import shutil
 import jsonschema
+import numpy as np
 
 from pathlib import Path
 from jsonschema import validate
@@ -24,7 +25,7 @@ class Board:
     config_dir = str(Path.home()) + "/Clue"
     tile_map = []
     symbols = {}
-
+    
 
     def __init__(self):
         self.setup_config_folder()
@@ -44,8 +45,43 @@ class Board:
         unique_symbols = {s['char'] for s in tiles}
         return len(unique_symbols) == len(tiles)
 
+
     def place_weapons_in_rooms(self, weapons, rooms, tile_map):
-        print()
+        print("weapons:", weapons)
+        for key, val in weapons.items():
+            x, y = self.find_first_instance(key, tile_map)
+            self.get_surrounding(x, y, tile_map)
+            
+
+
+    def find_first_instance(self, symbol, tile_map):
+        found = False
+        i = 0
+        
+        while found == False and i < len(tile_map):
+            if symbol in tile_map[i]:
+                return tile_map[i].find(symbol), i
+            i += 1
+        
+        return False, False
+
+
+    def get_surrounding(self, x, y, tile_map):
+        print(x, y)
+        max_y = len(tile_map)
+        max_x = len(tile_map[0])
+        surrounding = []
+        for i in range(y - 1, y + 2):
+            temp = []
+            for j in range(x - 1, x + 2):
+                if i >= 0 and j >= 0 and i < max_y and j < max_x:
+                    temp.append(tile_map[i][j])
+                else:
+                    temp.append(None)
+            surrounding.append(temp)
+        
+        print(*surrounding, sep='\n')
+        return surrounding
 
 
     def generate_objects_from_tiles(self, data):
@@ -71,7 +107,7 @@ class Board:
             elif tile['obj'].lower() == 'weapon':
                 w = Weapon(name, obj_id, symbol)
                 generated_objects[symbol] = w
-                player_cards = w
+                weapons[symbol] = w
 
             elif tile['obj'].lower() == 'player':
                 player = Player(name, player_count, symbol)
@@ -79,7 +115,7 @@ class Board:
 
                 pc = PlayerCard(name, obj_id, symbol, player)
                 generated_objects[symbol] = pc
-                player_cards = pc
+                player_cards[symbol] = pc
 
                 player_count += 1
 
@@ -87,6 +123,10 @@ class Board:
                 return False, False, False, False, False
             
         return generated_objects, rooms, weapons, players, player_cards
+
+
+    def correct_count_object_ref(self, data):
+        return True
 
 
     def parse_map_data(self):
@@ -135,11 +175,14 @@ class Board:
         game_tiles = data['game tiles']
 
         if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
-            board_objects, weapons, rooms, players, player_cards = self.generate_objects_from_tiles(data)
-            if board_objects != False:
-                self.place_weapons_in_rooms(weapons, rooms, data['map']['tiles'])
+            if self.correct_count_object_ref(data):
+                board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
+                if board_objects != False:
+                    self.place_weapons_in_rooms(weapons, rooms, data['map']['tiles'])
+                else:
+                    return False, 'Contains unidentified descriptor for a tile entry'
             else:
-                return False, 'Contains unidentified descriptor for a tile entry'
+                return False, 'Used a single use character multiple times'
 
         else:
             return False, 'Tile symols are not unique'
