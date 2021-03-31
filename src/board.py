@@ -189,8 +189,9 @@ class Board:
         return True
 
 
-    def check_valid_doors(self, tile_map):
+    def check_valid_doors(self, data):
         """ Checks if the doors are in valid positions """
+        tile_map = data['map']['tiles']
         door_locations = self.find_all_instances('D', tile_map)
         for x, y in door_locations:
             surrounding = self.get_surrounding(x, y, tile_map)
@@ -256,7 +257,7 @@ class Board:
 
         if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
             if self.correct_count_object_ref(data):
-                if self.check_valid_doors(data['map']['tiles']):
+                if self.check_valid_doors(data):
                     board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
@@ -266,7 +267,6 @@ class Board:
                     return False, 'A door or multiple doors are at an invalid position'
             else:
                 return False, 'Used a single use character multiple times'
-
         else:
             return False, 'Tile symbols are not unique'
 
