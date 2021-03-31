@@ -208,38 +208,21 @@ class Board:
         for x, y in door_locations:
             surrounding = self.get_surrounding(x, y, tile_map)
             surrounding_t = list(map(list, itertools.zip_longest(*surrounding, fillvalue=None)))
-            
             unique_tiles = self.get_unique_char_count(surrounding)
-
-            print(*surrounding, sep='\n')
-            print('---')
-            print(*surrounding_t, sep='\n')
-            print('---')
-            print()
-
-            """
-            needs a minimum of 3 of tiles / empty tile 
-            (if at edge, check if to left / right or up / down count None as apart of the three)
-            and the remainer being one type of room and the door itself
-            doors can only be in the middle row
-            """
 
             check_one = False
             for i in range(len(surrounding)):
                 if i == 0 or i == 2:
                     rows = [self.get_unique_char_count(surrounding[i]), self.get_unique_char_count(surrounding_t[i])]
-
                     count = 0
-                    count_t = 0
 
                     # Checks for appropriate amount of simple tiles
-                    # Can be shortened
                     for row in rows:
                         for key, val in row.items():
                             if (key in simple_tile_symbols and key != door_symbol) or key == None:
                                 count += val
                         
-                        if count == 3 or count_t == 3 and door_symbol not in row:
+                        if count == 3 and door_symbol not in row:
                             check_one = True
 
         for symbol in simple_tile_symbols:
@@ -250,6 +233,8 @@ class Board:
 
         if check_one and check_two:
             return True
+        else:
+            return False
 
 
     def parse_map_data(self):
