@@ -7,6 +7,13 @@ class MyTestCase(unittest.TestCase):
         result, data = board.setup_board()
         self.assertEqual(result, True)
 
+    def test_yesman(self):
+        board = Board()
+        
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
