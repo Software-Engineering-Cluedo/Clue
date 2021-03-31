@@ -73,6 +73,8 @@ class Board:
             room = rooms[current_largest]
             room.set_weapon_token(val)
 
+            return True
+
 
     def find_first_instance(self, symbol, tile_map):
         """ Finds the first instance of a symbol from the tile map """
@@ -114,6 +116,8 @@ class Board:
                     temp.append(None)
             surrounding.append(temp)
 
+        if surrounding == None:
+            return False
         return surrounding
 
 
@@ -193,21 +197,59 @@ class Board:
         """ Checks if the doors are in valid positions """
         tile_map = data['map']['tiles']
         door_locations = self.find_all_instances('D', tile_map)
+
+        simple_tile_symbols_dict = {tile['char']:tile['obj'] for tile in data['simple tiles']}
+        simple_tile_symbols = [tile for tile in simple_tile_symbols_dict]
+        
+        for key, val in simple_tile_symbols_dict.items():
+            if val.lower() == 'door':
+                door_symbol = key
+
         for x, y in door_locations:
             surrounding = self.get_surrounding(x, y, tile_map)
+            surrounding_t = list(map(list, itertools.zip_longest(*surrounding, fillvalue=None)))
+            
+            unique_tiles = self.get_unique_char_count(surrounding)
+
             print(*surrounding, sep='\n')
-            unique_chars = self.get_unique_char_count(surrounding)
-            print(unique_chars)
+            print('---')
+            print(*surrounding_t, sep='\n')
+            print('---')
             print()
 
             """
             needs a minimum of 3 of tiles / empty tile 
             (if at edge, check if to left / right or up / down count None as apart of the three)
             and the remainer being one type of room and the door itself
+            doors can only be in the middle row
             """
 
-        # TODO
-        return True
+            check_one = False
+            for i in range(len(surrounding)):
+                if i == 0 or i == 2:
+                    rows = [self.get_unique_char_count(surrounding[i]), self.get_unique_char_count(surrounding_t[i])]
+
+                    count = 0
+                    count_t = 0
+
+                    # Checks for appropriate amount of simple tiles
+                    # Can be shortened
+                    for row in rows:
+                        for key, val in row.items():
+                            if (key in simple_tile_symbols and key != door_symbol) or key == None:
+                                count += val
+                        
+                        if count == 3 or count_t == 3 and door_symbol not in row:
+                            check_one = True
+
+        for symbol in simple_tile_symbols:
+            if symbol in unique_tiles:
+                del unique_tiles[symbol]
+
+        check_two = 1 == len(unique_tiles)
+
+        if check_one and check_two:
+            return True
 
 
     def parse_map_data(self):
