@@ -73,6 +73,18 @@ class MyTestCase(unittest.TestCase):
         result = board.check_valid_doors(data)
         self.assertEqual(result, True)
 
+    
+    def test_find_instance(self):
+        data = self.get_json_data()
+        board = Board()
+        result = board.find_instance(data)
+        self.assertEqual(result, True)
+
+
+    #def test_seperate_board_and_players(self):
+    #    data = self.get_json_data()
+    #    board = Board()
+
 
     def test_find_instance(self):
         y = 10
