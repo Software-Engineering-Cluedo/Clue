@@ -16,6 +16,8 @@ from src.playercard import PlayerCard
 
 class Board:
     """The representation of the Clue board.
+
+    TODO: check for false for methods when calling
     
     Attributes:
         config_dir: A string which is the path to the Clue config directory
@@ -30,7 +32,7 @@ class Board:
 
     def __init__(self):
         self.setup_config_folder()
-        parsed_correctly, data = self.parse_map_data()
+        parsed_correctly, data = self.setup_board()
         if parsed_correctly:
             self.tile_map = data
             # print(*self.tile_map, sep='\n')
@@ -55,7 +57,7 @@ class Board:
         """ Finds the location of the weapons in relation to the room, and adds it to the room class of the prodominately surrounding room symbol """
 
         for key, val in weapons.items():
-            x, y = self.find_first_instance(key, tile_map)
+            x, y = self.find_instance(key, tile_map, True)
             surrounding = self.get_surrounding(x, y, tile_map)
             unique_chars = self.get_unique_char_count(surrounding)
 
@@ -76,25 +78,22 @@ class Board:
             return True
 
 
-    def find_first_instance(self, symbol, tile_map):
-        """ Finds the first instance of a symbol from the tile map """
+    def convert_tile_map_to_2d_array(self, tile_map):
+        for i in range(len(tile_map)):
+            tile_map[i] = [char for char in tile_map[i]]
 
-        found = False
-        i = 0
-        
-        while found == False and i < len(tile_map):
-            if symbol in tile_map[i]:
-                return tile_map[i].find(symbol), i
-            i += 1
+        return tile_map
 
-        return False, False
 
-    def find_all_instances(self, symbol, tile_map):
+    def find_instance(self, symbol, tile_map, first):
         arr = []
         for y in range(len(tile_map)):
             for x in range(len(tile_map[0])):
                 if tile_map[y][x] == symbol:
-                    arr.append([x, y])
+                    if first:
+                        return x, y
+                    else:
+                        arr.append([x, y])
 
         if arr == None:
             return False
@@ -196,7 +195,7 @@ class Board:
     def check_valid_doors(self, data):
         """ Checks if the doors are in valid positions """
         tile_map = data['map']['tiles']
-        door_locations = self.find_all_instances('D', tile_map)
+        door_locations = self.find_instance('D', tile_map, False)
 
         simple_tile_symbols_dict = {tile['char']:tile['obj'] for tile in data['simple tiles']}
         simple_tile_symbols = [tile for tile in simple_tile_symbols_dict]
@@ -236,8 +235,27 @@ class Board:
         else:
             return False
 
+    
+    def seperate_board_and_players(self, tile_map, players, simple_tiles):
+        for tile in simple_tiles:
+            if tile['obj'].lower() == 'tile':
+                simple_tile = tile['char']
+        
+        player_map = []
+        for i in range(len(tile_map)):
+            row = []
+            for j in range(len(tile_map[0])):
+                row.append('')
+            player_map.append(row)
 
-    def parse_map_data(self):
+        for player_symbol, player_object in players.items():
+            x, y = self.find_instance(player_symbol, tile_map, True)
+            player_map[y][x] = player_symbol
+            tile_map[y][x] = simple_tile
+
+        return tile_map, player_map
+
+    def setup_board(self):
         """Parses map json data to create the board and associated classes
 
         Checks if the json is valid, and then creates the board with the data 
@@ -282,12 +300,16 @@ class Board:
         simple_tiles = data['simple tiles']
         game_tiles = data['game tiles']
 
+        self.convert_tile_map_to_2d_array(data['map']['tiles'])
+        print(*data['map']['tiles'], sep='\n')
+
         if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
             if self.correct_count_object_ref(data):
                 if self.check_valid_doors(data):
                     board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
+                        tile_map, player_map = self.seperate_board_and_players(data['map']['tiles'], players, simple_tiles)
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
@@ -297,4 +319,4 @@ class Board:
         else:
             return False, 'Tile symbols are not unique'
 
-        return True, [board_objects, weapons, rooms, players, player_cards]
+        return True, [data, tile_map, player_map, board_objects, weapons, rooms, players, player_cards]
