@@ -5,14 +5,13 @@ from pathlib import Path
 
 
 class MyTestCase(unittest.TestCase):
-    data = []
-    config_dir = str(Path.home()) + "/Clue"
-    
-
-    def __init__(self):
-        super().init()
-        with open(self.config_dir + '/clue.json', encoding='UTF-8') as file:
-            self.data = json.loads(file.read())
+    def get_json_data(self):
+        data = []
+        config_dir = str(Path.home()) + "/Clue"
+        with open(config_dir + '/clue.json', encoding='UTF-8') as file:
+            data = json.loads(file.read())
+        
+        return data
 
 
     def test_parse_map_data(self):
@@ -22,19 +21,19 @@ class MyTestCase(unittest.TestCase):
 
 
     #def test_place_weapons_in_rooms(self):
-     #   board = Board()
-      #  result = board.place_weapons_in_rooms(w,r,s,t)
+    #   board = Board()
+    #  result = board.place_weapons_in_rooms(w,r,s,t)
 
 
     def test_get_surrounding(self):
+        data = self.get_json_data()
+        print(data["map"])
         board = Board()
         tile_map = data["map"]["tiles"]
         y = 10
         x = 10
-        result = get_surrounding(x,y,tile_map) != False
+        result = board.get_surrounding(x,y,tile_map) != False
         self.assertEqual(result, True)
-
-
 
 
 if __name__ == '__main__':
