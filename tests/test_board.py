@@ -36,5 +36,26 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, True)
 
 
+    def test_generate_objects_from_tiles(self):
+        data = self.get_json_data()
+        board = Board()
+        r1,r2,r3,r4,r5 = board.generate_objects_from_tiles(data)
+        result = r1 != False
+        self.assertEqual(result,True)
+
+    
+    def test_correct_count_object_ref(self):
+        data = self.get_json_data()
+        board = Board()
+        result = board.correct_count_object_ref(data)
+        self.assertEqual(result, True)
+
+    def test_check_valid_doors(self):
+        data = self.get_json_data()
+        board = Board()
+        result = board.check_valid_doors(data)
+        self.assertEqual(result, True)
+
+
 if __name__ == '__main__':
     unittest.main()
