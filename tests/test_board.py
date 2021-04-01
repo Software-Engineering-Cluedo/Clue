@@ -18,13 +18,20 @@ class MyTestCase(unittest.TestCase):
         board = Board()
         result, data = board.setup_board()
         self.assertEqual(result, True)
-    
+
+
     #def test_place_weapons_in_rooms(self):
      #   board = Board()
       #  result = board.place_weapons_in_rooms(w,r,s,t)
 
-    
 
+    def test_get_surrounding(self):
+        board = Board()
+        tile_map = data["map"]["tiles"]
+        y = 10
+        x = 10
+        result = get_surrounding(x,y,tile_map) != False
+        self.assertEqual(result, True)
 
 
 
