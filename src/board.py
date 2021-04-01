@@ -235,7 +235,7 @@ class Board:
         else:
             return False
 
-    
+
     def seperate_board_and_players(self, tile_map, players, simple_tiles):
         for tile in simple_tiles:
             if tile['obj'].lower() == 'tile':
@@ -254,6 +254,7 @@ class Board:
             tile_map[y][x] = simple_tile
 
         return tile_map, player_map
+
 
     def setup_board(self):
         """Parses map json data to create the board and associated classes
