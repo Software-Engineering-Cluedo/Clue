@@ -332,6 +332,11 @@ class Board:
         return tile_map, player_map
 
 
+    def generate_tokens(self, tile_map, player_map, players, weapons):
+        for player_symbol, player_object in players.items():
+            player_position = self.find_instance(player_symbol, player_map, True)
+
+
     def setup_board(self):
         """Parses map json data to create the board and associated classes
 
@@ -388,6 +393,7 @@ class Board:
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map = self.seperate_board_and_players(data['map']['tiles'], players, simple_tiles)
+                        tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons)
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
