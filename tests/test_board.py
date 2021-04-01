@@ -77,8 +77,12 @@ class MyTestCase(unittest.TestCase):
     def test_find_instance(self):
         data = self.get_json_data()
         board = Board()
-        result = board.find_instance(data)
-        self.assertEqual(result, True)
+        tile_map = data["map"]["tiles"]
+        y = 10
+        x = 10
+        first = True
+        result = board.find_instance(data, tile_map, first)
+        self.assetNotEqual(result, "")
 
 
     #def test_seperate_board_and_players(self):
