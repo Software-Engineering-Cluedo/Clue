@@ -26,13 +26,12 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_get_surrounding(self):
-        data = self.get_json_data()
-        print(data["map"])
-        board = Board()
-        tile_map = data["map"]["tiles"]
         y = 10
         x = 10
-        result = board.get_surrounding(x,y,tile_map) != False
+        data = self.get_json_data()
+        board = Board()
+        tile_map = data["map"]["tiles"]
+        result = board.get_surrounding(x, y, tile_map) != False
         self.assertEqual(result, True)
 
 
@@ -73,16 +72,19 @@ class MyTestCase(unittest.TestCase):
         result = board.check_valid_doors(data)
         self.assertEqual(result, True)
 
-    
+
     def test_find_instance(self):
+        y = 10
+        x = 10
         data = self.get_json_data()
         board = Board()
         tile_map = data["map"]["tiles"]
-        y = 10
-        x = 10
-        first = True
-        result = board.find_instance(data, tile_map, first)
-        self.assetNotEqual(result, "")
+
+        result1 = board.find_instance(tile_map[y][x], tile_map, True)
+        self.assertEqual(result1 != False, True)
+        self.assertEqual(len(result1), 2)
+        result2 = board.find_instance(tile_map[y][x], tile_map, False)
+        self.assertEqual(result2 != False, True)
 
 
     #def test_seperate_board_and_players(self):
