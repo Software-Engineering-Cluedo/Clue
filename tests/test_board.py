@@ -18,10 +18,12 @@ class MyTestCase(unittest.TestCase):
         board = Board()
         result, data = board.setup_board()
         self.assertEqual(result, True)
+    
+    #def test_place_weapons_in_rooms(self):
+     #   board = Board()
+      #  result = board.place_weapons_in_rooms(w,r,s,t)
 
-    def test_yesman(self):
-        board = Board()
-        
+    
 
 
 
