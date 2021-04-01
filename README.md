@@ -8,7 +8,7 @@ If you are on windows, install python from https://www.python.org/, be sure to c
 1. Clone the repo
 2. Open up powershell / terminal
 3. Navigate to the folder, e.g. `cd F:\Repositories\Clue`
-4. If on windows, run powershell as admin and run `Set-ExecutionPolicy unrestricted` ( there may be a potentially better way, please change if found )
+4. If on windows, run powershell as admin and run `Set-ExecutionPolicy unrestricted` and exit ( there may be a potentially better way, please change if found )
 6. Create the venv: `python -m venv venv`
 7. Activate the venv: `./venv/bin/activate` (Linux) or `./venv/Scripts/activate` (Win)
 8. Run `pip install -r requirements.txt` to install the requirements
