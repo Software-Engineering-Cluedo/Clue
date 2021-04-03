@@ -51,6 +51,9 @@ class Board:
         
         Args:
             tiles: The set of tile types, e.g. data['simple tiles'] or data['game tiles']
+        
+        Returns:
+            bool: If all symbols are unique in the tile set given
         """
 
         unique_symbols = {s['char'] for s in tiles}
@@ -60,11 +63,16 @@ class Board:
     def place_weapons_in_rooms(self, weapons, rooms, simple_tiles, tile_map):
         """Finds the location of the weapons in relation to the room, and adds it to the room class of the prodominately surrounding room symbol
         
+        TODO: Need to perform checks on other methods
+
         Args:
             weapons: The dictionary of characters associated to it's weapon object
             rooms: The dictionary of characters associated to it's room object 
             simple_tiles: The simple tiles object from the json data, e.g. data['simple tiles']
             tile_map: The tile map from the json data e.g. data['map']['tiles']
+
+        Returns:
+            bool: If all is ran, returns true
         """
 
         # Loop through the keys and associated value in weapons
@@ -100,6 +108,9 @@ class Board:
 
         Args:
             tile_map: The tile map to be used from the json data, e.g. data['map']['tiles']
+        
+        Returns:
+            tile_map: a two dimentional array of characters
         """
 
         for i in range(len(tile_map)):
@@ -115,6 +126,10 @@ class Board:
             symbol: The symbol to find the position/s of, e.g. char = 't'
             tile_map: The tile map of the board, e.g. data['map']['tiles']
             first: If true, it finds the first instance of the symbol, false gets all positions
+        
+        Returns:
+            bool: Returns false if arr is none 
+            Arr: The position or positions of the symbol 
         """
 
         arr = []
@@ -138,6 +153,10 @@ class Board:
             x: x position
             y: y position
             tile_map: The tile map of the board, e.g. data['map']['tiles']
+        
+        Returns:
+            bool: If surrounding array is none, returns false
+            surrounding: The surrounding characters around x and y
         """
 
         max_y = len(tile_map)
@@ -164,6 +183,13 @@ class Board:
         
         Args:
             data: The whole json data
+        
+        Returns:
+            generated_objects: All objetcs with associated symbols
+            rooms: All rooms with associated symbols
+            weapons: All weapons with associated symbols
+            players: All players with associated symbols
+            player_cards: All player_cards with associated symbols
         """
 
         # Cerates the simple tile dictionary with the character and associated object
@@ -214,6 +240,9 @@ class Board:
         
         Args:
             arr: the array to search through, e.g. the tile map or surrounding characters around a position
+        
+        Returns:
+            dict: dictionary of characters with the amount of times it appears
         """
         return dict(Counter(i for i in list(itertools.chain.from_iterable(arr))).items())
 
@@ -246,6 +275,9 @@ class Board:
         
         Args:
             data: The whole json data
+
+        Returns:
+            bool: If it passes the checks or not
         """
         
         # Gets tile map and gets the simple tile symbols
@@ -307,6 +339,10 @@ class Board:
             tile_map: The tile map of the board, e.g. data['map']['tiles']
             players: The dictionary of players and associated symbols
             simple_tiles: All simple tiles from the json data, e.g. data['simple tiles']
+
+        Returns:
+            tile_map: Returns the newly formatted tile map
+            player_map: The locations of players
         """
 
         # Gets the tile symbol from the simple_tiles
