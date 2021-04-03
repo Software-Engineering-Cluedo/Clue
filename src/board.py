@@ -47,31 +47,48 @@ class Board:
 
 
     def is_unique_tiles(self, tiles):
-        """ Checks if there are duplicate uses of a symbol for different contexts """
+        """Checks if there are duplicate uses of a symbol for different contexts
+        
+        Args:
+            tiles: The set of tile types, e.g. data['simple tiles'] or data['game tiles']
+        """
 
         unique_symbols = {s['char'] for s in tiles}
         return len(unique_symbols) == len(tiles)
 
 
     def place_weapons_in_rooms(self, weapons, rooms, simple_tiles, tile_map):
-        """ Finds the location of the weapons in relation to the room, and adds it to the room class of the prodominately surrounding room symbol """
+        """Finds the location of the weapons in relation to the room, and adds it to the room class of the prodominately surrounding room symbol
+        
+        Args:
+            weapons: The dictionary of characters associated to it's weapon object
+            rooms: The dictionary of characters associated to it's room object 
+            simple_tiles: The simple tiles object from the json data, e.g. data['simple tiles']
+            tile_map: The tile map from the json data e.g. data['map']['tiles']
+        """
 
+        # Loop through the keys and associated value in weapons
         for key, val in weapons.items():
             x, y = self.find_instance(key, tile_map, True)
             surrounding = self.get_surrounding(x, y, tile_map)
             unique_chars = self.get_unique_char_count(surrounding)
 
+            # Delete None entry in unique_chars dictionary
             if None in unique_chars:
                 del unique_chars[None]
+
+            # Remove all simple tile characters from unique_char dict
             for entry in simple_tiles:
                 if entry['char'] in unique_chars:
                     del unique_chars[entry['char']]
 
+            # Find the most used character surrounding the weapon
             current_largest = list(unique_chars.keys())[0]
             for char, count in unique_chars.items():
                 if unique_chars[current_largest] < count:
                     current_largest = char
 
+            # Get room using symbol and assign the weapon object within the room
             room = rooms[current_largest]
             room.set_weapon_token(val)
 
@@ -79,6 +96,12 @@ class Board:
 
 
     def convert_tile_map_to_2d_array(self, tile_map):
+        """Converts the one dimentional array of strings into a two dimention array of characters
+
+        Args:
+            tile_map: The tile map to be used from the json data, e.g. data['map']['tiles']
+        """
+
         for i in range(len(tile_map)):
             tile_map[i] = [char for char in tile_map[i]]
 
@@ -86,6 +109,14 @@ class Board:
 
 
     def find_instance(self, symbol, tile_map, first):
+        """Finds all or the first instance of a certain symbol / character position
+
+        Args:
+            symbol: The symbol to find the position/s of, e.g. char = 't'
+            tile_map: The tile map of the board, e.g. data['map']['tiles']
+            first: If true, it finds the first instance of the symbol, false gets all positions
+        """
+
         arr = []
         for y in range(len(tile_map)):
             for x in range(len(tile_map[0])):
@@ -101,11 +132,19 @@ class Board:
 
 
     def get_surrounding(self, x, y, tile_map):
-        """ Finds the surrounding tiles around a set of coordanates """
+        """Finds the surrounding tiles around a set of coordanates
+        
+        Args:
+            x: x position
+            y: y position
+            tile_map: The tile map of the board, e.g. data['map']['tiles']
+        """
 
         max_y = len(tile_map)
         max_x = len(tile_map[0])
         surrounding = []
+
+        # Loops through the one wide radius of the position given and adds the character to the array
         for i in range(y - 1, y + 2):
             temp = []
             for j in range(x - 1, x + 2):
@@ -121,10 +160,16 @@ class Board:
 
 
     def generate_objects_from_tiles(self, data):
-        """ Creates objects from the game tiles data """
+        """Creates objects from the game tiles data
+        
+        Args:
+            data: The whole json data
+        """
 
+        # Cerates the simple tile dictionary with the character and associated object
         generated_objects = {tile['char']:tile['obj'] for tile in data['simple tiles']}
         
+        # Create empty dictionary
         rooms = {}
         weapons = {}
         players = {}
@@ -132,10 +177,12 @@ class Board:
 
         player_count = 0
 
+        # Loops through the data
         for obj_id, tile in enumerate(data['game tiles']):
             name = tile['name']
             symbol = tile['char']
 
+            # Make objects from the object names
             if tile['obj'].lower() == 'room':
                 r = Room(name, obj_id, symbol)
                 generated_objects[symbol] = r
@@ -163,52 +210,66 @@ class Board:
 
 
     def get_unique_char_count(self, arr):
+        """Counts each character and assigns the value to the character in a dictionary
+        
+        Args:
+            arr: the array to search through, e.g. the tile map or surrounding characters around a position
+        """
         return dict(Counter(i for i in list(itertools.chain.from_iterable(arr))).items())
 
 
     def correct_count_object_ref(self, data):
-        """ Checks if the object type appears the correct amount of times """
+        """Checks if the object type appears the correct amount of times
+        
+        Args:
+            data: The whole json data, used to count the amount a character appears to check if appears correct amount of times
+        """
 
         combo_tiles = {tile['char']:tile['obj'] for tile in data['simple tiles'] + data['game tiles']}
         unique_chars = self.get_unique_char_count(data['map']['tiles'])
 
-        # Rules, could be stored in dict
-        weapon = 1
-        player = 1
-        secret_door = 2
+        # Rules
+        rules = {'weapon' : 1, 'player' : 1, 'secret door' : 2}
 
-        # This can be shortened using a for loop
-        for char, val in unique_chars.items():
-            if combo_tiles[char].lower() == 'weapon':
-                if val != weapon:
-                    return False
-            elif combo_tiles[char].lower() == 'player':
-                if val != player:
-                    return False
-            elif combo_tiles[char].lower() == 'secret door':
-                if val != secret_door:
-                    return False
+        # Loops through rules and checks if it appears in unique characters, if it is checks if the count is correct
+        for obj, correct_count in rules.items():
+            for char, val in unique_chars.items():
+                if combo_tiles[char].lower() == obj:
+                    if correct_count != val:
+                        return False
 
         return True
 
 
     def check_valid_doors(self, data):
-        """ Checks if the doors are in valid positions """
+        """Checks if the doors are in valid positions
+        
+        Args:
+            data: The whole json data
+        """
+        
+        # Gets tile map and gets the simple tile symbols
         tile_map = data['map']['tiles']
-        door_locations = self.find_instance('D', tile_map, False)
-
         simple_tile_symbols_dict = {tile['char']:tile['obj'] for tile in data['simple tiles']}
         simple_tile_symbols = [tile for tile in simple_tile_symbols_dict]
         
+        # Gets the door symbol
         for key, val in simple_tile_symbols_dict.items():
             if val.lower() == 'door':
                 door_symbol = key
 
+        # Finds each instance of the door
+        door_locations = self.find_instance(door_symbol, tile_map, False)
+
+        # Loops through all door locations
         for x, y in door_locations:
+            
+            # Gets surrounding symbols or the location and creates the transpose of the original, gets unique tile count of surrounding
             surrounding = self.get_surrounding(x, y, tile_map)
             surrounding_t = list(map(list, itertools.zip_longest(*surrounding, fillvalue=None)))
             unique_tiles = self.get_unique_char_count(surrounding)
 
+            # Checks if appropriate amount of simple tiles surrounding the door location
             check_one = False
             for i in range(len(surrounding)):
                 if i == 0 or i == 2:
@@ -224,12 +285,15 @@ class Board:
                         if count == 3 and door_symbol not in row:
                             check_one = True
 
+        # Deletes all simple tiles from unique tile character entries from unique_tiles
         for symbol in simple_tile_symbols:
             if symbol in unique_tiles:
                 del unique_tiles[symbol]
 
+        # Checks if the unique_tiles length only contains one room
         check_two = 1 == len(unique_tiles)
 
+        # If passed both checks return True
         if check_one and check_two:
             return True
         else:
@@ -237,10 +301,20 @@ class Board:
 
 
     def seperate_board_and_players(self, tile_map, players, simple_tiles):
+        """Seperates the players and the board into seperate arrays
+        
+        Args:
+            tile_map: The tile map of the board, e.g. data['map']['tiles']
+            players: The dictionary of players and associated symbols
+            simple_tiles: All simple tiles from the json data, e.g. data['simple tiles']
+        """
+
+        # Gets the tile symbol from the simple_tiles
         for tile in simple_tiles:
             if tile['obj'].lower() == 'tile':
                 simple_tile = tile['char']
         
+        # Creates a blank player map to store locations of players
         player_map = []
         for i in range(len(tile_map)):
             row = []
@@ -248,11 +322,13 @@ class Board:
                 row.append('')
             player_map.append(row)
 
+        # Stores players in player map and turns existing tile_map player symbols into tiles
         for player_symbol, player_object in players.items():
             x, y = self.find_instance(player_symbol, tile_map, True)
             player_map[y][x] = player_symbol
             tile_map[y][x] = simple_tile
 
+        # Returns both maps
         return tile_map, player_map
 
 
@@ -302,8 +378,9 @@ class Board:
         game_tiles = data['game tiles']
 
         self.convert_tile_map_to_2d_array(data['map']['tiles'])
-        print(*data['map']['tiles'], sep='\n')
+        # print(*data['map']['tiles'], sep='\n')
 
+        # Performs each check and creates objects
         if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
             if self.correct_count_object_ref(data):
                 if self.check_valid_doors(data):
