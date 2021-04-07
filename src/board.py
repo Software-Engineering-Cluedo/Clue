@@ -417,7 +417,9 @@ class Board:
         # print(*data['map']['tiles'], sep='\n')
 
         # Performs each check and creates objects
+        # Need to check both at the same time, not seperately
         if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
+            # Need to check for edge door check
             if self.correct_count_object_ref(data):
                 if self.check_valid_doors(data):
                     board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
