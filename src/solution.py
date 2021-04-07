@@ -8,7 +8,7 @@ class Solution:
     w = None
 
     def __init__(self):
-        solution=generateSolution()
+        solution = self.generateSolution()
         self.r = solution[0]
         self.p = solution[1]
         self.w = solution[2]
