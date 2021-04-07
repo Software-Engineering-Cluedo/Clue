@@ -17,9 +17,9 @@ class Solution:
         """ Generates the solution from each type of card """
 
         if rooms != None and player_cards != None and weapons != None:
-            r = random.choice(list(rooms.items()))
-            p = random.choice(list(player_cards.items()))
-            w = random.choice(list(weapons.items()))
+            r = random.choice(list(rooms.items()))[1]
+            p = random.choice(list(player_cards.items()))[1]
+            w = random.choice(list(weapons.items()))[1]
 
             return r, p, w
         else:
@@ -34,5 +34,5 @@ class Solution:
 
     def check_solution(self, r_guess, p_guess, w_guess):
         """ Checks if the given solution is correct """
-        
+
         return (w_guess == self.w and p_guess == self.p and r_guess == self.r)
