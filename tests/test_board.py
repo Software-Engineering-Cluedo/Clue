@@ -3,6 +3,7 @@ import json
 from src.board import Board
 from pathlib import Path
 
+startup_board = Board()
 
 class MyTestCase(unittest.TestCase):
     def get_json_data(self):
