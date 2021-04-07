@@ -13,7 +13,7 @@ class Solution:
         self.p = solution[1]
         self.w = solution[2]
 
-    def generateSolution(): 
+    def generateSolution(self): 
         #TO DO
         #randomly select one room, one player, one weapon 
         r = None
@@ -21,7 +21,7 @@ class Solution:
         w = None
         return r, p, w
     
-    def checkSolution(wGuess, pGuess, rGuess):
+    def checkSolution(self, wGuess, pGuess, rGuess):
         if (wGuess == self.w or pGuess == self.p or rGuess == self.r):
             return True
         else:
