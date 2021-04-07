@@ -20,11 +20,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, True)
 
 
-    #def test_place_weapons_in_rooms(self):
-    #   board = Board()
-    #  result = board.place_weapons_in_rooms(w,r,s,t)
-
-
     def test_get_surrounding(self):
         y = 10
         x = 10
@@ -33,13 +28,6 @@ class MyTestCase(unittest.TestCase):
         tile_map = data["map"]["tiles"]
         result = board.get_surrounding(x, y, tile_map) != False
         self.assertEqual(result, True)
-
-
-
-
-    #def test_place_weapons_in_rooms(self):
-    #   board = Board()
-    #  result = board.place_weapons_in_rooms(w,r,s,t)
 
 
     def test_get_surrounding(self):
@@ -60,12 +48,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(result, True)
 
 
-    def test_correct_count_object_ref(self):
-        data = self.get_json_data()
-        board = Board()
-        result = board.correct_count_object_ref(data)
-        self.assertEqual(result, True)
-
     def test_check_valid_doors(self):
         data = self.get_json_data()
         board = Board()
@@ -85,30 +67,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(len(result1), 2)
         result2 = board.find_instance(tile_map[y][x], tile_map, False)
         self.assertEqual(result2 != False, True)
-
-
-    #def test_seperate_board_and_players(self):
-    #    data = self.get_json_data()
-    #    board = Board()
-
-
-    def test_find_instance(self):
-        y = 10
-        x = 10
-        data = self.get_json_data()
-        board = Board()
-        tile_map = data["map"]["tiles"]
-
-        result1 = board.find_instance(tile_map[y][x], tile_map, True)
-        self.assertEqual(result1 != False, True)
-        self.assertEqual(len(result1), 2)
-        result2 = board.find_instance(tile_map[y][x], tile_map, False)
-        self.assertEqual(result2 != False, True)
-
-
-    #def test_seperate_board_and_players(self):
-    #    data = self.get_json_data()
-    #    board = Board()
 
 
 if __name__ == '__main__':
