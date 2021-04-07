@@ -22,7 +22,7 @@ class Solution:
         return r, p, w
     
     def checkSolution(self, wGuess, pGuess, rGuess):
-        if (wGuess == self.w or pGuess == self.p or rGuess == self.r):
+        if (wGuess == self.w and pGuess == self.p and rGuess == self.r):
             return True
         else:
             return False
