@@ -5,9 +5,9 @@ from src.weapon import Weapon
 class Solution:
     def __init__(self):
         solution=generateSolution
-        Room self.r = solution[0]
-        Player self.p = solution[1]
-        Weapon self.w = solution[2]
+        self.r = solution[0]
+        self.p = solution[1]
+        self.w = solution[2]
 
     def generateSolution(): 
         #TO DO
