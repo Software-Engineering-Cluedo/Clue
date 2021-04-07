@@ -4,19 +4,23 @@ from src.weapon import Weapon
 
 class Solution:
     def __init__(self):
-        Room self.r = null;
-        Player self.p = null;
-        Weapon self.w = null;
-        print('todo')
+        solution=generateSolution
+        Room self.r = solution[0]
+        Player self.p = solution[1]
+        Weapon self.w = solution[2]
 
     def generateSolution(): 
+        #TO DO
         #randomly select one room, one player, one weapon 
-        return (r,p,w); 
+        r=null
+        p=null
+        w=null
+        return ([r,p,w]); 
     
     def checkSolution(wGuess, pGuess, rGuess):
-        if (wGuess==w ||pGuess==p||rGuess=r){
-            return True;
-        } else {
-            return False;
-        }
+        if (wGuess==w or pGuess==p or rGuess=r):
+            return True
+        else:
+            return False
+        
 
