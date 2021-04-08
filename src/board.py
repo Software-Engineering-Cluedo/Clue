@@ -8,9 +8,12 @@ from pathlib import Path
 from collections import Counter
 
 from src.room import Room
-from src.player import Player
 from src.weapon import Weapon
+from src.player import Player
+from src.boardtoken import Token
 from src.playercard import PlayerCard
+from src.weapontoken import WeaponToken
+from src.playertoken import PlayerToken
 
 
 class Board:
@@ -351,7 +354,7 @@ class Board:
             return False
 
 
-    def seperate_board_and_players(self, tile_map, players, simple_tiles):
+    def seperate_board(self, tile_map, players, weapons, simple_tiles):
         """Seperates the players and the board into seperate arrays
         
         Args:
@@ -384,10 +387,12 @@ class Board:
             tile_map[y][x] = simple_tile
 
         # Returns both maps
-        return tile_map, player_map
+        return tile_map, player_map, weapon_map, door_map
 
 
     def generate_tokens(self, tile_map, player_map, players, weapons):
+        """
+        """
         for player_symbol, player_object in players.items():
             player_position = self.find_instance(player_symbol, player_map, True)
 
@@ -460,4 +465,4 @@ class Board:
         else:
             return False, 'Tile symbols are not unique'
 
-        return True, [data, tile_map, player_map, board_objects, weapons, rooms, players, player_cards]
+        return True, [data, tile_map, player_map, board_objects, weapons, rooms, players, player_cards, tokens, weapon_tokens, player_tokens]
