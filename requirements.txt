@@ -4,3 +4,4 @@ recommonmark
 sphinx-markdown-tables
 jsonschema
 numpy
+pygame
