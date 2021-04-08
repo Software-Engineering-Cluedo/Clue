@@ -5,7 +5,6 @@ import itertools
 import jsonschema
 
 from pathlib import Path
-from jsonschema import validate
 from collections import Counter
 
 from src.room import Room
@@ -397,7 +396,7 @@ class Board:
 
         # Validate the users json config file against the schema
         try:
-            validate(instance=data, schema=data_schema)
+            jsonschema.validate(instance=data, schema=data_schema)
         except jsonschema.exceptions.ValidationError as e:
             print(e)
             return False, 'Schema Error'
