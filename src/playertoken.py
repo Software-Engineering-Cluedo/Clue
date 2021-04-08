@@ -10,4 +10,4 @@ class PlayerToken(Token):
         self.board = board
     
     def move(x, y):
-        
+        return True
