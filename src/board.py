@@ -28,14 +28,34 @@ class Board:
     config_dir = str(Path.home()) + "/Clue"
     tile_map = []
     symbols = {}
+
+    data = None
+    tile_map  = None
+    player_map = None
+    board_objects = None
+    weapons = None
+    rooms = None
+    players = None
+    player_cards = None
     
 
     def __init__(self):
         self.setup_config_folder()
-        parsed_correctly, data = self.setup_board()
+        parsed_correctly, r_data = self.setup_board()
+        print(parsed_correctly)
         if parsed_correctly:
-            self.tile_map = data
-            # print(*self.tile_map, sep='\n')
+            self.data = r_data[0]
+            self.tile_map = r_data[1]
+            self.player_map = r_data[2]
+            self.board_objects = r_data[3]
+            self.weapons = r_data[4]
+            self.rooms = r_data[5]
+            self.players = r_data[6]
+            self.player_cards = r_data[7]
+
+
+    def get_tile_map(self):
+        return self.tile_map
 
 
     def setup_config_folder(self):
