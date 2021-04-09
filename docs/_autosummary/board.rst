@@ -1,7 +1,7 @@
-src.card
-========
+﻿board
+=====
 
-.. automodule:: src.card
+.. automodule:: board
 
    
    
@@ -17,7 +17,7 @@ src.card
 
    .. autosummary::
    
-      Card
+      Board
    
    
 

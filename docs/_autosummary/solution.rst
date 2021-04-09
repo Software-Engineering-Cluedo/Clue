@@ -1,7 +1,7 @@
-src.player
-==========
+﻿solution
+========
 
-.. automodule:: src.player
+.. automodule:: solution
 
    
    
@@ -17,7 +17,7 @@ src.player
 
    .. autosummary::
    
-      Player
+      Solution
    
    
 
