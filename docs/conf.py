@@ -12,31 +12,26 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../src/'))
+sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'Clue'
-copyright = '2021, Umar, Adam, Sarah, Sam, Will, Ethan'
-author = 'Umar, Adam, Sarah, Sam, Will, Ethan'
+copyright = '2021, https://github.com/orgs/Software-Engineering-Cluedo/people'
+author = 'https://github.com/orgs/Software-Engineering-Cluedo/people'
 
 
 # -- General configuration ---------------------------------------------------
-
-source_suffix = {
-        '.rst': 'restructuredtext',
-        '.md': 'markdown'
-}
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.autosummary"
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.autosummary'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -45,10 +40,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-# exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-exclude_patterns = []
-
-autosummary_generate = True
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -63,3 +55,5 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+
+autosummary_generate = True
