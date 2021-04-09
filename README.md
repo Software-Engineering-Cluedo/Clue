@@ -10,7 +10,7 @@ If you are on windows, install python from https://www.python.org/, be sure to c
 3. Navigate to the folder, e.g. `cd F:\Repositories\Clue`
 4. If on windows, run powershell as admin and run `Set-ExecutionPolicy unrestricted` and exit ( there may be a potentially better way, please change if found )
 6. Create the venv: `python -m venv venv`
-7. Activate the venv: `./venv/Scripts/activate` (Win) or `source ./venv/bin/activate` (Linux), , or open up vs code, accept the prompt to change to the venv and open up a terminal
+7. Activate the venv: `./venv/Scripts/activate` (Win) or `source ./venv/bin/activate` (Linux), or open up vs code, accept the prompt to change to the venv and open up a terminal
 9. Run `pip install -r requirements.txt` to install the requirements
 10. In the root directory, run `pip install -e .`
 
