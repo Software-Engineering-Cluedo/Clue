@@ -31,6 +31,8 @@
             - `tile`
             - `door`
             - `secret door`
+    - `name`
+        - The name of the object
 - `game tiles`
     - Is a list of objects which include `char` and `obj`
     - `char`
