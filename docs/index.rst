@@ -1,19 +1,24 @@
 Welcome to Clue's documentation!
 ================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-
-API Reference
-=============
+Classes
+=======
 
 .. autosummary::
    :toctree: _autosummary
 
-   board
-   solution
+   board.Board
+   ai.Ai
+   card.Card
+   carddeck.CardDeck
+   human.Human
+   player.Player
+   playercard.PlayerCard
+   room.Room
+   solution.Solution
+   token.Token
+   weapon.Weapon
+   weapontoken.WeaponToken
 
 
 Indices and tables
