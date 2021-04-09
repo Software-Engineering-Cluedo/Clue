@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('../src/'))
 # -- Project information -----------------------------------------------------
 
 project = 'Clue'
-copyright = '2021, Umar, Adam, Sarah, Sam, Will, Ethan'
-author = 'Umar, Adam, Sarah, Sam, Will, Ethan'
+copyright = '2021 https://github.com/Software-Engineering-Cluedo'
+author = 'https://github.com/Software-Engineering-Cluedo'
 
 
 # -- General configuration ---------------------------------------------------
