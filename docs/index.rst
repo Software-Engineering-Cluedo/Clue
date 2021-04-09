@@ -7,18 +7,18 @@ Classes
 .. autosummary::
    :toctree: _autosummary
 
-   board.Board
-   ai.Ai
-   card.Card
-   carddeck.CardDeck
-   human.Human
-   player.Player
-   playercard.PlayerCard
-   room.Room
-   solution.Solution
-   token.Token
-   weapon.Weapon
-   weapontoken.WeaponToken
+   src.board.Board
+   src.ai.Ai
+   src.card.Card
+   src.carddeck.CardDeck
+   src.human.Human
+   src.player.Player
+   src.playercard.PlayerCard
+   src.room.Room
+   src.solution.Solution
+   src.token.Token
+   src.weapon.Weapon
+   src.weapontoken.WeaponToken
 
 
 Indices and tables
