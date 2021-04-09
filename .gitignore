@@ -136,3 +136,5 @@ dmypy.json
 .vscode/
 
 export.sh
+
+docs/_autosummary/

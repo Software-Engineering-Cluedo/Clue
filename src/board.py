@@ -42,7 +42,6 @@ class Board:
     def __init__(self):
         self.setup_config_folder()
         parsed_correctly, r_data = self.setup_board()
-        print(parsed_correctly)
         if parsed_correctly:
             self.data = r_data[0]
             self.tile_map = r_data[1]
