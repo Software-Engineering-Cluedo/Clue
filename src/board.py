@@ -354,8 +354,8 @@ class Board:
             return False
 
 
-    def seperate_board(self, tile_map, players, weapons, simple_tiles):
-        """Seperates the players and the board into seperate arrays
+    def separate_board(self, tile_map, players, weapons, simple_tiles):
+        """Separates the players and the board into separate arrays
         
         Args:
             tile_map: The tile map of the board, e.g. data['map']['tiles']
@@ -370,9 +370,11 @@ class Board:
         # Gets the tile symbol from the simple_tiles
         for tile_type in simple_tiles:
             if tile_type['obj'].lower() == 'tile':
-                tile = tile['char']
+                tile_symbol = tile_type['char']
+            if tile_type['obj'].lower() == 'door':
+                door_symbol = tile_type['char']
         
-        # Creates a blank maps to store locations of dufferent object types
+        # Creates a blank maps to store locations of different object types
         player_map = self.generate_blank_map(tile_map)
         weapon_map = self.generate_blank_map(tile_map)
         door_map = self.generate_blank_map(tile_map)
@@ -381,18 +383,53 @@ class Board:
         for player_symbol, player_object in players.items():
             x, y = self.find_instance(player_symbol, tile_map, True)
             player_map[y][x] = player_symbol
-            tile_map[y][x] = tile
+            tile_map[y][x] = tile_symbol
         
         # Stores players in player map and turns existing tile_map player symbols into tiles
         for weapon_symbol, weapon_object in weapons.items():
             x, y = self.find_instance(weapon_symbol, tile_map, True)
-            weapon_map[y][x] = weapon_symbol
-            surrounding = get.surrounding(x, y)
-            unique_chars = self.get_unique_char_count(surrounding)
+            tile_map, weapon_map = self.separate_board_common(weapon_map, tile_map, simple_tiles, weapon_symbol, x, y)
 
+        door_locations = self.find_instance(door_symbol, tile_map, False)
+        for door in door_locations:
+            x, y = door
+            tile_map, door_map = self.separate_board_common(door_map, tile_map, simple_tiles, door_symbol, x, y)
+
+
+        print('Board:')
+        print(*tile_map, sep='\n')
+        print()
+        print('Players:')
+        print(*player_map, sep='\n')
+        print()
+        print('Weapons:')
+        print(*weapon_map, sep='\n')
+        print()
+        print('Doors:')
+        print(*door_map, sep='\n')
 
         # Returns both maps
         return tile_map, player_map, weapon_map, door_map
+
+
+    def separate_board_common(self, new_map, tile_map, simple_tiles, search_symbol, x, y ):
+        new_map[y][x] = search_symbol
+        surrounding = self.get_surrounding(x, y, tile_map)
+        unique_chars = self.get_unique_char_count(surrounding)
+        
+        del unique_chars[search_symbol]
+        if None in unique_chars:
+            del unique_chars[None]
+        for symbol in simple_tiles:
+            if symbol['char'] in unique_chars:
+                del unique_chars[symbol['char']]
+        
+        if 1 == len(unique_chars):
+            tile_map[y][x] = list(unique_chars)[0]
+            return tile_map, new_map
+        else:
+            return False
+        
 
 
     def generate_blank_map(self, tile_map):
@@ -404,6 +441,7 @@ class Board:
             blank_map.append(row)
         return blank_map
         
+
 
     def generate_tokens(self, tile_map, player_map, players, weapons):
         """
@@ -458,18 +496,16 @@ class Board:
         game_tiles = data['game tiles']
 
         self.convert_tile_map_to_2d_array(data['map']['tiles'])
-        # print(*data['map']['tiles'], sep='\n')
 
         # Performs each check and creates objects
-        # Need to check both at the same time, not seperately
-        if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
+        if self.is_unique_tiles(simple_tiles + game_tiles):
             # Need to check for edge door check
             if self.correct_count_object_ref(data):
                 if self.check_valid_doors(data):
                     board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
-                        tile_map, player_map, weapon_map, door_map = self.seperate_board(data['map']['tiles'], players, weapons, simple_tiles)
+                        tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
                         tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons)
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
@@ -480,4 +516,4 @@ class Board:
         else:
             return False, 'Tile symbols are not unique'
 
-        return True, [data, tile_map, player_map, board_objects, weapons, rooms, players, player_cards, tokens, weapon_tokens, player_tokens]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, tokens, weapon_tokens, player_tokens]
