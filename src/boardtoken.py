@@ -1,5 +1,4 @@
 from src.playercard import PlayerCard
-from src.board import Board
 from src.room import Room
 
 

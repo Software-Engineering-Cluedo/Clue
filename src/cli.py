@@ -24,7 +24,7 @@ class Cli():
                         print(self.tile_map[y][x], end='')
                 print()
             key = input('up (w), down (s), left (a), right (d), stop (p)\n')
-            if key.upper() is 'P': 
+            if key.upper() == 'P': 
                 running = False
         return True
     
