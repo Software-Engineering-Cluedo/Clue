@@ -34,6 +34,8 @@ class Board:
     data = None
     tile_map  = None
     player_map = None
+    weapon_map = None
+    door_map = None
     board_objects = None
     weapons = None
     rooms = None
@@ -49,12 +51,13 @@ class Board:
             self.data = r_data[0]
             self.tile_map = r_data[1]
             self.player_map = r_data[2]
-            self.board_objects = r_data[3]
-            self.weapons = r_data[4]
-            self.rooms = r_data[5]
-            self.players = r_data[6]
-            self.player_cards = r_data[7]
-
+            self.weapon_map = r_data[3]
+            self.door_map = r_data[4]
+            self.board_objects = r_data[5]
+            self.weapons = r_data[6]
+            self.rooms = r_data[7]
+            self.players = r_data[8]
+            self.player_cards = r_data[9]
 
     def get_tile_map(self):
         return self.tile_map
@@ -373,7 +376,7 @@ class Board:
                 tile_symbol = tile_type['char']
             if tile_type['obj'].lower() == 'door':
                 door_symbol = tile_type['char']
-        
+
         # Creates a blank maps to store locations of different object types
         player_map = self.generate_blank_map(tile_map)
         weapon_map = self.generate_blank_map(tile_map)
@@ -396,17 +399,17 @@ class Board:
             tile_map, door_map = self.separate_board_common(door_map, tile_map, simple_tiles, door_symbol, x, y)
 
 
-        print('Board:')
-        print(*tile_map, sep='\n')
-        print()
-        print('Players:')
-        print(*player_map, sep='\n')
-        print()
-        print('Weapons:')
-        print(*weapon_map, sep='\n')
-        print()
-        print('Doors:')
-        print(*door_map, sep='\n')
+        # print('Board:')
+        # print(*tile_map, sep='\n')
+        # print()
+        # print('Players:')
+        # print(*player_map, sep='\n')
+        # print()
+        # print('Weapons:')
+        # print(*weapon_map, sep='\n')
+        # print()
+        # print('Doors:')
+        # print(*door_map, sep='\n')
 
         # Returns both maps
         return tile_map, player_map, weapon_map, door_map
@@ -429,7 +432,6 @@ class Board:
             return tile_map, new_map
         else:
             return False
-        
 
 
     def generate_blank_map(self, tile_map):
@@ -440,14 +442,15 @@ class Board:
                 row.append('')
             blank_map.append(row)
         return blank_map
-        
 
 
-    def generate_tokens(self, tile_map, player_map, players, weapons):
+    def generate_tokens(self, player_map, weapon_map, players, weapons):
         """
+        TODO
         """
         for player_symbol, player_object in players.items():
             player_position = self.find_instance(player_symbol, player_map, True)
+        
 
 
     def setup_board(self):
@@ -506,7 +509,7 @@ class Board:
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
-                        tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons)
+                        #tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons) # TODO
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
@@ -516,4 +519,5 @@ class Board:
         else:
             return False, 'Tile symbols are not unique'
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, tokens, weapon_tokens, player_tokens]
+        # return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, tokens, weapon_tokens, player_tokens]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards]
