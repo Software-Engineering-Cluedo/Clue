@@ -5,6 +5,7 @@ import itertools
 import jsonschema
 
 from pathlib import Path
+from copy import copy, deepcopy
 from collections import Counter
 
 from src.room import Room
@@ -41,6 +42,7 @@ class Board:
     rooms = None
     players = None
     player_cards = None
+    combined_tiles = None
     
 
     def __init__(self):
@@ -58,6 +60,7 @@ class Board:
             self.rooms = r_data[7]
             self.players = r_data[8]
             self.player_cards = r_data[9]
+            self.combined_tiles = r_data[10]
 
     def get_tile_map(self):
         return self.tile_map
@@ -508,6 +511,7 @@ class Board:
                     board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
+                        combined_tiles = deepcopy(data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
                         #tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons) # TODO
                     else:
@@ -520,4 +524,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
         # return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, tokens, weapon_tokens, player_tokens]
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, combined_tiles]
