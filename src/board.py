@@ -454,6 +454,21 @@ class Board:
         for player_symbol, player_object in players.items():
             player_position = self.find_instance(player_symbol, player_map, True)
         
+    
+    def generate_combined_map(self, tile_map, weapon_map, player_map, door_map):
+        combined_tiles = []
+        for y in range(len(tile_map)):
+            temp = []
+            for x in range(len(tile_map[y])):
+                if player_map[y][x] != '':
+                    temp.append(player_map[y][x])   
+                elif weapon_map[y][x] != '':
+                    temp.append(weapon_map[y][x])
+                elif door_map[y][x] != '':
+                    temp.append(door_map[y][x])
+                else:
+                    temp.append(tile_map[y][x])
+            combined_tiles.append(temp)
 
 
     def setup_board(self):
@@ -511,7 +526,6 @@ class Board:
                     board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
-                        combined_tiles = deepcopy(data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
                         #tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons) # TODO
                     else:
@@ -523,5 +537,6 @@ class Board:
         else:
             return False, 'Tile symbols are not unique'
 
+
         # return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, tokens, weapon_tokens, player_tokens]
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, combined_tiles]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map)]
