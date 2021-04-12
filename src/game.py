@@ -3,7 +3,17 @@ import jsonschema
 from pathlib import Path
 from src.board import Board
 
-class Game:
+class Game: 
+    """
+    TO DO 
+    implement tiles with images, enhance visuals of the game 
+    create refresh function to update tiles 
+    add accusation button 
+    create accusation window
+    
+    
+    testing
+    """
     window=None
     boardObj = None
     boardArr = None
