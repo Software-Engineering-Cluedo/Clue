@@ -469,6 +469,7 @@ class Board:
                 else:
                     temp.append(tile_map[y][x])
             combined_tiles.append(temp)
+        return combined_tiles
 
 
     def setup_board(self):
