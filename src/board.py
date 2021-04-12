@@ -401,19 +401,6 @@ class Board:
             x, y = door
             tile_map, door_map = self.separate_board_common(door_map, tile_map, simple_tiles, door_symbol, x, y)
 
-
-        # print('Board:')
-        # print(*tile_map, sep='\n')
-        # print()
-        # print('Players:')
-        # print(*player_map, sep='\n')
-        # print()
-        # print('Weapons:')
-        # print(*weapon_map, sep='\n')
-        # print()
-        # print('Doors:')
-        # print(*door_map, sep='\n')
-
         # Returns both maps
         return tile_map, player_map, weapon_map, door_map
 
@@ -528,7 +515,7 @@ class Board:
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
-                        #tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons) # TODO
+                        tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons) # TODO
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
@@ -539,5 +526,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        # return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, tokens, weapon_tokens, player_tokens]
         return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map)]

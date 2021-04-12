@@ -14,7 +14,10 @@ class Cli():
 
         while running:
             self.refresh_tile_maps()
-            print(*self.board.combined_tiles, sep='\n')
+            for row in range(len(self.board.combined_tiles)):
+                for col in range(len(self.board.combined_tiles[0])):
+                    print(self.board.combined_tiles[row][col], end='')
+                print()
             key = input('up (w), down (s), left (a), right (d), stop (p)\n')
             if key.upper() == 'P': 
                 running = False    
