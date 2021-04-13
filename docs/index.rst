@@ -1,21 +1,25 @@
-.. Clue documentation master file, created by
-   sphinx-quickstart on Tue Feb  4 20:05:16 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to Clue's documentation!
-======================================
+================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+Classes
+=======
 
 .. autosummary::
-   :recursive:
-   :toctree: generated
+   :toctree: _autosummary
 
-   src
-   
+   src.board.Board
+   src.ai.Ai
+   src.card.Card
+   src.carddeck.CardDeck
+   src.human.Human
+   src.player.Player
+   src.playercard.PlayerCard
+   src.room.Room
+   src.solution.Solution
+   src.token.Token
+   src.weapon.Weapon
+   src.weapontoken.WeaponToken
+
 
 Indices and tables
 ==================

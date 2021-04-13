@@ -13,11 +13,17 @@
                     "properties": {
                         "x": {
                             "description": "Size of x dimension",
-                            "type": "number"
+                            "type": "number",
+                            "multipleOf": 1.0,
+                            "minimum": 10,
+                            "maximum": 40
                         },
                         "y": {
                             "description": "Size of x dimension",
-                            "type": "number"
+                            "type": "number",
+                            "multipleOf": 1.0,
+                            "minimum": 10,
+                            "maximum": 40
                         }
                     }
                 },
@@ -28,9 +34,7 @@
                 }
             },
             "required": ["dimensions", "tiles"]
-
         },
-
         "simple tiles": {
             "description": "Array of the characters with associated objects",
             "type": "array",
