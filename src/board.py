@@ -21,6 +21,7 @@ class Board:
     """The representation of the Clue board.
 
     TODO: check for false for methods when calling
+    TODO: Add comments
     
     Attributes:
         config_dir: A string which is the path to the Clue config directory
@@ -29,8 +30,6 @@ class Board:
     """
 
     config_dir = str(Path.home()) + "/Clue"
-    tile_map = []
-    symbols = {}
 
     data = None
     tile_map  = None
@@ -61,9 +60,6 @@ class Board:
             self.players = r_data[8]
             self.player_cards = r_data[9]
             self.combined_tiles = r_data[10]
-
-    def get_tile_map(self):
-        return self.tile_map
 
 
     def setup_config_folder(self):
@@ -434,14 +430,22 @@ class Board:
         return blank_map
 
 
-    def generate_tokens(self, player_map, weapon_map, players, weapons):
-        """
-        TODO
-        """
-        for player_symbol, player_object in players.items():
-            player_position = self.find_instance(player_symbol, player_map, True)
-        
-    
+    def generate_all_tokens(self, player_map, players, weapon_map, weapons):
+        return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, players, False)
+
+
+    def generate_tokens(self, char_map, object_dict, is_weapon):
+        tokens = []
+
+        for symbol, object in object_dict.items():
+            x, y = self.find_instance(symbol, char_map, True)
+            if is_weapon:
+                tokens.append(WeaponToken(x, y, object))
+            else:
+                tokens.append(PlayerToken(x, y, object))
+        return tokens
+
+
     def generate_combined_map(self, tile_map, weapon_map, player_map, door_map):
         combined_tiles = []
         for y in range(len(tile_map)):
@@ -515,7 +519,7 @@ class Board:
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
-                        tokens, weapon_tokens, player_tokens = self.generate_tokens(tile_map, player_map, players, weapons) # TODO
+                        weapon_tokens, player_tokens = self.generate_all_tokens(player_map, players, weapon_map, weapons) # TODO
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
