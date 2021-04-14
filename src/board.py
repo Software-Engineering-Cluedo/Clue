@@ -42,6 +42,8 @@ class Board:
     players = None
     player_cards = None
     combined_tiles = None
+    weapon_tokens = None
+    player_tokens = None
     
 
     def __init__(self):
@@ -60,6 +62,8 @@ class Board:
             self.players = r_data[8]
             self.player_cards = r_data[9]
             self.combined_tiles = r_data[10]
+            self.weapon_tokens = r_data[11]
+            self.player_tokens = r_data[12]
 
 
     def setup_config_folder(self):
@@ -430,8 +434,8 @@ class Board:
         return blank_map
 
 
-    def generate_all_tokens(self, player_map, players, weapon_map, weapons):
-        return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, players, False)
+    def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
+        return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, player_cards, False)
 
 
     def generate_tokens(self, char_map, object_dict, is_weapon):
@@ -519,7 +523,7 @@ class Board:
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
-                        weapon_tokens, player_tokens = self.generate_all_tokens(player_map, players, weapon_map, weapons) # TODO
+                        weapon_tokens, player_tokens = self.generate_all_tokens(player_map, player_cards, weapon_map, weapons) # TODO
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
@@ -530,4 +534,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map)]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens]
