@@ -37,7 +37,6 @@ class Game:
         self.simple_tile_dict=self.setup_tile_dict("simple tiles")
         self.game_tile_dict=self.setup_tile_dict("game tiles")
         self.combined_tile_dict=self.simple_tile_dict|self.game_tile_dict
- 
         for i in range(self.rows):
             for j in range(self.columns):
                 if "name" in self.combined_tile_dict[self.boardArr[i][j]]:
