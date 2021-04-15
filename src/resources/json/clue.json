@@ -99,7 +99,7 @@
             "obj": "weapon",
             "name": "Wrench",
             "img_dir": "wrench.png"
-        },
+        }, 
         {
             "char": "k",
             "obj": "room",
