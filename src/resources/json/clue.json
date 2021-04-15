@@ -38,23 +38,27 @@
         {
             "char": ".",
             "obj": "none",
-            "img_dir": "da boi.jpg"
+            "img_dir": "none.png"
         },
         {
             "char": "t",
-            "obj": "tile"
+            "obj": "tile",
+            "img_dir":"tile.png"
         },
         {
             "char": "D",
-            "obj": "door"
+            "obj": "door",
+            "img_dir":"door.png"
         },
         {
             "char": "🤠",
-            "obj": "secret door"
+            "obj": "secret door",
+            "img_dir":"secretdoor1.png"
         }, 
         {
             "char": "👾",
-            "obj": "secret door"
+            "obj": "secret door",
+            "img_dir":"secretdoor2.png"
         }
     ],
 
@@ -62,107 +66,129 @@
         {
             "char": "1",
             "obj": "weapon",
-            "name": "Candlestick"
+            "name": "Candlestick",
+            "img_dir": "candlestick.png"
         },
         {
             "char": "2",
             "obj": "weapon",
-            "name": "Dagger"
+            "name": "Dagger",
+            "img_dir": "dagger.png"
+
         },
         {
             "char": "3",
             "obj": "weapon",
-            "name": "Lead Pipe"
+            "name": "Lead Pipe",
+            "img_dir": "leadpipe.png"
         },
         {
             "char": "4",
             "obj": "weapon",
-            "name": "Revolver"
+            "name": "Revolver",
+            "img_dir": "revolver.png"
         },
         {
             "char": "5",
             "obj": "weapon",
-            "name": "Rope"
+            "name": "Rope",
+            "img_dir": "rope.png"
         },
         {
             "char": "6",
             "obj": "weapon",
-            "name": "Wrench"
+            "name": "Wrench",
+            "img_dir": "wrench.png"
         },
         {
             "char": "k",
             "obj": "room",
-            "name": "Kitchen"
+            "name": "Kitchen",
+            "img_dir": "kitchen.png"
         },
         {
             "char": "b",
             "obj": "room",
-            "name": "Ball Room"
+            "name": "Ball Room",
+            "img_dir": "ballroom.png"
         },
         {
             "char": "c",
             "obj": "room",
-            "name": "Conservatory"
+            "name": "Conservatory",
+            "img_dir":"conservatory.png"
         },
         {
             "char": "d",
             "obj": "room",
-            "name": "Dining Room"
+            "name": "Dining Room",
+            "img_dir": "diningroom.png"
         },
         {
             "char": "r",
             "obj": "room",
-            "name": "Billiard Room"
+            "name": "Billiard Room",
+            "img_dir": "billiardroom.png"
         },
         {
             "char": "l",
             "obj": "room",
-            "name": "Library"
+            "name": "Library",
+            "img_dir": "library.png"
         },
         {
             "char": "h",
             "obj": "room",
-            "name": "Hall"
+            "name": "Hall",
+            "img_dir": "hall.png"
         },
         {
             "char": "o",
             "obj": "room",
-            "name": "Lounge"
+            "name": "Lounge",
+            "img_dir":"lounge.png"
         },
         {
             "char": "s",
             "obj": "room",
-            "name": "Study"
+            "name": "Study",
+            "img_dir": "study.png"
         },
         {
             "char": "Q",
             "obj": "player",
-            "name": "Mrs. White"
+            "name": "Mrs. White",
+            "img_dir": "mrswhite.png"
         },
         {
             "char": "W",
             "obj": "player",
-            "name": "Mr. Green"
+            "name": "Mr. Green",
+            "img_dir": "mrgreen.png"
         },
         {
             "char": "E",
             "obj": "player",
-            "name": "Mrs. Peacock"
+            "name": "Mrs. Peacock",
+            "img_dir": "mrspeacock.png"
         },
         {
             "char": "R",
             "obj": "player",
-            "name": "Colonel Mustard"
+            "name": "Colonel Mustard",
+            "img_dir":"colonelmustard.png"
         },
         {
             "char": "T",
             "obj": "player",
-            "name": "Professor Plum"
+            "name": "Professor Plum",
+            "img_dir": "professorplum.png"    
         },
         {
             "char": "Y",
             "obj": "player",
-            "name": "Miss Scarlett"
+            "name": "Miss Scarlett",
+            "img_dir": "missscarlett.png"
         }
     ]
 }
