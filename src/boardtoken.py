@@ -20,7 +20,7 @@ class Token:
 
 
     def get_position(self):
-        return x, y
+        return self.x, self.y
 
 
     def set_room(self, room):

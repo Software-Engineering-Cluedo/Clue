@@ -37,7 +37,8 @@
     "simple tiles": [
         {
             "char": ".",
-            "obj": "none"
+            "obj": "none",
+            "img_dir": "da boi.jpg"
         },
         {
             "char": "t",
