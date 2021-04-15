@@ -2,6 +2,7 @@ from tkinter import *
 import jsonschema
 import json
 import os
+from PIL import Image, ImageTk
 from pathlib import Path
 from src.board import Board
 
@@ -23,8 +24,6 @@ class Game:
     columns = None
     simple_tile_dict = None
     game_tile_dict = None
-    config_dir = str(Path.home()) + "/Clue"
-
 
     def __init__(self):
         self.boardObj=Board()
@@ -39,13 +38,12 @@ class Game:
         self.combined_tile_dict=self.simple_tile_dict|self.game_tile_dict
         for i in range(self.rows):
             for j in range(self.columns):
-                if "name" in self.combined_tile_dict[self.boardArr[i][j]]:
-                    currentLabel=Label(self.window, text=str(self.combined_tile_dict[self.boardArr[i][j]]["name"]))
-                else:
-                    currentLabel=Label(self.window, text=str(self.combined_tile_dict[self.boardArr[i][j]]["obj"]))
-                currentLabel.grid(row=i, column=j)    
-        print(self.simple_tile_dict)
-        print(self.game_tile_dict)
+                if "img_src" in self.combined_tile_dict[self.boardArr[i][j]]:
+                    img_path = Image.open(os.path.dirname(__file__) + '/resources/images/' + self.combined_tile_dict[self.boardArr[i][j]]["img_src"])
+                    img=ImageTk.PhotoImage(img_path)
+                    currentLabel=Label(self.window, image=img)
+                    currentLabel.image=img
+                    currentLabel.grid(row=i, column=j)    
         self.window.mainloop()
 
     def setup_tile_dict(self, tile_type):

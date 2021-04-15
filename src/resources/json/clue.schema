@@ -63,6 +63,10 @@
                 "obj": {
                     "description": "The object type, could be: none, tile, door or secret door",
                     "type": "string"
+                }, 
+                "img_src": {
+                     "description": "The name of the image file",
+                     "type": "string"   
                 }
             },
             "required": ["char", "obj"]
@@ -81,6 +85,10 @@
                 "name": {
                     "description": "The objects name",
                     "type": "string"
+                }, 
+                "img_src": {
+                     "description": "The name of the image file",
+                     "type": "string"   
                 }
             },
             "required": ["char", "obj", "name"]
