@@ -99,7 +99,11 @@
             "obj": "weapon",
             "name": "Wrench",
             "img_dir": "wrench.png"
+<<<<<<< HEAD
         }, 
+=======
+        },
+>>>>>>> GUI-tkinter
         {
             "char": "k",
             "obj": "room",
