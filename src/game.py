@@ -24,6 +24,7 @@ class Game:
     columns = None
     simple_tile_dict = None
     game_tile_dict = None
+    accuseButton = None
 
     def __init__(self):
         self.boardObj=Board()
@@ -37,7 +38,9 @@ class Game:
         self.game_tile_dict=self.setup_tile_dict("game tiles")
         self.combined_tile_dict=self.simple_tile_dict|self.game_tile_dict
         self.generate_img_tiles()
-        self.window.mainloop()
+        self.accuseButton=Button(self.window,text="Make accusation?", command=self.generate_accusation_window)
+        self.accuseButton.grid(row=24,column=26)
+        mainloop()
 
     def setup_tile_dict(self, tile_type):
         temp_dict={}
@@ -62,7 +65,6 @@ class Game:
         return True    
 
     def generate_accusation_window(self):
-        self.accusationWindow=Tk()
+        self.accusationWindow=Toplevel(self.window)
         self.accusationWindow.title("Make Accusation")
-        return self.accusationWindow
-
+        Label(self.accusationWindow, text = "Make your accusation").grid(row=0,column=0)
