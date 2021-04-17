@@ -36,14 +36,7 @@ class Game:
         self.simple_tile_dict=self.setup_tile_dict("simple tiles")
         self.game_tile_dict=self.setup_tile_dict("game tiles")
         self.combined_tile_dict=self.simple_tile_dict|self.game_tile_dict
-        for i in range(self.rows):
-            for j in range(self.columns):
-                if "img_src" in self.combined_tile_dict[self.boardArr[i][j]]:
-                    img_path = Image.open(os.path.dirname(__file__) + '/resources/images/' + self.combined_tile_dict[self.boardArr[i][j]]["img_src"])
-                    img=ImageTk.PhotoImage(img_path)
-                    currentLabel=Label(self.window, image=img)
-                    currentLabel.image=img
-                    currentLabel.grid(row=i, column=j)    
+        self.generate_img_tiles()
         self.window.mainloop()
 
     def setup_tile_dict(self, tile_type):
@@ -57,4 +50,13 @@ class Game:
                         temp_dict[tile["char"]][k]=obj
         return temp_dict
 
+    def generate_img_tiles(self):
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if "img_src" in self.combined_tile_dict[self.boardArr[i][j]]:
+                    img_path = Image.open(os.path.dirname(__file__) + '/resources/images/' + self.combined_tile_dict[self.boardArr[i][j]]["img_src"])
+                    img=ImageTk.PhotoImage(img_path)
+                    currentLabel=Label(self.window, image=img)
+                    currentLabel.image=img
+                    currentLabel.grid(row=i, column=j)    
 
