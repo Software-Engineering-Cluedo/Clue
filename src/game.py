@@ -58,5 +58,11 @@ class Game:
                     img=ImageTk.PhotoImage(img_path)
                     currentLabel=Label(self.window, image=img)
                     currentLabel.image=img
-                    currentLabel.grid(row=i, column=j)    
+                    currentLabel.grid(row=i, column=j)
+        return True    
+
+    def generate_accusation_window(self):
+        self.accusationWindow=Tk()
+        self.accusationWindow.title("Make Accusation")
+        return self.accusationWindow
 
