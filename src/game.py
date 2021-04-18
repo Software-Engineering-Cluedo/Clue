@@ -67,9 +67,10 @@ class Game:
     def generate_accusation_window(self):
         self.accusationWindow=Toplevel(self.window)
         self.accusationWindow.title("Make Accusation")
+        #update this to pull these options from a backend based on who is playing
         listPlayers=["PLAYER1","PLAYER2", "PLAYER3"]
-        listWeapons=["gun","knife", "pipe", "hammer"]
-        listRooms=["ballroom","lounge", "study","hall","kitchen"]
+        listWeapons=["Candlestick","Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench"]
+        listRooms=["Kitchen","Ball Room", "Conservatory","Dining Room","Billiard Room", "Library","Hall", "Lounge", "Study"]
         Label(self.accusationWindow, text = "Character:").grid(row=1,column=1, padx=40,pady=20)
         Label(self.accusationWindow, text = "Weapon:").grid(row=3,column=1, padx=40,pady=20)
         Label(self.accusationWindow, text = "Room:").grid(row=5,column=1, padx=40,pady=20)
