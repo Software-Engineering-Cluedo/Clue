@@ -25,12 +25,14 @@ class Game:
     simple_tile_dict = None
     game_tile_dict = None
     accuseButton = None
+    childWindowOpen = None
 
     def __init__(self):
         self.boardObj=Board()
         self.boardArr=self.boardObj.tile_map
         self.rows=len(self.boardArr)
         self.columns=len(self.boardArr[0])
+        self.childWindowOpen=False
         self.window=Tk()
         self.window.title("Clue!")
         self.data=self.boardObj.data   
@@ -65,26 +67,34 @@ class Game:
         return True    
 
     def generate_accusation_window(self):
-        self.accusationWindow=Toplevel(self.window)
-        self.accusationWindow.title("Make Accusation")
-        #update this to pull these options from a backend based on who is playing
-        listPlayers=["PLAYER1","PLAYER2", "PLAYER3"]
-        listWeapons=["Candlestick","Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench"]
-        listRooms=["Kitchen","Ball Room", "Conservatory","Dining Room","Billiard Room", "Library","Hall", "Lounge", "Study"]
-        Label(self.accusationWindow, text = "Character:").grid(row=1,column=1, padx=40,pady=20)
-        Label(self.accusationWindow, text = "Weapon:").grid(row=3,column=1, padx=40,pady=20)
-        Label(self.accusationWindow, text = "Room:").grid(row=5,column=1, padx=40,pady=20)
-        Button(self.accusationWindow, text = "Submit", command=print("submit")).grid(row=7,column=5,padx=10,pady=10)
-        playerOption=OptionMenu(self.accusationWindow,  StringVar(self.accusationWindow,listPlayers[0]),*listPlayers).grid(row=1,column=3)
-        weaponOption=OptionMenu(self.accusationWindow, StringVar(self.accusationWindow,listWeapons[0]),*listWeapons).grid(row=3,column=3)
-        roomOption=OptionMenu(self.accusationWindow, StringVar(self.accusationWindow,listRooms[0]),*listRooms).grid(row=5,column=3)
-        
-        #positioning at the end as it is based on dimensions that will change as elements are added 
-        widthParent=self.window.winfo_width()
-        lengthParent=self.window.winfo_height()
-        widthChild=self.accusationWindow.winfo_width()
-        lengthChild=self.accusationWindow.winfo_height()
-        x=int(self.window.winfo_x()+(widthParent/2)-(widthChild/2))
-        y=int(self.window.winfo_y()+(lengthParent/2)-(lengthChild/2))
-        self.accusationWindow.geometry("+{}+{}".format(x,y))
+        if self.childWindowOpen==False:
+            self.accusationWindow=Toplevel(self.window)
+            self.accusationWindow.title("Make Accusation")
+            listPlayers=["PLAYER1","PLAYER2", "PLAYER3"]#update this to pull these options from a backend based on who is playing
+            listWeapons=["Candlestick","Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench"]
+            listRooms=["Kitchen","Ball Room", "Conservatory","Dining Room","Billiard Room", "Library","Hall", "Lounge", "Study"]
+            Label(self.accusationWindow, text = "Character:").grid(row=1,column=1, padx=40,pady=20)
+            Label(self.accusationWindow, text = "Weapon:").grid(row=3,column=1, padx=40,pady=20)
+            Label(self.accusationWindow, text = "Room:").grid(row=5,column=1, padx=40,pady=20)
+            Button(self.accusationWindow, text = "Submit", command=self.submit_accusation).grid(row=7,column=5,padx=10,pady=10)
+            self.accusationWindow.accusedPlayer= StringVar(self.accusationWindow,listPlayers[0])
+            self.accusationWindow.accusedWeapon= StringVar(self.accusationWindow,listWeapons[0])
+            self.accusationWindow.accusedRoom=StringVar(self.accusationWindow,listRooms[0])
+            self.accusationWindow.playerOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedPlayer,*listPlayers).grid(row=1,column=3)
+            self.accusationWindow.weaponOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedWeapon,*listWeapons).grid(row=3,column=3)
+            self.accusationWindow.roomOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedRoom,*listRooms).grid(row=5,column=3)
+            
+            #positioning at the end as it is based on dimensions that will change as elements are added 
+            widthParent=self.window.winfo_width()
+            lengthParent=self.window.winfo_height()
+            widthChild=self.accusationWindow.winfo_width()
+            lengthChild=self.accusationWindow.winfo_height()
+            x=int(self.window.winfo_x()+(widthParent/2)-(widthChild/2))
+            y=int(self.window.winfo_y()+(lengthParent/2)-(lengthChild/2))
+            self.accusationWindow.geometry("+{}+{}".format(x,y))
+            self.childWindowOpen=True
 
+    def submit_accusation(self):
+        print(self.accusationWindow.accusedPlayer.get(),self.accusationWindow.accusedRoom.get(),self.accusationWindow.accusedWeapon.get())
+        self.accusationWindow.destroy()
+        self.childWindowOpen=False
