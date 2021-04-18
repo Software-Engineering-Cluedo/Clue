@@ -31,6 +31,9 @@ class Cli():
         for tile, obj in self.board.simple_tiles.items():
             if obj['obj'] == 'tile':
                 tile_symbol = tile
+            if obj['obj'] == 'door':
+                door_symbol = tile
+                print(door_symbol)
 
         while cont:
             print('Select one of the following characters to start: ')
@@ -54,12 +57,13 @@ class Cli():
                     
                     if key in ['W', 'S', 'A', 'D']:
                         cur_x, cur_y = player_token.get_position()
-                        print(cur_x, cur_y)
                         temp_x, temp_y = [cur_x + movements[key][0], cur_y + movements[key][1]]
-                        print(temp_x, temp_y)
-                        if temp_y >= 0 and temp_x >= 0 and temp_y < self.board.data['map']['dimensions']['y'] and temp_x < self.board.data['map']['dimensions']['x'] and self.tile_map[temp_y][temp_x] == tile_symbol and self.player_map[temp_y][temp_x] == '':
-                            player_token.move(temp_x, temp_y)
-                            self.board.refresh_player_positions()
+                        if temp_y >= 0 and temp_x >= 0 and temp_y < self.board.data['map']['dimensions']['y'] and temp_x < self.board.data['map']['dimensions']['x'] and self.player_map[temp_y][temp_x] == '':
+                            if (self.tile_map[temp_y][temp_x] == door_symbol or self.tile_map[temp_y][temp_x] == tile_symbol):
+                                player_token.move(temp_x, temp_y)
+                                self.board.refresh_player_positions()
+                            else:
+                                print("Can't move this direction")
                         else:
                             print("Can't move this direction")
 
