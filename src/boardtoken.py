@@ -1,5 +1,4 @@
 from src.playercard import PlayerCard
-from src.room import Room
 
 
 class Token:
@@ -21,14 +20,6 @@ class Token:
 
     def get_position(self):
         return self.x, self.y
-
-
-    def set_room(self, room):
-        self.room = room
-
-
-    def get_room(self):
-        return self.room
 
 
     def set_card(self, card):
