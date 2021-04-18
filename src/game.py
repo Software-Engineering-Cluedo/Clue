@@ -68,3 +68,11 @@ class Game:
         self.accusationWindow=Toplevel(self.window)
         self.accusationWindow.title("Make Accusation")
         Label(self.accusationWindow, text = "Make your accusation").grid(row=0,column=0)
+        widthParent=self.window.winfo_width()
+        lengthParent=self.window.winfo_height()
+        widthChild=self.accusationWindow.winfo_width()
+        lengthChild=self.accusationWindow.winfo_height()
+        x=int(self.window.winfo_x()+(widthParent/2)-(widthChild/2))
+        y=int(self.window.winfo_y()+(lengthParent/2)-(lengthChild/2))
+        self.accusationWindow.geometry("+{}+{}".format(x,y))
+
