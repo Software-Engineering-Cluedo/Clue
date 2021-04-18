@@ -435,18 +435,19 @@ class Board:
 
 
     def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
+        print(player_cards)
         return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, player_cards, False)
 
 
     def generate_tokens(self, char_map, object_dict, is_weapon):
-        tokens = []
+        tokens = {}
 
         for symbol, object in object_dict.items():
             x, y = self.find_instance(symbol, char_map, True)
             if is_weapon:
-                tokens.append(WeaponToken(x, y, object))
+                tokens[symbol] = WeaponToken(x, y, object)
             else:
-                tokens.append(PlayerToken(x, y, object))
+                tokens[symbol] = PlayerToken(x, y, object)
         return tokens
 
 
@@ -465,6 +466,17 @@ class Board:
                     temp.append(tile_map[y][x])
             combined_tiles.append(temp)
         return combined_tiles
+
+
+    def refresh_player_positions(self):
+        new_player_map = self.generate_blank_map(self.tile_map)
+        print(self.player_tokens)
+        for player_token_symbol, player_token_obj in self.player_tokens.items():
+            x, y = player_token_obj.get_position()
+            new_player_map[y][x] = player_token_symbol
+        
+        print(new_player_map)
+        self.player_map = new_player_map
 
 
     def setup_board(self):
@@ -523,6 +535,7 @@ class Board:
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
+                        print(player_cards)
                         weapon_tokens, player_tokens = self.generate_all_tokens(player_map, player_cards, weapon_map, weapons) # TODO
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'

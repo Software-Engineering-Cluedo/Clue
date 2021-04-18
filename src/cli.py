@@ -14,10 +14,6 @@ class Cli():
         running = True
 
         self.data = self.board.data
-        self.tile_map = self.board.tile_map
-        self.player_map = self.board.player_map
-        self.weapon_map = self.board.weapon_map
-        self.door_map = self.board.door_map
         self.board_objects = self.board.board_objects
         self.weapons = self.board.weapons
         self.rooms = self.board.rooms
@@ -30,6 +26,7 @@ class Cli():
         self.print_all()
 
         cont = True
+        movements = {'W': [0, -1], 'S': [0, 1], 'A': [-1, 0], 'D': [1, 0]}
 
         while cont:
             print('Select one of the following characters to start: ')
@@ -37,17 +34,30 @@ class Cli():
             player_char = input().upper()
 
             if player_char in self.players:
+                player_token = self.player_tokens[player_char]
                 player_object = self.players[player_char]
                 cont = False
                 while running:
                     self.refresh_tile_maps()
-                    for row in range(len(self.board.combined_tiles)):
-                        for col in range(len(self.board.combined_tiles[0])):
-                            print(self.board.combined_tiles[row][col], end='')
+                    for row in range(len(self.combined_tiles)):
+                        for col in range(len(self.combined_tiles[0])):
+                            print(self.combined_tiles[row][col], end='')
                         print()
                     key = input('up (w), down (s), left (a), right (d), stop (p)\n')
-                    if key.upper() == 'P': 
+                    key = key.upper()
+                    if key == 'P': 
                         running = False
+                    
+                    if key in ['W', 'S', 'A', 'D']:
+                        cur_x, cur_y = player_token.get_position()
+                        print(cur_x, cur_y)
+                        temp_x, temp_y = [cur_x + movements[key][0], cur_y + movements[key][1]]
+                        print(temp_x, temp_y)
+                        if temp_y >= 0 and temp_x >= 0 and temp_y < self.board.data['map']['dimensions']['y'] and temp_x < self.board.data['map']['dimensions']['y']:
+                            player_token.move(temp_x, temp_y)
+                            self.board.refresh_player_positions()
+                        else:
+                            print("Can't move this direction")
 
 
     def refresh_tile_maps(self):
@@ -55,19 +65,19 @@ class Cli():
         self.player_map = self.board.player_map
         self.weapon_map = self.board.weapon_map
         self.door_map = self.board.door_map
-        self.combined_map = self.board.generate_combined_map(self.tile_map, self.player_map, self.weapon_map, self.door_map)
+        self.combined_tiles = self.board.generate_combined_map(self.tile_map, self.player_map, self.weapon_map, self.door_map)
 
 
     def print_all(self):
         print(json.dumps(self.data, indent=4))
         print()
-        print(*self.tile_map, sep='\n')
+        print(*self.board.tile_map, sep='\n')
         print()
-        print(*self.player_map, sep='\n')
+        print(*self.board.player_map, sep='\n')
         print()
-        print(*self.weapon_map, sep='\n')
+        print(*self.board.weapon_map, sep='\n')
         print()
-        print(*self.door_map, sep='\n')
+        print(*self.board.door_map, sep='\n')
         print()
         print(*self.board_objects)
         print()
