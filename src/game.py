@@ -74,9 +74,9 @@ class Game:
         Label(self.accusationWindow, text = "Weapon:").grid(row=3,column=1, padx=40,pady=20)
         Label(self.accusationWindow, text = "Room:").grid(row=5,column=1, padx=40,pady=20)
         Button(self.accusationWindow, text = "Submit", command=print("submit")).grid(row=7,column=5,padx=10,pady=10)
-        OptionMenu(self.accusationWindow, listPlayers[0],*listPlayers).grid(row=1,column=3)
-        OptionMenu(self.accusationWindow, listWeapons[0],*listWeapons).grid(row=3,column=3)
-        OptionMenu(self.accusationWindow, listRooms[0],*listRooms).grid(row=5,column=3)
+        playerOption=OptionMenu(self.accusationWindow, listPlayers[0],*listPlayers).grid(row=1,column=3)
+        weaponOption=OptionMenu(self.accusationWindow, listWeapons[0],*listWeapons).grid(row=3,column=3)
+        roomOption=OptionMenu(self.accusationWindow, listRooms[0],*listRooms).grid(row=5,column=3)
         #positioning at the end as it is based on dimensions that will change as elements are added 
         widthParent=self.window.winfo_width()
         lengthParent=self.window.winfo_height()
