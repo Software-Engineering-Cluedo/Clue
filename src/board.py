@@ -47,6 +47,7 @@ class Board:
     player_tokens = None
     simple_tiles = None
     game_tiles = None
+    room_positions = None
     
 
     def __init__(self):
@@ -68,6 +69,7 @@ class Board:
             self.player_tokens = r_data[12]
             self.simple_tiles = r_data[13]
             self.game_tiles = r_data[14]
+            self.room_positions = r_data[15]
 
 
     def setup_config_folder(self):
@@ -492,6 +494,36 @@ class Board:
         return temp_dict
 
 
+    def get_door_room(self, x, y, tile_map, rooms, simple_tiles):
+        surrounding = self.get_surrounding(x, y, tile_map)
+        unique_char = self.get_unique_char_count(surrounding)
+        for symbol in simple_tiles:
+            if symbol in unique_char:
+                del unique_char[symbol]
+        
+        temp_x = x
+        temp_y = y
+
+        if len(unique_char) == 1:
+            return list(unique_char)[0][0]
+
+        else:
+            return False
+
+
+    def get_all_room_positions(self, rooms, tile_map):
+        positions = {}
+        for y in range(len(tile_map)):
+            for x in range(len(tile_map[y])):
+                tile = tile_map[y][x]
+                if tile in rooms:
+                    if tile not in positions:
+                        positions[tile] = [[x, y]]
+                    else:
+                        positions[tile].append([x, y])
+        return positions
+
+
     def setup_board(self):
         """Parses map json data to create the board and associated classes
 
@@ -559,4 +591,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles')]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map)]

@@ -1,5 +1,7 @@
 import json
+import random
 from src.board import Board
+
 
 class Cli():
     board = Board()
@@ -39,6 +41,7 @@ class Cli():
             print('Select one of the following characters to start: ')
             print(self.players.keys())
             player_char = input().upper()
+            door_entered = None
 
             if player_char in self.players:
                 player_token = self.player_tokens[player_char]
@@ -59,8 +62,19 @@ class Cli():
                         cur_x, cur_y = player_token.get_position()
                         temp_x, temp_y = [cur_x + movements[key][0], cur_y + movements[key][1]]
                         if temp_y >= 0 and temp_x >= 0 and temp_y < self.board.data['map']['dimensions']['y'] and temp_x < self.board.data['map']['dimensions']['x'] and self.player_map[temp_y][temp_x] == '' and (self.door_map[temp_y][temp_x] == door_symbol or self.tile_map[temp_y][temp_x] == tile_symbol):
-                            player_token.move(temp_x, temp_y)
+                            
+                            if self.door_map[temp_y][temp_x] == door_symbol:
+                                room_symbol = self.board.get_door_room(temp_x, temp_y, self.tile_map, self.rooms, self.board.simple_tiles)
+                                room_positions_of_door = self.board.room_positions[room_symbol]
+                                door_entered = [temp_x, temp_y]
+                                temp_x, temp_y = random.choice(room_positions_of_door)
+                                player_token.move(temp_x, temp_y)
+                            
+                            elif self.tile_map[cur_y][cur_x] == tile_symbol:
+                                player_token.move(temp_x, temp_y)
+
                             self.board.refresh_player_positions()
+
                         else:
                             print("Can't move this direction")
 
