@@ -514,8 +514,6 @@ class Board:
         for secret_door in secret_doors:
             door_locations += self.get_instance(secret_door, tile_map, False) 
 
-        print(door_locations)
-
         for door in door_locations:
             x, y = door
             symbol = tile_map[y][x]
