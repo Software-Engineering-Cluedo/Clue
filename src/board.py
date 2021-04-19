@@ -74,69 +74,33 @@ class Board:
             self.secret_door_rooms = r_data[16]
 
 
-    def setup_config_folder(self):
-        """ Creates the config directory for Clue and copies the default clue map to the folder if doesn't exist """
 
-        Path(self.config_dir).mkdir(parents=True, exist_ok=True)
-        if not Path(self.config_dir + '/clue.json').is_file():
-            shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
+    ### Update Methods ###
 
 
-    def is_unique_tiles(self, tiles):
-        """Checks if there are duplicate uses of a symbol for different contexts
+
+    def refresh_player_positions(self):
+        new_player_map = self.generate_blank_map(self.tile_map)
+        for player_token_symbol, player_token_obj in self.player_tokens.items():
+            x, y = player_token_obj.get_position()
+            new_player_map[y][x] = player_token_symbol
         
-        Args:
-            tiles: The set of tile types, e.g. data['simple tiles'] or data['game tiles']
-        
-        Returns:
-            bool: If all symbols are unique in the tile set given
-        """
-
-        unique_symbols = {s['char'] for s in tiles}
-        return len(unique_symbols) == len(tiles)
+        self.player_map = new_player_map
 
 
-    def place_weapons_in_rooms(self, weapons, rooms, simple_tiles, tile_map):
-        """Finds the location of the weapons in relation to the room, and adds it to the room class of the prodominately surrounding room symbol
-        
-        TODO: Need to perform checks on other methods
+    ### Conversion Methods ###
 
-        Args:
-            weapons: The dictionary of characters associated to it's weapon object
-            rooms: The dictionary of characters associated to it's room object 
-            simple_tiles: The simple tiles object from the json data, e.g. data['simple tiles']
-            tile_map: The tile map from the json data e.g. data['map']['tiles']
 
-        Returns:
-            bool: If all is ran, returns true
-        """
-
-        # Loop through the keys and associated value in weapons
-        for key, val in weapons.items():
-            x, y = self.find_instance(key, tile_map, True)
-            surrounding = self.get_surrounding(x, y, tile_map)
-            unique_chars = self.get_unique_char_count(surrounding)
-
-            # Delete None entry in unique_chars dictionary
-            if None in unique_chars:
-                del unique_chars[None]
-
-            # Remove all simple tile characters from unique_char dict
-            for entry in simple_tiles:
-                if entry['char'] in unique_chars:
-                    del unique_chars[entry['char']]
-
-            # Find the most used character surrounding the weapon
-            current_largest = list(unique_chars.keys())[0]
-            for char, count in unique_chars.items():
-                if unique_chars[current_largest] < count:
-                    current_largest = char
-
-            # Get room using symbol and assign the weapon object within the room
-            room = rooms[current_largest]
-            room.set_weapon_token(val)
-
-            return True
+    def tile_array_to_dict(self, data, tile_type):
+        temp_dict = {}
+        tiles = data[tile_type]
+        for tile in tiles:
+            if "char" in tile:
+                temp_dict[tile["char"]] = {}
+                for k, obj in tile.items():
+                    if k != "char":
+                        temp_dict[tile["char"]][k] = obj
+        return temp_dict
 
 
     def convert_tile_map_to_2d_array(self, tile_map):
@@ -155,7 +119,23 @@ class Board:
         return tile_map
 
 
-    def find_instance(self, symbol, tile_map, first):
+    ### Get Methods ###
+
+
+    def get_unique_char_count(self, arr):
+        """Counts each character and assigns the value to the character in a dictionary
+        
+        Args:
+            arr: the array to search through, e.g. the tile map or surrounding characters around a position
+        
+        Returns:
+            dict: dictionary of characters with the amount of times it appears
+        """
+        return dict(Counter(i for i in list(itertools.chain.from_iterable(arr))).items())
+
+
+
+    def get_instance(self, symbol, tile_map, first):
         """Finds all or the first instance of a certain symbol / character position
 
         Args:
@@ -180,6 +160,23 @@ class Board:
         if arr == None:
             return False
         return arr
+
+
+    def get_all_room_positions(self, rooms, tile_map):
+        positions = {}
+        for y in range(len(tile_map)):
+            for x in range(len(tile_map[y])):
+                tile = tile_map[y][x]
+                if tile in rooms:
+                    if tile not in positions:
+                        positions[tile] = [[x, y]]
+                    else:
+                        positions[tile].append([x, y])
+        return positions
+
+
+    def get_secret_door_rooms(self, simple_tiles, tile_map):
+        print()
 
 
     def get_surrounding(self, x, y, tile_map):
@@ -212,6 +209,52 @@ class Board:
         if surrounding == None:
             return False
         return surrounding
+
+
+    ### Generate Variables ###
+
+
+    def generate_blank_map(self, tile_map):
+        blank_map = []
+        for i in range(len(tile_map)):
+            row = []
+            for j in range(len(tile_map[0])):
+                row.append('')
+            blank_map.append(row)
+        return blank_map
+
+
+    def generate_tokens(self, char_map, object_dict, is_weapon):
+        tokens = {}
+
+        for symbol, object in object_dict.items():
+            x, y = self.get_instance(symbol, char_map, True)
+            if is_weapon:
+                tokens[symbol] = WeaponToken(x, y, object)
+            else:
+                tokens[symbol] = PlayerToken(x, y, object)
+        return tokens
+
+
+    def generate_combined_map(self, tile_map, weapon_map, player_map, door_map):
+        combined_tiles = []
+        for y in range(len(tile_map)):
+            temp = []
+            for x in range(len(tile_map[y])):
+                if player_map[y][x] != '':
+                    temp.append(player_map[y][x])   
+                elif weapon_map[y][x] != '':
+                    temp.append(weapon_map[y][x])
+                elif door_map[y][x] != '':
+                    temp.append(door_map[y][x])
+                else:
+                    temp.append(tile_map[y][x])
+            combined_tiles.append(temp)
+        return combined_tiles
+
+
+    def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
+        return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, player_cards, False)
 
 
     def generate_objects_from_tiles(self, data):
@@ -270,17 +313,24 @@ class Board:
             
         return generated_objects, rooms, weapons, players, player_cards
 
+    
 
-    def get_unique_char_count(self, arr):
-        """Counts each character and assigns the value to the character in a dictionary
+    ### map validation methods ###
+
+
+
+    def is_unique_tiles(self, tiles):
+        """Checks if there are duplicate uses of a symbol for different contexts
         
         Args:
-            arr: the array to search through, e.g. the tile map or surrounding characters around a position
+            tiles: The set of tile types, e.g. data['simple tiles'] or data['game tiles']
         
         Returns:
-            dict: dictionary of characters with the amount of times it appears
+            bool: If all symbols are unique in the tile set given
         """
-        return dict(Counter(i for i in list(itertools.chain.from_iterable(arr))).items())
+
+        unique_symbols = {s['char'] for s in tiles}
+        return len(unique_symbols) == len(tiles)
 
 
     def correct_count_object_ref(self, data):
@@ -327,7 +377,7 @@ class Board:
                 door_symbol = key
 
         # Finds each instance of the door
-        door_locations = self.find_instance(door_symbol, tile_map, False)
+        door_locations = self.get_instance(door_symbol, tile_map, False)
 
         # Loops through all door locations
         for x, y in door_locations:
@@ -368,6 +418,54 @@ class Board:
             return False
 
 
+
+        ### Board Setup ###
+
+
+
+    def place_weapons_in_rooms(self, weapons, rooms, simple_tiles, tile_map):
+        """Finds the location of the weapons in relation to the room, and adds it to the room class of the prodominately surrounding room symbol
+        
+        TODO: Need to perform checks on other methods
+
+        Args:
+            weapons: The dictionary of characters associated to it's weapon object
+            rooms: The dictionary of characters associated to it's room object 
+            simple_tiles: The simple tiles object from the json data, e.g. data['simple tiles']
+            tile_map: The tile map from the json data e.g. data['map']['tiles']
+
+        Returns:
+            bool: If all is ran, returns true
+        """
+
+        # Loop through the keys and associated value in weapons
+        for key, val in weapons.items():
+            x, y = self.get_instance(key, tile_map, True)
+            surrounding = self.get_surrounding(x, y, tile_map)
+            unique_chars = self.get_unique_char_count(surrounding)
+
+            # Delete None entry in unique_chars dictionary
+            if None in unique_chars:
+                del unique_chars[None]
+
+            # Remove all simple tile characters from unique_char dict
+            for entry in simple_tiles:
+                if entry['char'] in unique_chars:
+                    del unique_chars[entry['char']]
+
+            # Find the most used character surrounding the weapon
+            current_largest = list(unique_chars.keys())[0]
+            for char, count in unique_chars.items():
+                if unique_chars[current_largest] < count:
+                    current_largest = char
+
+            # Get room using symbol and assign the weapon object within the room
+            room = rooms[current_largest]
+            room.set_weapon_token(val)
+
+            return True
+
+
     def separate_board(self, tile_map, players, weapons, simple_tiles):
         """Separates the players and the board into separate arrays
         
@@ -398,19 +496,19 @@ class Board:
 
         # Stores players in player map and turns existing tile_map player symbols into tiles
         for player_symbol, player_object in players.items():
-            x, y = self.find_instance(player_symbol, tile_map, True)
+            x, y = self.get_instance(player_symbol, tile_map, True)
             player_map[y][x] = player_symbol
             tile_map[y][x] = tile_symbol
         
         # Stores players in player map and turns existing tile_map player symbols into tiles
         for weapon_symbol, weapon_object in weapons.items():
-            x, y = self.find_instance(weapon_symbol, tile_map, True)
+            x, y = self.get_instance(weapon_symbol, tile_map, True)
             tile_map, weapon_map = self.separate_board_common(weapon_map, tile_map, simple_tiles, weapon_symbol, x, y)
 
-        door_locations = self.find_instance(door_symbol, tile_map, False) 
+        door_locations = self.get_instance(door_symbol, tile_map, False) 
 
         for secret_door in secret_doors:
-            door_locations += self.find_instance(secret_door, tile_map, False) 
+            door_locations += self.get_instance(secret_door, tile_map, False) 
 
         print(door_locations)
 
@@ -421,7 +519,7 @@ class Board:
 
         # Returns both maps
         return tile_map, player_map, weapon_map, door_map
-
+    
 
     def separate_board_common(self, new_map, tile_map, simple_tiles, search_symbol, x, y ):
         new_map[y][x] = search_symbol
@@ -442,87 +540,19 @@ class Board:
             return False
 
 
-    def generate_blank_map(self, tile_map):
-        blank_map = []
-        for i in range(len(tile_map)):
-            row = []
-            for j in range(len(tile_map[0])):
-                row.append('')
-            blank_map.append(row)
-        return blank_map
+
+    ### Main functions ###
 
 
-    def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
-        return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, player_cards, False)
 
+    def setup_config_folder(self):
+        """ Creates the config directory for Clue and copies the default clue map to the folder if doesn't exist """
 
-    def generate_tokens(self, char_map, object_dict, is_weapon):
-        tokens = {}
+        Path(self.config_dir).mkdir(parents=True, exist_ok=True)
+        if not Path(self.config_dir + '/clue.json').is_file():
+            shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
-        for symbol, object in object_dict.items():
-            x, y = self.find_instance(symbol, char_map, True)
-            if is_weapon:
-                tokens[symbol] = WeaponToken(x, y, object)
-            else:
-                tokens[symbol] = PlayerToken(x, y, object)
-        return tokens
-
-
-    def generate_combined_map(self, tile_map, weapon_map, player_map, door_map):
-        combined_tiles = []
-        for y in range(len(tile_map)):
-            temp = []
-            for x in range(len(tile_map[y])):
-                if player_map[y][x] != '':
-                    temp.append(player_map[y][x])   
-                elif weapon_map[y][x] != '':
-                    temp.append(weapon_map[y][x])
-                elif door_map[y][x] != '':
-                    temp.append(door_map[y][x])
-                else:
-                    temp.append(tile_map[y][x])
-            combined_tiles.append(temp)
-        return combined_tiles
-
-
-    def refresh_player_positions(self):
-        new_player_map = self.generate_blank_map(self.tile_map)
-        for player_token_symbol, player_token_obj in self.player_tokens.items():
-            x, y = player_token_obj.get_position()
-            new_player_map[y][x] = player_token_symbol
-        
-        self.player_map = new_player_map
-
-
-    def tile_array_to_dict(self, data, tile_type):
-        temp_dict = {}
-        tiles = data[tile_type]
-        for tile in tiles:
-            if "char" in tile:
-                temp_dict[tile["char"]] = {}
-                for k, obj in tile.items():
-                    if k != "char":
-                        temp_dict[tile["char"]][k] = obj
-        return temp_dict
-
-
-    def get_all_room_positions(self, rooms, tile_map):
-        positions = {}
-        for y in range(len(tile_map)):
-            for x in range(len(tile_map[y])):
-                tile = tile_map[y][x]
-                if tile in rooms:
-                    if tile not in positions:
-                        positions[tile] = [[x, y]]
-                    else:
-                        positions[tile].append([x, y])
-        return positions
-
-
-    def get_secret_door_rooms(self, simple_tiles, tile_map):
-        print()
-
-
+    
     def setup_board(self):
         """Parses map json data to create the board and associated classes
 
@@ -590,4 +620,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map)]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, tile_map)]
