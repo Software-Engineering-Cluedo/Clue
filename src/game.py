@@ -41,7 +41,6 @@ class Game:
         self.simple_tile_dict=self.setup_tile_dict("simple tiles")
         self.game_tile_dict=self.setup_tile_dict("game tiles")
         self.combined_tile_dict=self.simple_tile_dict|self.game_tile_dict
-        self.setup_img_files()
         self.generate_img_tiles()
         self.accuseButton=Button(self.window,text="Make accusation?", command=self.generate_accusation_window)
         self.accuseButton.grid(row=24,column=26)
@@ -57,12 +56,6 @@ class Game:
                     if k != "char":
                         temp_dict[tile["char"]][k]=obj
         return temp_dict
-
-    def setup_img_files(self):
-        Path(self.config_dir).mkdir(parents=True, exist_ok=True)
-        if not Path(self.config_dir + '/images').is_dir():
-            shutil.copytree(os.path.dirname(__file__) + '/resources/images', self.config_dir + '/images')
-
 
     def generate_img_tiles(self):
         for i in range(self.rows):
