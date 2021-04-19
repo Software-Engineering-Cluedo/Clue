@@ -78,6 +78,14 @@ class Board:
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
 
+    def get_tile_names(self, cards):
+        names = []
+        for card_symbol, card_object in cards.items():
+            names.append(card_object.get_name())
+        
+        return names
+
+
     def is_unique_tiles(self, tiles):
         """Checks if there are duplicate uses of a symbol for different contexts
         
