@@ -35,6 +35,8 @@ class Cli():
         misc_options_one = ['E', 'D']
         misc_options_two = ['E']
 
+        accessed_through_secret_door = False
+
         for tile, obj in self.board.simple_tiles.items():
             if obj['obj'] == 'tile':
                 tile_symbol = tile
@@ -69,27 +71,70 @@ class Cli():
                     if key == 'P': 
                         running = False
 
+                    room_symbol = None
+
+                    # os.system('cls' if os.name == 'nt' else 'clear')
                     if door_entered != None:
+                        
                         if current_room in self.board.secret_door_rooms and key in misc_options_one:
                             if key == 'D':
-                                print(self.board.secret_door_rooms)
+                                # print(self.board.secret_door_rooms)
+                                current_room_secret_door = list(self.board.secret_door_rooms[current_room].keys())[0]
 
-                                # Need to set the door_entered var to a door in the new room
+                                found = False
+
+                                for room_symbol_dict, secrect_door_symbol_dict in self.board.secret_door_rooms.items():
+                                    secrect_door_symbol = list(secrect_door_symbol_dict.keys())[0]
+                                    if secrect_door_symbol == current_room_secret_door and room_symbol_dict != current_room and found == False:
+                                        found = True
+
+                                        temp_x, temp_y = self.board.secret_door_rooms[room_symbol_dict][secrect_door_symbol]
+                                        room_symbol = self.board.tile_map[temp_y][temp_x]
+
+                                        temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
+                                        door_entered = [temp_x, temp_y]
+
+                                        current_room = room_symbol
+
+                                        temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
+                                        while self.door_map[temp_y][temp_x] != '':
+                                            temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
+
+                                        player_token.move(temp_x, temp_y)
+                                        accessed_through_secret_door = True
+                                        self.board.refresh_player_positions()
+
                             else:
-                                x, y = door_entered
-                                player_token.move(x, y)
-                                self.board.refresh_player_positions()
-                                door_entered = None
+                                if accessed_through_secret_door:
+                                    x, y = door_entered
+                                    all_tiles_next_to_doors = self.board.get_door_offset(current_room, self.tile_map, self.board.door_rooms, tile_symbol)
+
+                                    temp_x, temp_y = random.choice(all_tiles_next_to_doors)
+
+                                    player_token.move(temp_x, temp_y)
+                                    self.board.refresh_player_positions()
+                                    accessed_through_door = False
+                                    door_entered = None
+                                    current_room = None
+                                else:
+                                    x, y = door_entered
+                                    player_token.move(x, y)
+                                    self.board.refresh_player_positions()
+                                    door_entered = None
+                                    current_room = None
+
+
                         elif key in misc_options_two:
                             x, y = door_entered
                             player_token.move(x, y)
                             self.board.refresh_player_positions()
                             door_entered = None
+                            current_room = None
+                            
                         else:
                             continue
                     
                     elif key in movements:
-                        os.system('cls' if os.name == 'nt' else 'clear')
                         cur_x, cur_y = player_token.get_position()
                         temp_x, temp_y = [cur_x + movements[key][0], cur_y + movements[key][1]]
                         if temp_y >= 0 and temp_x >= 0 and temp_y < self.board.data['map']['dimensions']['y'] and temp_x < self.board.data['map']['dimensions']['x'] and self.player_map[temp_y][temp_x] == '' and (self.door_map[temp_y][temp_x] == door_symbol or self.tile_map[temp_y][temp_x] == tile_symbol):

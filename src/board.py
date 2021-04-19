@@ -49,6 +49,7 @@ class Board:
     game_tiles = None
     room_positions = None
     secret_door_rooms = None
+    door_rooms = None
     
 
     def __init__(self):
@@ -72,6 +73,7 @@ class Board:
             self.game_tiles = r_data[14]
             self.room_positions = r_data[15]
             self.secret_door_rooms = r_data[16]
+            self.door_rooms = r_data[17]
 
 
 
@@ -191,8 +193,27 @@ class Board:
                 tile = door_map[y][x]
                 if tile in secret_doors:
                     corresponding_tile = tile_map[y][x]
-                    if tile not in positions:
+                    if corresponding_tile not in positions:
                         positions[corresponding_tile] = {tile: [x, y]}
+        
+        return positions
+    
+
+    def get_door_rooms(self, simple_tiles, door_map, tile_map):
+        for tile_type in simple_tiles:
+            if tile_type['obj'].lower() == 'door':
+                door = tile_type['char']
+        
+        positions = {}
+        for y in range(len(door_map)):
+            for x in range(len(door_map[y])):
+                tile = door_map[y][x]
+                if tile == door:
+                    corresponding_tile = tile_map[y][x]
+                    if corresponding_tile not in positions:
+                        positions[corresponding_tile] = [[x, y]]
+                    else:
+                        positions[corresponding_tile].append([x, y])
         
         return positions
 
@@ -229,7 +250,36 @@ class Board:
         return surrounding
 
 
+    def get_door_offset(self, room_symbol, tile_map, door_positions, tile):
+        room_door_positions = door_positions[room_symbol]
+
+        for door_position in room_door_positions:
+            x, y = door_position
+            surrounding = self.get_surrounding(x, y, tile_map)
+            offsets = []
+
+            off_y = -1
+            for row in range(len(surrounding)):
+                off_x = -1
+                for col in range(len(surrounding[row])):
+                    if surrounding[row][col] == tile:
+                        offsets.append([off_x, off_y])
+                    off_x += 1
+                off_y += 1
+
+            positions = []
+
+            for offset in range(len(offsets)):
+                temp_x, temp_y = [x, y]
+                off_x, off_y = offsets[offset]
+                positions.append([temp_x + off_x, temp_y + off_y])
+        
+        return positions
+
+
+
     ### Generate Variables ###
+
 
 
     def generate_blank_map(self, tile_map):
@@ -636,4 +686,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map)]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map)]
