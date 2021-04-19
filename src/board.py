@@ -88,7 +88,9 @@ class Board:
         self.player_map = new_player_map
 
 
+
     ### Conversion Methods ###
+
 
 
     def tile_array_to_dict(self, data, tile_type):
@@ -119,7 +121,9 @@ class Board:
         return tile_map
 
 
+
     ### Get Methods ###
+
 
 
     def get_unique_char_count(self, arr):
@@ -315,7 +319,7 @@ class Board:
 
     
 
-    ### map validation methods ###
+    ### Map validation methods ###
 
 
 
@@ -419,7 +423,7 @@ class Board:
 
 
 
-        ### Board Setup ###
+    ### Board Setup ###
 
 
 
