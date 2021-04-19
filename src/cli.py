@@ -73,6 +73,8 @@ class Cli():
                         if current_room in self.board.secret_door_rooms and key in misc_options_one:
                             if key == 'D':
                                 print(self.board.secret_door_rooms)
+
+                                # Need to set the door_entered var to a door in the new room
                             else:
                                 x, y = door_entered
                                 player_token.move(x, y)
