@@ -1,3 +1,4 @@
+import os
 import json
 import random
 from src.board import Board
@@ -7,8 +8,8 @@ class Cli():
     board = Board()
 
 
-    def __init__(self):
-        print('todo')
+    # def __init__(self):
+    #     print('todo')
 
 
     def test_movement(self):
@@ -35,7 +36,6 @@ class Cli():
                 tile_symbol = tile
             if obj['obj'] == 'door':
                 door_symbol = tile
-                print(door_symbol)
 
         while cont:
             print('Select one of the following characters to start: ')
@@ -59,11 +59,11 @@ class Cli():
                         running = False
                     
                     if key in ['W', 'S', 'A', 'D']:
+                        os.system('cls' if os.name=='nt' else 'clear')
                         cur_x, cur_y = player_token.get_position()
                         temp_x, temp_y = [cur_x + movements[key][0], cur_y + movements[key][1]]
                         if temp_y >= 0 and temp_x >= 0 and temp_y < self.board.data['map']['dimensions']['y'] and temp_x < self.board.data['map']['dimensions']['x'] and self.player_map[temp_y][temp_x] == '' and (self.door_map[temp_y][temp_x] == door_symbol or self.tile_map[temp_y][temp_x] == tile_symbol):
-                            
-                            if self.door_map[temp_y][temp_x] == door_symbol:
+                            if self.door_map[temp_y][temp_x] == door_symbol and door_entered == None:
                                 room_symbol = self.board.tile_map[temp_y][temp_x]
                                 door_entered = [temp_x, temp_y]
                                 temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
