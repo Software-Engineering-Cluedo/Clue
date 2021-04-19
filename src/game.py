@@ -73,11 +73,8 @@ class Game:
             self.accusationWindow=Toplevel(self.window)
             self.accusationWindow.title("Make Accusation")
             
-            # listPlayers=["PLAYER1","PLAYER2", "PLAYER3"]#update this to pull these options from a backend based on who is playing
             listPlayers=self.boardObj.get_tile_names(self.boardObj.player_cards)
-            # listWeapons=["Candlestick","Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench"]
             listWeapons=self.boardObj.get_tile_names(self.boardObj.weapons)
-            # listRooms=["Kitchen","Ball Room", "Conservatory","Dining Room","Billiard Room", "Library","Hall", "Lounge", "Study"]
             listRooms=self.boardObj.get_tile_names(self.boardObj.rooms)
             
             Label(self.accusationWindow, text = "Character:").grid(row=1,column=1, padx=40,pady=20)
