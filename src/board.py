@@ -494,23 +494,6 @@ class Board:
         return temp_dict
 
 
-    def get_door_room(self, x, y, tile_map, rooms, simple_tiles):
-        surrounding = self.get_surrounding(x, y, tile_map)
-        unique_char = self.get_unique_char_count(surrounding)
-        for symbol in simple_tiles:
-            if symbol in unique_char:
-                del unique_char[symbol]
-        
-        temp_x = x
-        temp_y = y
-
-        if len(unique_char) == 1:
-            return list(unique_char)[0][0]
-
-        else:
-            return False
-
-
     def get_all_room_positions(self, rooms, tile_map):
         positions = {}
         for y in range(len(tile_map)):

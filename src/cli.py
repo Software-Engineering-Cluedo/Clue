@@ -64,10 +64,9 @@ class Cli():
                         if temp_y >= 0 and temp_x >= 0 and temp_y < self.board.data['map']['dimensions']['y'] and temp_x < self.board.data['map']['dimensions']['x'] and self.player_map[temp_y][temp_x] == '' and (self.door_map[temp_y][temp_x] == door_symbol or self.tile_map[temp_y][temp_x] == tile_symbol):
                             
                             if self.door_map[temp_y][temp_x] == door_symbol:
-                                room_symbol = self.board.get_door_room(temp_x, temp_y, self.tile_map, self.rooms, self.board.simple_tiles)
-                                room_positions_of_door = self.board.room_positions[room_symbol]
+                                room_symbol = self.board.tile_map[temp_y][temp_x]
                                 door_entered = [temp_x, temp_y]
-                                temp_x, temp_y = random.choice(room_positions_of_door)
+                                temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
                                 player_token.move(temp_x, temp_y)
                             
                             elif self.tile_map[cur_y][cur_x] == tile_symbol:
