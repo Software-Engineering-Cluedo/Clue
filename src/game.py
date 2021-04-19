@@ -68,25 +68,23 @@ class Game:
                 if "img_src" in self.combinedTileDict[self.boardArr[i][j]]:
                     surroundingTiles=self.boardObj.get_surrounding(j,i,self.boardArr)
                     currentTile=surroundingTiles[1][1]
+                    surroundingTilesValues=[surroundingTiles[0][1],surroundingTiles[1][2],surroundingTiles[2][1],surroundingTiles[1][0]]
+                    wallPresent=[surroundingTiles[0][1]==currentTile,surroundingTiles[1][2]==currentTile,surroundingTiles[2][1]==currentTile,surroundingTiles[1][0]==currentTile]
+                    description="_tile_"
                     if self.combinedTileDict[self.boardArr[i][j]]["obj"]=="room" or self.combinedTileDict[self.boardArr[i][j]]["obj"]=="tile":
-                        if surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]!=currentTile and surroundingTiles[1][0]!=currentTile:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_bottom_left_border.jpg"
-                        elif surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] != currentTile and surroundingTiles[2][1]!=currentTile and surroundingTiles[1][0]==currentTile:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_bottom_right_border.jpg"
-                        elif surroundingTiles[0][1] != currentTile and surroundingTiles[1][2] != currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]==currentTile:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_top_right_border.jpg"
-                        elif surroundingTiles[0][1] != currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]!=currentTile:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_top_left_border.jpg"
-                        elif surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]!=currentTile:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_left_border.jpg"
-                        elif surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] != currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]==currentTile:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_right_border.jpg"
-                        elif surroundingTiles[0][1] != currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]==currentTile:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_top_border.jpg"
-                        elif surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]!=currentTile and surroundingTiles[1][0]==currentTile:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_bottom_border.jpg"
+                        if not wallPresent[0]:
+                            description+="top_"
+                        if not wallPresent[2]:
+                            description+="bottom_"
+                        if not wallPresent[3]:
+                            description+="left_"
+                        if not wallPresent[1]:
+                            description+="right_"
+                        if description=="_tile_":
+                            description+="borderless.jpg"
                         else:
-                            imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+"_tile_borderless.jpg"
+                            description+="border.jpg"
+                        imgName=self.combinedTileDict[self.boardArr[i][j]]["img_src"]+description
                         img_path = Image.open(self.config_dir + '/images/' + imgName)
                     else: 
                         img_path = Image.open(self.config_dir + '/images/' + self.combinedTileDict[self.boardArr[i][j]]["img_src"])
