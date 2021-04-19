@@ -16,6 +16,8 @@ class Cli():
         """ A loop to test movement showing in the terminal """
         running = True
 
+        self.refresh_tile_maps()
+
         self.data = self.board.data
         self.board_objects = self.board.board_objects
         self.weapons = self.board.weapons
@@ -42,6 +44,7 @@ class Cli():
             print(self.players.keys())
             player_char = input().upper()
             door_entered = None
+            current_room = None
 
             if player_char in self.players:
                 player_token = self.player_tokens[player_char]
@@ -53,19 +56,24 @@ class Cli():
                         for col in range(len(self.combined_tiles[0])):
                             print(self.combined_tiles[row][col], end='')
                         print()
-                    key = input('up (w), down (s), left (a), right (d), stop (p)\n')
+                    if door_entered == None:
+                        key = input('up (w), down (s), left (a), right (d), stop (p)\n')
+                    else:
+                        key = input('exit(e), secret door(d), stop (p)\n')
+
                     key = key.upper()
                     if key == 'P': 
                         running = False
                     
-                    if key in ['W', 'S', 'A', 'D']:
-                        os.system('cls' if os.name=='nt' else 'clear')
+                    if key in movements:
+                        os.system('cls' if os.name == 'nt' else 'clear')
                         cur_x, cur_y = player_token.get_position()
                         temp_x, temp_y = [cur_x + movements[key][0], cur_y + movements[key][1]]
                         if temp_y >= 0 and temp_x >= 0 and temp_y < self.board.data['map']['dimensions']['y'] and temp_x < self.board.data['map']['dimensions']['x'] and self.player_map[temp_y][temp_x] == '' and (self.door_map[temp_y][temp_x] == door_symbol or self.tile_map[temp_y][temp_x] == tile_symbol):
                             if self.door_map[temp_y][temp_x] == door_symbol and door_entered == None:
                                 room_symbol = self.board.tile_map[temp_y][temp_x]
                                 door_entered = [temp_x, temp_y]
+                                current_room = room_symbol
                                 temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
                                 player_token.move(temp_x, temp_y)
                             

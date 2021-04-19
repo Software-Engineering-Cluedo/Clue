@@ -48,6 +48,7 @@ class Board:
     simple_tiles = None
     game_tiles = None
     room_positions = None
+    secret_door_rooms = None
     
 
     def __init__(self):
@@ -70,6 +71,7 @@ class Board:
             self.simple_tiles = r_data[13]
             self.game_tiles = r_data[14]
             self.room_positions = r_data[15]
+            self.secret_door_rooms = r_data[16]
 
 
     def setup_config_folder(self):
@@ -380,11 +382,14 @@ class Board:
         """
 
         # Gets the tile symbol from the simple_tiles
+        secret_doors = []
         for tile_type in simple_tiles:
             if tile_type['obj'].lower() == 'tile':
                 tile_symbol = tile_type['char']
             if tile_type['obj'].lower() == 'door':
                 door_symbol = tile_type['char']
+            if tile_type['obj'].lower() == 'secret door':
+                secret_doors.append(tile_type['char'])
 
         # Creates a blank maps to store locations of different object types
         player_map = self.generate_blank_map(tile_map)
@@ -402,10 +407,17 @@ class Board:
             x, y = self.find_instance(weapon_symbol, tile_map, True)
             tile_map, weapon_map = self.separate_board_common(weapon_map, tile_map, simple_tiles, weapon_symbol, x, y)
 
-        door_locations = self.find_instance(door_symbol, tile_map, False)
+        door_locations = self.find_instance(door_symbol, tile_map, False) 
+
+        for secret_door in secret_doors:
+            door_locations += self.find_instance(secret_door, tile_map, False) 
+
+        print(door_locations)
+
         for door in door_locations:
             x, y = door
-            tile_map, door_map = self.separate_board_common(door_map, tile_map, simple_tiles, door_symbol, x, y)
+            symbol = tile_map[y][x]
+            tile_map, door_map = self.separate_board_common(door_map, tile_map, simple_tiles, symbol, x, y)
 
         # Returns both maps
         return tile_map, player_map, weapon_map, door_map
@@ -505,6 +517,10 @@ class Board:
                     else:
                         positions[tile].append([x, y])
         return positions
+
+
+    def get_secret_door_rooms(self, simple_tiles, tile_map):
+        print()
 
 
     def setup_board(self):
