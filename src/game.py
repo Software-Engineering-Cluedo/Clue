@@ -41,7 +41,7 @@ class Game:
         self.simple_tile_dict=self.setup_tile_dict("simple tiles")
         self.game_tile_dict=self.setup_tile_dict("game tiles")
         self.combined_tile_dict=self.simple_tile_dict|self.game_tile_dict
-        self.generate_img_tiles()
+        self.generate_board_tiles()
         self.accuseButton=Button(self.window,text="Make accusation?", command=self.generate_accusation_window)
         self.accuseButton.grid(row=24,column=26)
         mainloop()
@@ -57,11 +57,34 @@ class Game:
                         temp_dict[tile["char"]][k]=obj
         return temp_dict
 
-    def generate_img_tiles(self):
+    def generate_board_tiles(self):
         for i in range(self.rows):
             for j in range(self.columns):
                 if "img_src" in self.combined_tile_dict[self.boardArr[i][j]]:
-                    img_path = Image.open(self.config_dir + '/images/' + self.combined_tile_dict[self.boardArr[i][j]]["img_src"])
+                    surroundingTiles=self.boardObj.get_surrounding(j,i,self.boardArr)
+                    currentTile=surroundingTiles[1][1]
+                    if self.combined_tile_dict[self.boardArr[i][j]]["obj"]=="room" or self.combined_tile_dict[self.boardArr[i][j]]["obj"]=="tile":
+                        if surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]!=currentTile and surroundingTiles[1][0]!=currentTile:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_bottom_left_border.jpg"
+                        elif surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] != currentTile and surroundingTiles[2][1]!=currentTile and surroundingTiles[1][0]==currentTile:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_bottom_right_border.jpg"
+                        elif surroundingTiles[0][1] != currentTile and surroundingTiles[1][2] != currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]==currentTile:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_top_right_border.jpg"
+                        elif surroundingTiles[0][1] != currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]!=currentTile:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_top_left_border.jpg"
+                        elif surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]!=currentTile:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_left_border.jpg"
+                        elif surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] != currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]==currentTile:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_right_border.jpg"
+                        elif surroundingTiles[0][1] != currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]==currentTile and surroundingTiles[1][0]==currentTile:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_top_border.jpg"
+                        elif surroundingTiles[0][1] == currentTile and surroundingTiles[1][2] == currentTile and surroundingTiles[2][1]!=currentTile and surroundingTiles[1][0]==currentTile:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_bottom_border.jpg"
+                        else:
+                            img_name=self.combined_tile_dict[self.boardArr[i][j]]["img_src"]+"_tile_borderless.jpg"
+                        img_path = Image.open(self.config_dir + '/images/' + img_name)
+                    else: 
+                        img_path = Image.open(self.config_dir + '/images/' + self.combined_tile_dict[self.boardArr[i][j]]["img_src"])
                     img=ImageTk.PhotoImage(img_path)
                     currentLabel=Label(self.window, image=img)
                     currentLabel.image=img
