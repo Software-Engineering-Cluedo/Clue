@@ -57,12 +57,6 @@ class Game:
                         temp_dict[tile["char"]][k]=obj
         return temp_dict
 
-    def setup_img_files(self):
-        if not Path(self.config_dir + '/images').is_dir():
-            Path(self.config_dir + '/images').mkdir(parents=True, exist_ok=True)
-            shutil.copytree(os.path.dirname(__file__) +"/images/", self.config_dir)
-
-
     def generate_img_tiles(self):
         for i in range(self.rows):
             for j in range(self.columns):
