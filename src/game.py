@@ -72,21 +72,28 @@ class Game:
         if self.childWindowOpen==False:
             self.accusationWindow=Toplevel(self.window)
             self.accusationWindow.title("Make Accusation")
-            listPlayers=["PLAYER1","PLAYER2", "PLAYER3"]#update this to pull these options from a backend based on who is playing
-            listWeapons=["Candlestick","Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench"]
-            listRooms=["Kitchen","Ball Room", "Conservatory","Dining Room","Billiard Room", "Library","Hall", "Lounge", "Study"]
+            
+            # listPlayers=["PLAYER1","PLAYER2", "PLAYER3"]#update this to pull these options from a backend based on who is playing
+            listPlayers=self.boardObj.get_tile_names(self.boardObj.player_cards)
+            # listWeapons=["Candlestick","Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench"]
+            listWeapons=self.boardObj.get_tile_names(self.boardObj.weapons)
+            # listRooms=["Kitchen","Ball Room", "Conservatory","Dining Room","Billiard Room", "Library","Hall", "Lounge", "Study"]
+            listRooms=self.boardObj.get_tile_names(self.boardObj.rooms)
+            
             Label(self.accusationWindow, text = "Character:").grid(row=1,column=1, padx=40,pady=20)
             Label(self.accusationWindow, text = "Weapon:").grid(row=3,column=1, padx=40,pady=20)
             Label(self.accusationWindow, text = "Room:").grid(row=5,column=1, padx=40,pady=20)
             Button(self.accusationWindow, text = "Submit", command=self.submit_accusation).grid(row=7,column=5,padx=10,pady=10)
+
             self.accusationWindow.accusedPlayer= StringVar(self.accusationWindow,listPlayers[0])
             self.accusationWindow.accusedWeapon= StringVar(self.accusationWindow,listWeapons[0])
             self.accusationWindow.accusedRoom=StringVar(self.accusationWindow,listRooms[0])
+
             self.accusationWindow.playerOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedPlayer,*listPlayers).grid(row=1,column=3)
             self.accusationWindow.weaponOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedWeapon,*listWeapons).grid(row=3,column=3)
             self.accusationWindow.roomOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedRoom,*listRooms).grid(row=5,column=3)
-            x=int(self.window.winfo_x()+(self.window.winfo_width()/2)-(self.accusationWindow.winfo_width()/2))
             y=int(self.window.winfo_y()+(self.window.winfo_height()/2)-(self.accusationWindow.winfo_height()/2))
+            x=int(self.window.winfo_x()+(self.window.winfo_width()/2)-(self.accusationWindow.winfo_width()/2))
             self.accusationWindow.geometry("+{}+{}".format(x,y))
             self.childWindowOpen=True
 
