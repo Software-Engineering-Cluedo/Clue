@@ -179,8 +179,22 @@ class Board:
         return positions
 
 
-    def get_secret_door_rooms(self, simple_tiles, tile_map):
-        print()
+    def get_secret_door_rooms(self, simple_tiles, door_map, tile_map):
+        secret_doors = []
+        for tile_type in simple_tiles:
+            if tile_type['obj'].lower() == 'secret door':
+                secret_doors.append(tile_type['char'])
+        
+        positions = {}
+        for y in range(len(door_map)):
+            for x in range(len(door_map[y])):
+                tile = door_map[y][x]
+                if tile in secret_doors:
+                    corresponding_tile = tile_map[y][x]
+                    if tile not in positions:
+                        positions[corresponding_tile] = {tile: [x, y]}
+        
+        return positions
 
 
     def get_surrounding(self, x, y, tile_map):
@@ -622,4 +636,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, tile_map)]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map)]
