@@ -10,11 +10,7 @@ from src.board import Board
 class Game: 
     """
     TO DO 
-    implement tiles with images, enhance visuals of the game 
-    create refresh function to update tiles 
-    add accusation button 
-    create accusation window
-    
+
     
     testing
     """
@@ -45,6 +41,9 @@ class Game:
         self.combinedTileDict=self.simpleTileDict|self.gameTileDict
         self.boardTileImgs=[]
         self.generate_board_tiles()
+        self.generate_character_tiles()
+        self.generate_door_tiles()
+        self.generate_weapon_tiles()
         self.output_tile_images()
         self.accuseButton=Button(self.window,text="Make accusation?", command=self.generate_accusation_window)
         self.accuseButton.grid(row=24,column=26)
@@ -95,14 +94,23 @@ class Game:
         return True    
 
     def generate_character_tiles(self):
-        #should replace any current img paths with character tiles shoudl they exist, should be pulled from separated map 
-        return True
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if self.boardObj.player_map[i][j]!="":
+                    print(self.boardObj.player_map[i][j])
+                    self.boardTileImgs[i][j]=Image.open(self.config_dir + '/images/' + self.combinedTileDict[self.boardObj.player_map[i][j]]["img_src"])
     
     def generate_door_tiles(self):
-        return True
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if self.boardObj.door_map[i][j]!="":
+                    self.boardTileImgs[i][j]=Image.open(self.config_dir + '/images/' + self.combinedTileDict[self.boardObj.door_map[i][j]]["img_src"])
     
     def generate_weapon_tiles(self):
-        return True
+        for i in range(self.rows):
+            for j in range(self.columns):
+                if self.boardObj.weapon_map[i][j]!="":
+                    self.boardTileImgs[i][j]=Image.open(self.config_dir + '/images/' + self.combinedTileDict[self.boardObj.weapon_map[i][j]]["img_src"])
 
     def output_tile_images(self):
         for i in range(self.rows):

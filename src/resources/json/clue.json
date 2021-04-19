@@ -48,7 +48,7 @@
         {
             "char": "D",
             "obj": "door",
-            "img_src":"black_tile"
+            "img_src":"black_tile.jpg"
         },
         {
             "char": "🤠",
