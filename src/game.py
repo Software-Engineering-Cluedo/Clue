@@ -112,8 +112,8 @@ class Game:
             self.accusationWindow.playerOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedPlayer,*listPlayers).grid(row=1,column=3)
             self.accusationWindow.weaponOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedWeapon,*listWeapons).grid(row=3,column=3)
             self.accusationWindow.roomOption=OptionMenu(self.accusationWindow,  self.accusationWindow.accusedRoom,*listRooms).grid(row=5,column=3)
-            y=int(self.window.winfo_y()+(self.window.winfo_height()/2)-(self.accusationWindow.winfo_height()/2))
             x=int(self.window.winfo_x()+(self.window.winfo_width()/2)-(self.accusationWindow.winfo_width()/2))
+            y=int(self.window.winfo_y()+(self.window.winfo_height()/2)-(self.accusationWindow.winfo_height()/2))
             self.accusationWindow.geometry("+{}+{}".format(x,y))
             self.childWindowOpen=True
 
