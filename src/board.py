@@ -76,6 +76,9 @@ class Board:
         Path(self.config_dir).mkdir(parents=True, exist_ok=True)
         if not Path(self.config_dir + '/clue.json').is_file():
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
+            
+        if not Path(self.config_dir + '/images').is_dir():
+            shutil.copytree(os.path.dirname(__file__) + '/resources/images', self.config_dir + '/images')
 
 
     def get_tile_names(self, cards):
