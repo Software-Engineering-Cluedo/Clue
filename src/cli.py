@@ -32,8 +32,7 @@ class Cli():
 
         key = ''
 
-        self.move_players_testing()
-        self.refresh_tile_maps()
+        # self.move_players_testing()
         # self.remove_players_testing()
 
         while cont:
@@ -68,7 +67,7 @@ class Cli():
                                     cont_two = False
                                     cont = False
                                     key_incorrect = False
-                                else:
+                                elif key in movements:
                                     off_x, off_y = movements[key]  
                                     cont_two = not player_token.move_by_direction(off_x, off_y)
                                     print(cont_two)
