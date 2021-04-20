@@ -300,7 +300,7 @@ class Board:
             if is_weapon:
                 tokens[symbol] = WeaponToken(x, y, object)
             else:
-                tokens[symbol] = PlayerToken(x, y, object)
+                tokens[symbol] = PlayerToken(x, y, object, self)
         return tokens
 
 
