@@ -131,6 +131,7 @@ class Cli():
         self.player_tokens['R'].move(6, 16)
         self.player_tokens['T'].move(16, 21)
         self.player_tokens['Y'].move(7, 19)
+        self.board.refresh_player_positions()
         self.refresh_tile_maps()
 
 
