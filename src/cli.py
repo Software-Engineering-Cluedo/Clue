@@ -30,42 +30,42 @@ class Cli():
         misc_options_one = ['E', 'D']
         misc_options_two = ['E']
 
-        for tile, obj in self.board.simple_tiles.items():
-            if obj['obj'] == 'tile':
-                tile_symbol = tile
-            if obj['obj'] == 'door':
-                door_symbol = tile
+        key = ''
+
+        # self.remove_players_testing()
 
         while cont:
             for player_char in self.players:
+                if key == 'P':
+                    cont = False
+                    break
+
                 player_token = self.player_tokens[player_char]
                 player_object = self.players[player_char]
-
-                self.refresh_tile_maps()
-                print(player_char)
-                for row in range(len(self.combined_tiles)):
-                    for col in range(len(self.combined_tiles[0])):
-                        print(self.combined_tiles[row][col], end='')
-                    print()
             
-                option = player_token.get_turn_options()
-
-                if option == 0:
-                    key = input('up (w), down (s), left (a), right (d), stop (p)\n')
-                elif option == 1:
-                    key = input('exit(e), secret door(d), stop (p)\n')
-                elif option == 2:
-                    key = input('exit(e), stop (p)\n')
-
-                key = key.upper()
+                key, option = self.menu_refresh(player_token, player_char)
 
                 if key == 'P':
                     cont = False
+                    break
                 
                 elif key in movements or key in misc_options_one or key in misc_options_two:
                     if option == 0 and key in movements:
-                        off_x, off_y = movements[key]
-                        player_token.move_by_direction(off_x, off_y)
+                        cont_two = True
+                        switch = True
+                        while cont_two:
+                            if switch:
+                                switch = False
+                            else:
+                                key, temp_option = self.menu_refresh(player_token, player_char)
+                            
+                            if key == 'P':
+                                cont_two = False
+                                cont = False
+                            else:
+                                off_x, off_y = movements[key]  
+                                cont_two = not player_token.move_by_direction(off_x, off_y)
+                                print(cont_two)
                     elif option == 1 and key in misc_options_one:
                         if key == 'D':
                             player_token.enter_secret_door()
@@ -75,7 +75,27 @@ class Cli():
                         player_token.exit_door()
                 
 
-                
+    def menu_refresh(self, player_token, player_char):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        self.refresh_tile_maps()
+        print(player_char)
+        for row in range(len(self.combined_tiles)):
+            for col in range(len(self.combined_tiles[0])):
+                print(self.combined_tiles[row][col], end='')
+            print()
+
+        option = player_token.get_turn_options()
+
+        if option == 0:
+            key = input('up (w), down (s), left (a), right (d), stop (p)\n')
+        elif option == 1:
+            key = input('exit(e), secret door(d), stop (p)\n')
+        elif option == 2:
+            key = input('exit(e), stop (p)\n')
+
+        key = key.upper()
+
+        return key, option
 
 
     def refresh_tile_maps(self):
@@ -84,6 +104,14 @@ class Cli():
         self.weapon_map = self.board.weapon_map
         self.door_map = self.board.door_map
         self.combined_tiles = self.board.generate_combined_map(self.tile_map, self.player_map, self.weapon_map, self.door_map)
+
+
+    def remove_players_testing(self):
+        del self.players['Q']
+        del self.players['W']
+        del self.players['E']
+        del self.players['R']
+        del self.players['T']
 
 
     def roll_dice(self):

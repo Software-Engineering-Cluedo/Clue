@@ -50,6 +50,7 @@ class Board:
     room_positions = None
     secret_door_rooms = None
     door_rooms = None
+    default_symbols = None
     
 
     def __init__(self):
@@ -74,6 +75,7 @@ class Board:
             self.room_positions = r_data[15]
             self.secret_door_rooms = r_data[16]
             self.door_rooms = r_data[17]
+            self.default_symbols = r_data[18]
 
 
 
@@ -182,10 +184,13 @@ class Board:
 
 
     def get_secret_door_rooms(self, simple_tiles, door_map, tile_map):
+
+        ### could be simplified with self.default_symbols ###
         secret_doors = []
         for tile_type in simple_tiles:
             if tile_type['obj'].lower() == 'secret door':
                 secret_doors.append(tile_type['char'])
+        #####################################################
         
         positions = {}
         for y in range(len(door_map)):
@@ -200,9 +205,12 @@ class Board:
     
 
     def get_door_rooms(self, simple_tiles, door_map, tile_map):
+
+        ### could be simplified with self.default_symbols ###
         for tile_type in simple_tiles:
             if tile_type['obj'].lower() == 'door':
                 door = tile_type['char']
+        #####################################################
         
         positions = {}
         for y in range(len(door_map)):
@@ -275,6 +283,23 @@ class Board:
                 positions.append([temp_x + off_x, temp_y + off_y])
         
         return positions
+
+
+    def get_default_symbols(self, simple_tiles):
+        defaults = {}
+        secret_doors = []
+
+        for tile_type in simple_tiles:
+            if tile_type['obj'].lower() == 'tile':
+                defaults['tile'] = tile_type['char']
+            elif tile_type['obj'].lower() == 'door':
+                defaults['door'] = tile_type['char']
+            if tile_type['obj'].lower() == 'secret door':
+                secret_doors.append(tile_type['char'])
+        
+        defaults['secret door'] = secret_doors
+
+        return defaults
 
 
 
@@ -686,4 +711,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map)]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map), self.get_default_symbols(simple_tiles)]
