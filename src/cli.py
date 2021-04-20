@@ -114,10 +114,6 @@ class Cli():
         del self.players['T']
 
 
-    def roll_dice(self):
-        return random.randrange(1,7), random.randrange(1,7)
-
-
     def print_all(self):
         print(json.dumps(self.data, indent=4))
         print()

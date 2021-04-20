@@ -105,3 +105,7 @@ class PlayerToken(Token):
             return 1 # Exit room and go through secret door
         else:
             return 2 # Exit room
+    
+
+    def roll_dice(self):
+        return random.randrange(1,7), random.randrange(1,7)
