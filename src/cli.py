@@ -32,47 +32,58 @@ class Cli():
 
         key = ''
 
+        self.move_players_testing()
+        self.refresh_tile_maps()
         # self.remove_players_testing()
 
         while cont:
-            for player_char in self.players:
-                if key == 'P':
-                    cont = False
-                    break
-
-                player_token = self.player_tokens[player_char]
-                player_object = self.players[player_char]
-            
-                key, option = self.menu_refresh(player_token, player_char)
-
+            for player_char in self.players:                    
                 if key == 'P':
                     cont = False
                     break
                 
-                elif key in movements or key in misc_options_one or key in misc_options_two:
-                    if option == 0 and key in movements:
-                        cont_two = True
-                        switch = True
-                        while cont_two:
-                            if switch:
-                                switch = False
+                key_incorrect = True
+                while key_incorrect:
+                    player_token = self.player_tokens[player_char]
+                    player_object = self.players[player_char]
+                
+                    key, option = self.menu_refresh(player_token, player_char)
+
+                    if key == 'P':
+                        cont = False
+                        key_incorrect = False
+                        break
+                    
+                    elif key in movements or key in misc_options_one or key in misc_options_two:
+                        if option == 0 and key in movements:
+                            cont_two = True
+                            switch = True
+                            while cont_two:
+                                if switch:
+                                    switch = False
+                                else:
+                                    key, temp_option = self.menu_refresh(player_token, player_char)
+                                
+                                if key == 'P':
+                                    cont_two = False
+                                    cont = False
+                                    key_incorrect = False
+                                else:
+                                    off_x, off_y = movements[key]  
+                                    cont_two = not player_token.move_by_direction(off_x, off_y)
+                                    print(cont_two)
+                            key_incorrect = False
+                        elif option == 1 and key in misc_options_one:
+                            if key == 'D':
+                                player_token.enter_secret_door()
                             else:
-                                key, temp_option = self.menu_refresh(player_token, player_char)
-                            
-                            if key == 'P':
-                                cont_two = False
-                                cont = False
-                            else:
-                                off_x, off_y = movements[key]  
-                                cont_two = not player_token.move_by_direction(off_x, off_y)
-                                print(cont_two)
-                    elif option == 1 and key in misc_options_one:
-                        if key == 'D':
-                            player_token.enter_secret_door()
-                        else:
+                                player_token.exit_door()
+                            key_incorrect = False
+                        elif option == 2 and key in misc_options_two:
                             player_token.exit_door()
-                    elif option == 2 and key in misc_options_two:
-                        player_token.exit_door()
+                            key_incorrect = False
+
+
                 
 
     def menu_refresh(self, player_token, player_char):
@@ -112,6 +123,16 @@ class Cli():
         del self.players['E']
         del self.players['R']
         del self.players['T']
+
+    
+    def move_players_testing(self):
+        self.player_tokens['Q'].move(7, 5)
+        self.player_tokens['W'].move(17, 4)
+        self.player_tokens['E'].move(17, 9)
+        self.player_tokens['R'].move(6, 16)
+        self.player_tokens['T'].move(16, 21)
+        self.player_tokens['Y'].move(7, 19)
+        self.refresh_tile_maps()
 
 
     def print_all(self):
