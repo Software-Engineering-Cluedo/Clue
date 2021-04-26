@@ -8,6 +8,7 @@ from pathlib import Path
 from copy import copy, deepcopy
 from collections import Counter
 
+from src.dice import Dice
 from src.room import Room
 from src.weapon import Weapon
 from src.player import Player
@@ -51,7 +52,7 @@ class Board:
     secret_door_rooms = None
     door_rooms = None
     default_symbols = None
-    
+    dice = None    
 
     def __init__(self):
         self.setup_config_folder()
@@ -76,6 +77,7 @@ class Board:
             self.secret_door_rooms = r_data[16]
             self.door_rooms = r_data[17]
             self.default_symbols = r_data[18]
+            self.dice = Dice()
 
 
 

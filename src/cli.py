@@ -24,6 +24,7 @@ class Cli():
         self.combined_tiles = self.board.combined_tiles
         self.weapon_tokens = self.board.weapon_tokens
         self.player_tokens = self.board.player_tokens
+        self.dice = self.board.dice
 
         cont = True
         movements = {'W': [0, -1], 'S': [0, 1], 'A': [-1, 0], 'D': [1, 0]}
@@ -42,6 +43,8 @@ class Cli():
                     break
                 
                 key_incorrect = True
+                roll_one, roll_two = self.dice.roll()
+                
                 while key_incorrect:
                     player_token = self.player_tokens[player_char]
                     player_object = self.players[player_char]
@@ -70,7 +73,6 @@ class Cli():
                                 elif key in movements:
                                     off_x, off_y = movements[key]  
                                     cont_two = not player_token.move_by_direction(off_x, off_y)
-                                    print(cont_two)
                             key_incorrect = False
                         elif option == 1 and key in misc_options_one:
                             if key == 'D':
