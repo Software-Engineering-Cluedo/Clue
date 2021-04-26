@@ -41,56 +41,70 @@ class Cli():
                 if key == 'P':
                     cont = False
                     break
-                
-                key_incorrect = True
+                   
                 roll_one, roll_two = self.dice.roll()
+                steps = roll_one + roll_two
+                player_not_stopped = True
                 
-                while key_incorrect:
-                    player_token = self.player_tokens[player_char]
-                    player_object = self.players[player_char]
-                
-                    key, option = self.menu_refresh(player_token, player_char)
-
+                while player_not_stopped and steps > 0:
                     if key == 'P':
                         cont = False
-                        key_incorrect = False
+                        player_not_stopped = False
                         break
+
+                    key_incorrect = True
+                    while key_incorrect:
+                        player_token = self.player_tokens[player_char]
+                        player_object = self.players[player_char]
                     
-                    elif key in movements or key in misc_options_one or key in misc_options_two:
-                        if option == 0 and key in movements:
-                            cont_two = True
-                            switch = True
-                            while cont_two:
-                                if switch:
-                                    switch = False
+                        key, option = self.menu_refresh(player_token, player_char, steps)
+
+                        if key == 'P':
+                            cont = False
+                            player_not_stopped = False
+                            key_incorrect = False
+                            break
+
+                        elif key == '!':
+                            player_not_stopped = False
+                            key_incorrect = False
+                        
+                        elif key in movements or key in misc_options_one or key in misc_options_two:
+                            if option == 0 and key in movements:
+                                cont_two = True
+                                switch = True
+                                while cont_two:
+                                    if switch:
+                                        switch = False
+                                    else:
+                                        key, temp_option = self.menu_refresh(player_token, player_char, steps)
+                                    if key == 'P':
+                                        cont_two = False
+                                        cont = False
+                                        steps -= 1
+                                        key_incorrect = False
+                                    elif key in movements:
+                                        off_x, off_y = movements[key]  
+                                        cont_two = not player_token.move_by_direction(off_x, off_y)
+                                steps -= 1
+                                key_incorrect = False
+                            elif option == 1 and key in misc_options_one:
+                                if key == 'D':
+                                    player_token.enter_secret_door()
                                 else:
-                                    key, temp_option = self.menu_refresh(player_token, player_char)
-                                
-                                if key == 'P':
-                                    cont_two = False
-                                    cont = False
-                                    key_incorrect = False
-                                elif key in movements:
-                                    off_x, off_y = movements[key]  
-                                    cont_two = not player_token.move_by_direction(off_x, off_y)
-                            key_incorrect = False
-                        elif option == 1 and key in misc_options_one:
-                            if key == 'D':
-                                player_token.enter_secret_door()
-                            else:
+                                    player_token.exit_door()
+                                steps -= 1
+                                key_incorrect = False
+                            elif option == 2 and key in misc_options_two:
                                 player_token.exit_door()
-                            key_incorrect = False
-                        elif option == 2 and key in misc_options_two:
-                            player_token.exit_door()
-                            key_incorrect = False
+                                steps -= 1
+                                key_incorrect = False
 
 
-                
-
-    def menu_refresh(self, player_token, player_char):
+    def menu_refresh(self, player_token, player_char, remaining_steps):
         os.system('cls' if os.name == 'nt' else 'clear')
         self.refresh_tile_maps()
-        print(player_char)
+        print(player_char, remaining_steps)
         for row in range(len(self.combined_tiles)):
             for col in range(len(self.combined_tiles[0])):
                 print(self.combined_tiles[row][col], end='')
@@ -99,11 +113,11 @@ class Cli():
         option = player_token.get_turn_options()
 
         if option == 0:
-            key = input('up (w), down (s), left (a), right (d), stop (p)\n')
+            key = input('up (w), down (s), left (a), right (d), wait(!), stop (p)\n')
         elif option == 1:
-            key = input('exit(e), secret door(d), stop (p)\n')
+            key = input('exit(e), secret door(d), wait(!),  stop (p)\n')
         elif option == 2:
-            key = input('exit(e), stop (p)\n')
+            key = input('exit(e), wait(!),  stop (p)\n')
 
         key = key.upper()
 
