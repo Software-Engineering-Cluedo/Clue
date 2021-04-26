@@ -35,6 +35,10 @@ class MyTestCase(unittest.TestCase):
         tile_map = data["map"]["tiles"]
         result = board.get_surrounding(x, y, tile_map) != False
         self.assertEqual(result, True)
+        board = Board()
+        tile_map = data["map"]["tiles"]
+        result = board.get_surrounding(x,y, tile_map) != False
+        self.assertEqual(result, True)
 
 
     def test_get_surrounding(self):
