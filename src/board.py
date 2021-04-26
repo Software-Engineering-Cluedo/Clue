@@ -5,19 +5,23 @@ import itertools
 import jsonschema
 
 from pathlib import Path
-from jsonschema import validate
+from copy import copy, deepcopy
 from collections import Counter
 
 from src.room import Room
-from src.player import Player
 from src.weapon import Weapon
+from src.player import Player
+from src.boardtoken import Token
 from src.playercard import PlayerCard
+from src.weapontoken import WeaponToken
+from src.playertoken import PlayerToken
 
 
 class Board:
     """The representation of the Clue board.
 
     TODO: check for false for methods when calling
+    TODO: Add comments
     
     Attributes:
         config_dir: A string which is the path to the Clue config directory
@@ -26,16 +30,44 @@ class Board:
     """
 
     config_dir = str(Path.home()) + "/Clue"
-    tile_map = []
-    symbols = {}
+
+    data = None
+    simple_tile = None
+    tile_map  = None
+    player_map = None
+    weapon_map = None
+    door_map = None
+    board_objects = None
+    weapons = None
+    rooms = None
+    players = None
+    player_cards = None
+    combined_tiles = None
+    weapon_tokens = None
+    player_tokens = None
+    simple_tiles = None
+    game_tiles = None
     
 
     def __init__(self):
         self.setup_config_folder()
-        parsed_correctly, data = self.setup_board()
+        parsed_correctly, r_data = self.setup_board()
         if parsed_correctly:
-            self.tile_map = data
-            # print(*self.tile_map, sep='\n')
+            self.data = r_data[0]
+            self.tile_map = r_data[1]
+            self.player_map = r_data[2]
+            self.weapon_map = r_data[3]
+            self.door_map = r_data[4]
+            self.board_objects = r_data[5]
+            self.weapons = r_data[6]
+            self.rooms = r_data[7]
+            self.players = r_data[8]
+            self.player_cards = r_data[9]
+            self.combined_tiles = r_data[10]
+            self.weapon_tokens = r_data[11]
+            self.player_tokens = r_data[12]
+            self.simple_tiles = r_data[13]
+            self.game_tiles = r_data[14]
 
 
     def setup_config_folder(self):
@@ -44,6 +76,17 @@ class Board:
         Path(self.config_dir).mkdir(parents=True, exist_ok=True)
         if not Path(self.config_dir + '/clue.json').is_file():
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
+            
+        if not Path(self.config_dir + '/images').is_dir():
+            shutil.copytree(os.path.dirname(__file__) + '/resources/images', self.config_dir + '/images')
+
+
+    def get_tile_names(self, cards):
+        names = []
+        for card_symbol, card_object in cards.items():
+            names.append(card_object.get_name())
+        
+        return names
 
 
     def is_unique_tiles(self, tiles):
@@ -332,8 +375,8 @@ class Board:
             return False
 
 
-    def seperate_board_and_players(self, tile_map, players, simple_tiles):
-        """Seperates the players and the board into seperate arrays
+    def separate_board(self, tile_map, players, weapons, simple_tiles):
+        """Separates the players and the board into separate arrays
         
         Args:
             tile_map: The tile map of the board, e.g. data['map']['tiles']
@@ -346,26 +389,118 @@ class Board:
         """
 
         # Gets the tile symbol from the simple_tiles
-        for tile in simple_tiles:
-            if tile['obj'].lower() == 'tile':
-                simple_tile = tile['char']
-        
-        # Creates a blank player map to store locations of players
-        player_map = []
-        for i in range(len(tile_map)):
-            row = []
-            for j in range(len(tile_map[0])):
-                row.append('')
-            player_map.append(row)
+        for tile_type in simple_tiles:
+            if tile_type['obj'].lower() == 'tile':
+                tile_symbol = tile_type['char']
+            if tile_type['obj'].lower() == 'door':
+                door_symbol = tile_type['char']
+
+        # Creates a blank maps to store locations of different object types
+        player_map = self.generate_blank_map(tile_map)
+        weapon_map = self.generate_blank_map(tile_map)
+        door_map = self.generate_blank_map(tile_map)
 
         # Stores players in player map and turns existing tile_map player symbols into tiles
         for player_symbol, player_object in players.items():
             x, y = self.find_instance(player_symbol, tile_map, True)
             player_map[y][x] = player_symbol
-            tile_map[y][x] = simple_tile
+            tile_map[y][x] = tile_symbol
+        
+        # Stores players in player map and turns existing tile_map player symbols into tiles
+        for weapon_symbol, weapon_object in weapons.items():
+            x, y = self.find_instance(weapon_symbol, tile_map, True)
+            tile_map, weapon_map = self.separate_board_common(weapon_map, tile_map, simple_tiles, weapon_symbol, x, y)
+
+        door_locations = self.find_instance(door_symbol, tile_map, False)
+        for door in door_locations:
+            x, y = door
+            tile_map, door_map = self.separate_board_common(door_map, tile_map, simple_tiles, door_symbol, x, y)
 
         # Returns both maps
-        return tile_map, player_map
+        return tile_map, player_map, weapon_map, door_map
+
+
+    def separate_board_common(self, new_map, tile_map, simple_tiles, search_symbol, x, y ):
+        new_map[y][x] = search_symbol
+        surrounding = self.get_surrounding(x, y, tile_map)
+        unique_chars = self.get_unique_char_count(surrounding)
+        
+        del unique_chars[search_symbol]
+        if None in unique_chars:
+            del unique_chars[None]
+        for symbol in simple_tiles:
+            if symbol['char'] in unique_chars:
+                del unique_chars[symbol['char']]
+        
+        if 1 == len(unique_chars):
+            tile_map[y][x] = list(unique_chars)[0]
+            return tile_map, new_map
+        else:
+            return False
+
+
+    def generate_blank_map(self, tile_map):
+        blank_map = []
+        for i in range(len(tile_map)):
+            row = []
+            for j in range(len(tile_map[0])):
+                row.append('')
+            blank_map.append(row)
+        return blank_map
+
+
+    def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
+        return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, player_cards, False)
+
+
+    def generate_tokens(self, char_map, object_dict, is_weapon):
+        tokens = {}
+
+        for symbol, object in object_dict.items():
+            x, y = self.find_instance(symbol, char_map, True)
+            if is_weapon:
+                tokens[symbol] = WeaponToken(x, y, object)
+            else:
+                tokens[symbol] = PlayerToken(x, y, object)
+        return tokens
+
+
+    def generate_combined_map(self, tile_map, weapon_map, player_map, door_map):
+        combined_tiles = []
+        for y in range(len(tile_map)):
+            temp = []
+            for x in range(len(tile_map[y])):
+                if player_map[y][x] != '':
+                    temp.append(player_map[y][x])   
+                elif weapon_map[y][x] != '':
+                    temp.append(weapon_map[y][x])
+                elif door_map[y][x] != '':
+                    temp.append(door_map[y][x])
+                else:
+                    temp.append(tile_map[y][x])
+            combined_tiles.append(temp)
+        return combined_tiles
+
+
+    def refresh_player_positions(self):
+        new_player_map = self.generate_blank_map(self.tile_map)
+        for player_token_symbol, player_token_obj in self.player_tokens.items():
+            x, y = player_token_obj.get_position()
+            new_player_map[y][x] = player_token_symbol
+        
+        self.player_map = new_player_map
+
+
+    def tile_array_to_dict(self, data, tile_type):
+        temp_dict = {}
+        tiles = data[tile_type]
+        for tile in tiles:
+            if "char" in tile:
+                temp_dict[tile["char"]] = {}
+                for k, obj in tile.items():
+                    if k != "char":
+                        temp_dict[tile["char"]][k] = obj
+        return temp_dict
 
 
     def setup_board(self):
@@ -392,7 +527,7 @@ class Board:
 
         # Validate the users json config file against the schema
         try:
-            validate(instance=data, schema=data_schema)
+            jsonschema.validate(instance=data, schema=data_schema)
         except jsonschema.exceptions.ValidationError as e:
             print(e)
             return False, 'Schema Error'
@@ -414,18 +549,17 @@ class Board:
         game_tiles = data['game tiles']
 
         self.convert_tile_map_to_2d_array(data['map']['tiles'])
-        # print(*data['map']['tiles'], sep='\n')
 
         # Performs each check and creates objects
-        # Need to check both at the same time, not seperately
-        if self.is_unique_tiles(simple_tiles) and self.is_unique_tiles(game_tiles):
+        if self.is_unique_tiles(simple_tiles + game_tiles):
             # Need to check for edge door check
             if self.correct_count_object_ref(data):
                 if self.check_valid_doors(data):
                     board_objects, rooms, weapons, players, player_cards = self.generate_objects_from_tiles(data)
                     if board_objects != False:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
-                        tile_map, player_map = self.seperate_board_and_players(data['map']['tiles'], players, simple_tiles)
+                        tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
+                        weapon_tokens, player_tokens = self.generate_all_tokens(player_map, player_cards, weapon_map, weapons) # TODO
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
@@ -435,4 +569,5 @@ class Board:
         else:
             return False, 'Tile symbols are not unique'
 
-        return True, [data, tile_map, player_map, board_objects, weapons, rooms, players, player_cards]
+
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles')]

@@ -10,8 +10,10 @@ class Solution:
     p = None
     w = None
 
+
     def __init__(self, rooms, player_cards, weapons):
         self.r, self.p, self.w = self.generate_solution(weapons, player_cards, weapons)
+
 
     def generate_solution(self, rooms, player_cards, weapons):
         """ Generates the solution from each type of card """
@@ -25,12 +27,14 @@ class Solution:
         else:
             return False, False, False
 
+
     def set_solution(self, r, p, w):
         """ Used for testing, sets the solution attributes """
 
         self.r = r
         self.p = p
         self.w = w
+
 
     def check_solution(self, r_guess, p_guess, w_guess):
         """ Checks if the given solution is correct """
