@@ -9,7 +9,7 @@ class MyTestCase(unittest.TestCase):
     def get_json_data(self):
         data = []
         config_dir = str(Path.home()) + "/Clue"
-        with open(config_dir + '/clue.json', encoding='UTF-8') as file:
+        with open(config_dir + 'tests\resources\json\lineDeleted.json', encoding='UTF-8') as file:
             data = json.loads(file.read())
         
         return data
