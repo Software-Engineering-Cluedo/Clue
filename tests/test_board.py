@@ -7,10 +7,15 @@ import os
 startup_board = Board()
 
 class MyTestCase(unittest.TestCase):
-    def get_json_data(self):
+    def get_json_data(self, path):
+
+        """
+        1 (default) : /../src/resources/json/clue.json
+        2 (test for line deleted) : /resources/json/lineDeleted.json
+        """
+
         data = []
-        config_dir = str(Path.home()) + "/Clue"
-        with open(os.path.dirname(__file__) + '/resources/json/lineDeleted.json', encoding='UTF-8') as file:
+        with open(os.path.dirname(__file__) + path, encoding='UTF-8') as file:
             data = json.loads(file.read())
         
         return data
@@ -25,7 +30,7 @@ class MyTestCase(unittest.TestCase):
     def test_get_surrounding(self):
         y = 10
         x = 10
-        data = self.get_json_data()
+        data = self.get_json_data('/../src/resources/json/clue.json')
         board = Board()
         tile_map = data["map"]["tiles"]
         result = board.get_surrounding(x, y, tile_map) != False
@@ -35,7 +40,7 @@ class MyTestCase(unittest.TestCase):
     def test_get_surrounding(self):
         y = 10
         x = 10
-        data = self.get_json_data()
+        data = self.get_json_data('/../src/resources/json/clue.json')
         board = Board()
         tile_map = data["map"]["tiles"]
         result = board.get_surrounding(x, y, tile_map) != False
@@ -43,7 +48,7 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_generate_objects_from_tiles(self):
-        data = self.get_json_data()
+        data = self.get_json_data('/../src/resources/json/clue.json')
         board = Board()
         r1, r2, r3, r4, r5 = board.generate_objects_from_tiles(data)
         result = r1 != False
@@ -51,7 +56,7 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_check_valid_doors(self):
-        data = self.get_json_data()
+        data = self.get_json_data('/../src/resources/json/clue.json')
         board = Board()
         result = board.check_valid_doors(data)
         self.assertEqual(result, True)
@@ -60,7 +65,7 @@ class MyTestCase(unittest.TestCase):
     def test_find_instance(self):
         y = 10
         x = 10
-        data = self.get_json_data()
+        data = self.get_json_data('/../src/resources/json/clue.json')
         board = Board()
         tile_map = data["map"]["tiles"]
 
