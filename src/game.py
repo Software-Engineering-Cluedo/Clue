@@ -61,12 +61,11 @@ class Game:
         return tempDict
 
     def generate_board_tiles(self): 
-        #extend for walking tiles
         for i in range(self.rows):
             self.boardTileImgs.append([])
             for j in range(self.columns):
                 if "img_src" in self.combinedTileDict[self.boardArr[i][j]]:
-                    surroundingTiles=self.boardObj.get_surrounding(j,i,self.boardArr)
+                    surroundingTiles=self.boardObj.get_surrounding(j,i,self.boardObj.tile_map)
                     currentTile=surroundingTiles[1][1]
                     surroundingTilesValues=[surroundingTiles[0][1],surroundingTiles[1][2],surroundingTiles[2][1],surroundingTiles[1][0]]
                     wallPresent=[surroundingTiles[0][1]==currentTile,surroundingTiles[1][2]==currentTile,surroundingTiles[2][1]==currentTile,surroundingTiles[1][0]==currentTile]
@@ -95,7 +94,6 @@ class Game:
         for i in range(self.rows):
             for j in range(self.columns):
                 if self.boardObj.player_map[i][j]!="":
-                    print(self.boardObj.player_map[i][j])
                     self.boardTileImgs[i][j]=Image.open(self.config_dir + '/images/' + self.combinedTileDict[self.boardObj.player_map[i][j]]["img_src"])
     
     def generate_door_tiles(self):
