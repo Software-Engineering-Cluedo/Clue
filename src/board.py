@@ -52,7 +52,9 @@ class Board:
     secret_door_rooms = None
     door_rooms = None
     default_symbols = None
-    dice = None    
+    dice = None
+    public_cards = None
+    solution = None
 
     def __init__(self):
         self.setup_config_folder()
@@ -77,6 +79,9 @@ class Board:
             self.secret_door_rooms = r_data[16]
             self.door_rooms = r_data[17]
             self.default_symbols = r_data[18]
+            self.public_cards = r_data[19]
+            self.solution = r_data[20]
+
             self.dice = Dice()
 
 
