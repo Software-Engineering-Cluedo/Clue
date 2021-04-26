@@ -63,10 +63,10 @@ class MyTestCase(unittest.TestCase):
         board = Board()
         tile_map = data["map"]["tiles"]
 
-        result1 = board.find_instance(tile_map[y][x], tile_map, True)
+        result1 = board.(tile_map[y][x], tile_map, True)
         self.assertEqual(result1 != False, True)
         self.assertEqual(len(result1), 2)
-        result2 = board.find_instance(tile_map[y][x], tile_map, False)
+        result2 = board.get_instance(tile_map[y][x], tile_map, False)
         self.assertEqual(result2 != False, True)
 
 
