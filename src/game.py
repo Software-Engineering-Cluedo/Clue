@@ -35,22 +35,40 @@ class Game:
         self.window=Tk()
         self.window.title("Clue!")
         self.data=self.boardObj.data   
+
+        """creates a dictionary of all the possible tiles""" 
         self.simpleTileDict=self.setup_tile_dict("simple tiles")
         self.gameTileDict=self.setup_tile_dict("game tiles")
         self.combinedTileDict=self.simpleTileDict|self.gameTileDict
+
+        """generates all the tiles as grids of image references""" 
         self.boardTileImgs=[]
         self.generate_board_tiles()
         self.generate_character_tiles()
         self.generate_door_tiles()
         self.generate_weapon_tiles()
-        self.output_tile_images()
+
+        """puts all the images into the grid in the parent tkinter window"""
+        self.output_tile_images() 
+
+        """generate suggestion and accusation buttons"""
         self.suggestButton=Button(self.window,text="Make suggestion?", command=lambda: self.generate_suggest_accuse_window("suggest"))
         self.suggestButton.grid(row=0,column=26)
         self.accuseButton=Button(self.window,text="Make accusation?", command=lambda: self.generate_suggest_accuse_window("accuse"))
         self.accuseButton.grid(row=1,column=26)
-        mainloop()
+        mainloop() #generates the window
 
     def setup_tile_dict(self, tile_type):
+        """creates a dictionary of dictionaries to keep track of the different tile types
+        
+        Args:
+            tile_type: the type of tile i.e. simple tile of game tile
+        
+        Returns: 
+            dict: dictionary within dictionary where every first key is the tile character, 
+            and its attributes are in the value dictionary assigned to it. 
+
+        """
         tempDict={}
         tiles=self.data[tile_type]
         for tile in tiles: 
@@ -62,6 +80,12 @@ class Game:
         return tempDict
 
     def generate_board_tiles(self): 
+        """ Creates a 2d list in which each element corresponds to the image name for the tile in that space
+
+            Returns: 
+                bool: true if tile images have been successfully returned in the 2d list
+
+        """
         for i in range(self.rows):
             self.boardTileImgs.append([])
             for j in range(self.columns):
@@ -92,24 +116,36 @@ class Game:
         return True    
 
     def generate_character_tiles(self):
+        """
+            Overwrites tiles with character tile images over the existing board image tiles
+        """
         for i in range(self.rows):
             for j in range(self.columns):
                 if self.boardObj.player_map[i][j]!="":
                     self.boardTileImgs[i][j]=Image.open(self.config_dir + '/images/' + self.combinedTileDict[self.boardObj.player_map[i][j]]["img_src"])
     
     def generate_door_tiles(self):
+        """
+            Overwrites tiles with door tile images over the existing board image tiles
+        """
         for i in range(self.rows):
             for j in range(self.columns):
                 if self.boardObj.door_map[i][j]!="":
                     self.boardTileImgs[i][j]=Image.open(self.config_dir + '/images/' + self.combinedTileDict[self.boardObj.door_map[i][j]]["img_src"])
     
     def generate_weapon_tiles(self):
+        """
+            Overwrites tiles with weapon tile images over the existing board image tiles
+        """
         for i in range(self.rows):
             for j in range(self.columns):
                 if self.boardObj.weapon_map[i][j]!="":
                     self.boardTileImgs[i][j]=Image.open(self.config_dir + '/images/' + self.combinedTileDict[self.boardObj.weapon_map[i][j]]["img_src"])
 
     def output_tile_images(self):
+        """
+            places the images in the 2d list into the tkinter window in the correct grid order 
+        """
         for i in range(self.rows):
             for j in range(self.columns):
                     img=ImageTk.PhotoImage(self.boardTileImgs[i][j])
@@ -118,6 +154,9 @@ class Game:
                     currentLabel.grid(row=i, column=j)
     
     def generate_suggest_accuse_window(self,name):
+        """
+            creates a tkinter child window that will allow for suggestion or accusations to be fed into a later function 
+        """
         if self.childWindowOpen==False:
             self.suggestaccusewindow=Toplevel(self.window)
             if name=="accuse":
@@ -148,6 +187,7 @@ class Game:
             self.childWindowOpen=True
 
     def submit_accusation(self):
+    
         if self.suggestaccusewindow.windowtype=="suggest": 
             #this can later be replaced with the necessary function
             print(self.suggestaccusewindow.windowtype,self.suggestaccusewindow.accusedPlayer.get(),self.suggestaccusewindow.accusedRoom.get(),self.suggestaccusewindow.accusedWeapon.get())
