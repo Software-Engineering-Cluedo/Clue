@@ -20,8 +20,13 @@ class CardDeck():
         self.deck[1][card] = symbol
 
 
+    def has_card(self, card):
+        return card in self.deck[1]
+
+
     def pop_card(self):
         choice = random.choice(list(self.deck[0].items()))
         del self.deck[0][choice[0]]
         del self.deck[1][choice[1]]
         return {choice[0]: choice[1]}
+    
