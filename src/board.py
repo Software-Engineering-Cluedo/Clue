@@ -1,18 +1,23 @@
+# Libraries
+
 import os
 import json
 import shutil
+import random
 import itertools
 import jsonschema
 
 from pathlib import Path
-from copy import copy, deepcopy
 from collections import Counter
+
+# Our classes
 
 from src.dice import Dice
 from src.room import Room
 from src.weapon import Weapon
 from src.player import Player
-from src.boardtoken import Token
+from src.solution import Solution
+from src.carddeck import CardDeck
 from src.playercard import PlayerCard
 from src.weapontoken import WeaponToken
 from src.playertoken import PlayerToken
@@ -53,7 +58,8 @@ class Board:
     door_rooms = None
     default_symbols = None
     dice = None
-    public_cards = None
+    sans_solution_cards = None
+    card_deck = None
     solution = None
 
     def __init__(self):
@@ -79,9 +85,9 @@ class Board:
             self.secret_door_rooms = r_data[16]
             self.door_rooms = r_data[17]
             self.default_symbols = r_data[18]
-            self.public_cards = r_data[19]
-            self.solution = r_data[20]
-
+            self.sans_solution_cards = r_data[19]
+            self.card_deck = r_data[20]
+            self.solution = r_data[21]
             self.dice = Dice()
 
 
@@ -90,7 +96,7 @@ class Board:
 
 
 
-    def refresh_player_positions(self):
+    def update_player_positions(self):
         new_player_map = self.generate_blank_map(self.tile_map)
         for player_token_symbol, player_token_obj in self.player_tokens.items():
             x, y = player_token_obj.get_position()
@@ -351,6 +357,23 @@ class Board:
                     temp.append(tile_map[y][x])
             combined_tiles.append(temp)
         return combined_tiles
+
+
+    def generate_public_cards_and_solution(self, player_cards, rooms, weapons):
+        public_cards = player_cards | rooms | weapons
+
+        player_cards_chosen = random.choice(list(player_cards.items()))
+        rooms_chosen = random.choice(list(rooms.items()))
+        weapons_chosen = random.choice(list(weapons.items()))
+
+        del public_cards[player_cards_chosen[0]]
+        del public_cards[rooms_chosen[0]]
+        del public_cards[weapons_chosen[0]]
+
+        solution = Solution({rooms_chosen[0]: rooms_chosen[1]}, {player_cards_chosen[0]: player_cards_chosen[1]}, {weapons_chosen[0]: weapons_chosen[1]})
+        public_card_deck = CardDeck(public_cards)
+
+        return public_cards, public_card_deck, solution
 
 
     def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
@@ -708,6 +731,8 @@ class Board:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
                         weapon_tokens, player_tokens = self.generate_all_tokens(player_map, player_cards, weapon_map, weapons) # TODO
+                        public_cards, card_deck, solution = self.generate_public_cards_and_solution(player_cards, rooms, weapons)
+                        self.deal_cards(card_deck, players)
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
@@ -718,4 +743,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map), self.get_default_symbols(simple_tiles)]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map), self.get_default_symbols(simple_tiles), public_cards, card_deck, solution]

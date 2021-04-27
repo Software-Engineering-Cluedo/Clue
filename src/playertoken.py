@@ -33,11 +33,11 @@ class PlayerToken(Token):
                     temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
 
                 self.move(temp_x, temp_y)
-                self.board.refresh_player_positions()
+                self.board.update_player_positions()
             
             elif self.board.tile_map[cur_y][cur_x] == self.board.default_symbols['tile']:
                 self.move(temp_x, temp_y)
-                self.board.refresh_player_positions()
+                self.board.update_player_positions()
             return True
         else:
             return False
@@ -66,7 +66,7 @@ class PlayerToken(Token):
 
                 self.move(temp_x, temp_y)
                 self.accessed_through_secret_door = True
-                self.board.refresh_player_positions()
+                self.board.update_player_positions()
     
 
     def exit_door(self):
@@ -82,7 +82,7 @@ class PlayerToken(Token):
 
         self.door_entered = None
         self.current_room = None
-        self.board.refresh_player_positions()
+        self.board.update_player_positions()
     
 
     def exit_secret_door(self):
@@ -92,7 +92,7 @@ class PlayerToken(Token):
         temp_x, temp_y = random.choice(all_tiles_next_to_doors)
 
         self.move(temp_x, temp_y)
-        self.board.refresh_player_positions()
+        self.board.update_player_positions()
         self.accessed_through_secret_door = False
         self.door_entered = None
         self.current_room = None
