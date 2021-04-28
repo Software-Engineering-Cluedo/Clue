@@ -70,10 +70,14 @@ class Cli():
                             key_incorrect = False
                         
                         elif key == '£':
-                            print()
+                            accuse_options = self.board.get_card_options()
+                            print(accuse_options)
+                            input()
                         
                         elif key == '"' and (option == 1 or option == 3):
-                            print()
+                            suggest_options = self.board.get_card_options()
+                            print(suggest_options)
+                            input()
 
                         elif key in movements or key in misc_options_one or key in misc_options_two:
                             if option == 0 and key in movements:
@@ -119,14 +123,14 @@ class Cli():
         option = player_token.get_turn_options()
 
         if option == 0:
-            key = input('up (w), down (s), left (a), right (d), wait(!), stop (p)\n')
+            key = input('up (w), down (s), left (a), right (d), wait(!), accuse(£), stop (p)\n')
         elif option == 1:
             key = input('exit(e), secret door(d), wait(!), suggest("), accuse(£), stop (p)\n')
         elif option == 2:
             key = input('exit(e), secret door(d), wait(!), accuse(£), stop (p)\n')
-        elif option == 4:
-            key = input('exit(e), wait(!), suggest("), accuse(£), stop (p)\n')
         elif option == 3:
+            key = input('exit(e), wait(!), suggest("), accuse(£), stop (p)\n')
+        elif option == 4:
             key = input('exit(e), wait(!), accuse(£), stop (p)\n')
 
         key = key.upper()

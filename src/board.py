@@ -12,8 +12,6 @@ import numpy as np
 from pathlib import Path
 from collections import Counter
 
-from numpy.lib.function_base import append
-
 # Our classes
 
 from src.ai import Ai
@@ -321,6 +319,18 @@ class Board:
         defaults['secret door'] = secret_doors
 
         return defaults
+    
+
+    def get_card_options(self):
+        """ Only should be ran after setup """
+        options = [[], [], []]
+        card_categories = [self.player_cards, self.rooms, self.weapons]
+
+        for i in range(len(options)):
+            for j, card in enumerate(card_categories[i]):
+                options[i].append((j, card, card_categories[i][card], card_categories[i][card].name))
+
+        return options
 
 
 
