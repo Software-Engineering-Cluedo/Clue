@@ -15,7 +15,8 @@ class CardDeck():
         self.deck[1] = {value:key for key, value in cards.items()}
     
     
-    def add_card(self, symbol, card):
+    def add_card(self, card_dict):
+        symbol, card = tuple(card_dict)
         self.deck[0][symbol] = card
         self.deck[1][card] = symbol
 

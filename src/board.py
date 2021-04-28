@@ -12,10 +12,11 @@ from collections import Counter
 
 # Our classes
 
+from src.ai import Ai
 from src.dice import Dice
 from src.room import Room
+from src.human import Human
 from src.weapon import Weapon
-from src.player import Player
 from src.solution import Solution
 from src.carddeck import CardDeck
 from src.playercard import PlayerCard
@@ -65,6 +66,7 @@ class Board:
     def __init__(self):
         self.setup_config_folder()
         parsed_correctly, r_data = self.setup_board()
+        print(parsed_correctly)
         if parsed_correctly:
             self.data = r_data[0]
             self.tile_map = r_data[1]
@@ -89,6 +91,8 @@ class Board:
             self.card_deck = r_data[20]
             self.solution = r_data[21]
             self.dice = Dice()
+        else:
+            print(r_data)
 
 
 
@@ -371,7 +375,8 @@ class Board:
         del public_cards[weapons_chosen[0]]
 
         solution = Solution({rooms_chosen[0]: rooms_chosen[1]}, {player_cards_chosen[0]: player_cards_chosen[1]}, {weapons_chosen[0]: weapons_chosen[1]})
-        public_card_deck = CardDeck(public_cards)
+        public_card_deck = CardDeck()
+        public_card_deck.convert_dict_and_add_to_deck(public_cards)
 
         return public_cards, public_card_deck, solution
 
@@ -421,8 +426,12 @@ class Board:
                 generated_objects[symbol] = w
                 weapons[symbol] = w
 
-            elif tile['obj'].lower() == 'player':
-                player = Player(name, player_count, symbol)
+            elif tile['obj'].lower() == 'human' or tile['obj'].lower() == 'ai':
+                if tile['obj'].lower() == 'human':
+                    player = Human(name, player_count, symbol)
+                else:
+                    player = Ai(name, player_count, symbol)
+
                 players[symbol] = player
 
                 pc = PlayerCard(name, obj_id, symbol, player)
@@ -433,7 +442,7 @@ class Board:
 
             else:
                 return False, False, False, False, False
-            
+        
         return generated_objects, rooms, weapons, players, player_cards
 
     
@@ -467,7 +476,7 @@ class Board:
         unique_chars = self.get_unique_char_count(data['map']['tiles'])
 
         # Rules
-        rules = {'weapon' : 1, 'player' : 1, 'secret door' : 2}
+        rules = {'weapon' : 1, 'human' : 1, 'ai' : 1, 'secret door' : 2}
 
         # Loops through rules and checks if it appears in unique characters, if it is checks if the count is correct
         for obj, correct_count in rules.items():
@@ -732,7 +741,7 @@ class Board:
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
                         weapon_tokens, player_tokens = self.generate_all_tokens(player_map, player_cards, weapon_map, weapons) # TODO
                         public_cards, card_deck, solution = self.generate_public_cards_and_solution(player_cards, rooms, weapons)
-                        self.deal_cards(card_deck, players)
+                        #self.deal_cards(card_deck, players)
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
@@ -743,4 +752,5 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
+        print(tile_map)
         return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map), self.get_default_symbols(simple_tiles), public_cards, card_deck, solution]
