@@ -698,7 +698,7 @@ class Board:
         try:
             with open(self.config_dir + '/clue.json', encoding='UTF-8') as file:
                 data = json.loads(file.read())
-            with open(os.path.dirname(__file__) + '/resources/json/clue.schema', encoding='UTF-8') as file:
+            with open(os.path.dirname(__file__) + '/resources/json/clue-schema.json', encoding='UTF-8') as file:
                 data_schema = json.loads(file.read())
 
         except IOError as e:
