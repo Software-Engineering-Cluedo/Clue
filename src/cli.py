@@ -69,10 +69,20 @@ class Cli():
                             player_not_stopped = False
                             key_incorrect = False
                         
-                        elif key == '£':
-                            accuse_options = self.board.get_card_options()
-                            print(accuse_options)
-                            input()
+                        elif key == '£' or (key == '"' and (option == 1 or option == 3)):
+                            # options order: player_cards, rooms, weapons
+                            options = self.board.get_card_options()
+                            selection = []
+                            for option in options:
+                                for i, card_details in enumerate(option):
+                                    print('%s : %s' % (i, card_details[3]))
+                                selection.append(int(input('Select from above: ')))
+                            
+                            if key == '"' and (option == 1 or option == 3):
+                                print() 
+
+                            elif key == '£':
+                                print() 
                         
                         elif key == '"' and (option == 1 or option == 3):
                             suggest_options = self.board.get_card_options()
