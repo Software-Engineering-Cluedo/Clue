@@ -7,8 +7,12 @@ import random
 import itertools
 import jsonschema
 
+import numpy as np
+
 from pathlib import Path
 from collections import Counter
+
+from numpy.lib.function_base import append
 
 # Our classes
 
@@ -363,7 +367,7 @@ class Board:
         return combined_tiles
 
 
-    def generate_public_cards_and_solution(self, player_cards, rooms, weapons):
+    def generate_public_cards_and_solution(self, player_cards, rooms, weapons, players):
         public_cards = player_cards | rooms | weapons
 
         player_cards_chosen = random.choice(list(player_cards.items()))
@@ -375,10 +379,28 @@ class Board:
         del public_cards[weapons_chosen[0]]
 
         solution = Solution({rooms_chosen[0]: rooms_chosen[1]}, {player_cards_chosen[0]: player_cards_chosen[1]}, {weapons_chosen[0]: weapons_chosen[1]})
-        public_card_deck = CardDeck()
-        public_card_deck.convert_dict_and_add_to_deck(public_cards)
+        card_deck = CardDeck()
+        card_deck.convert_dict_and_add_to_deck(public_cards)
 
-        return public_cards, public_card_deck, solution
+        # The most simplistic method was a buggy mess for some reason so I just had to improvise with a not so efficient method instead
+
+        cards = []
+        card_dicts = []
+        player_objs = list(players.values())
+
+        for c in range(len(card_deck)):
+            cards.append(card_deck.pop_card())
+        
+        cards_split = np.array_split(cards, len(players))
+        
+        for i in range(len(players)):
+            card_dicts.append({k: v for d in cards_split[i] for k, v in d.items()})
+        
+        for i in range(len(player_objs)):
+            player_objs[i].hand.convert_dict_and_add_to_deck(card_dicts[i])
+
+        return public_cards, card_deck, solution
+        
 
 
     def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
@@ -740,7 +762,7 @@ class Board:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
                         weapon_tokens, player_tokens = self.generate_all_tokens(player_map, player_cards, weapon_map, weapons) # TODO
-                        public_cards, card_deck, solution = self.generate_public_cards_and_solution(player_cards, rooms, weapons)
+                        public_cards, card_deck, solution = self.generate_public_cards_and_solution(player_cards, rooms, weapons, players)
                         #self.deal_cards(card_deck, players)
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
@@ -752,5 +774,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        print(tile_map)
         return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map), self.get_default_symbols(simple_tiles), public_cards, card_deck, solution]
