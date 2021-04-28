@@ -69,6 +69,12 @@ class Cli():
                             player_not_stopped = False
                             key_incorrect = False
                         
+                        elif key == '£':
+                            print()
+                        
+                        elif key == '"' and (option == 1 or option == 3):
+                            print()
+
                         elif key in movements or key in misc_options_one or key in misc_options_two:
                             if option == 0 and key in movements:
                                 cont_two = True
@@ -115,9 +121,13 @@ class Cli():
         if option == 0:
             key = input('up (w), down (s), left (a), right (d), wait(!), stop (p)\n')
         elif option == 1:
-            key = input('exit(e), secret door(d), wait(!),  stop (p)\n')
+            key = input('exit(e), secret door(d), wait(!), suggest("), accuse(£), stop (p)\n')
         elif option == 2:
-            key = input('exit(e), wait(!),  stop (p)\n')
+            key = input('exit(e), secret door(d), wait(!), accuse(£), stop (p)\n')
+        elif option == 4:
+            key = input('exit(e), wait(!), suggest("), accuse(£), stop (p)\n')
+        elif option == 3:
+            key = input('exit(e), wait(!), accuse(£), stop (p)\n')
 
         key = key.upper()
 

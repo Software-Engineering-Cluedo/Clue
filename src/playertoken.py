@@ -7,6 +7,7 @@ class PlayerToken(Token):
     current_room = None
     door_entered = None
     accessed_through_secret_door = False
+    has_entered = False
 
 
     def __init__(self, x, y, card, board):
@@ -27,6 +28,7 @@ class PlayerToken(Token):
                 room_symbol = self.board.tile_map[temp_y][temp_x]
                 self.door_entered = [cur_x, cur_y]
                 self.current_room = room_symbol
+                self.has_entered = True
 
                 temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
                 while self.board.door_map[temp_y][temp_x] != '':
@@ -45,6 +47,7 @@ class PlayerToken(Token):
 
     def enter_secret_door(self):
         found = False
+        self.has_entered = True
         current_room_secret_door = list(self.board.secret_door_rooms[self.current_room].keys())[0]
 
         for room_symbol_dict, secrect_door_symbol_dict in self.board.secret_door_rooms.items():
@@ -101,8 +104,14 @@ class PlayerToken(Token):
     def get_turn_options(self):
         if self.door_entered == None:
             return 0 # Move normally
-        elif self.current_room in self.board.secret_door_rooms:
+        elif self.current_room in self.board.secret_door_rooms and self.has_entered:
+            self.has_entered = False
             return 1 # Exit room and go through secret door
-        else:
+        elif self.current_room in self.board.secret_door_rooms:
             return 2 # Exit room
+        elif self.has_entered:
+            self.has_entered = False
+            return 3
+        else:
+            return 4
             
