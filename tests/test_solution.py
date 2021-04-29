@@ -23,27 +23,42 @@ class MyTestCase(unittest.TestCase):
     
     def test_set_and_get_solution(self):
         board = Board()
-        board_objects, rooms, weapons, players, player_cards = board.generate_objects_from_tiles(self.get_json_data())
-        solution = Solution(rooms, player_cards, weapons)
-        solution.set_solution(rooms, player_cards, weapons)
-        r, p, w = solution.get_solution()
-        #r, p, w = solution.generate_solution(rooms, player_cards, weapons)
-        self.assertEqual(r != False, True)
 
-        room = random.choice(board.rooms)
-        player_card = random.choice(board.player_cards)
-        weapon = random.choice(board.weapons)
+        room = random.choice(list(board.rooms.items()))
+        player_card = random.choice(list(board.player_cards.items()))
+        weapon = random.choice(list(board.weapons.items()))
+
+        room = {room[0]: room[1]}
+        player_card = {player_card[0]: player_card[1]}
+        weapon = {weapon[0]: weapon[1]}
+
+        solution = Solution(room, player_card, weapon)
+        r, p, w = solution.get_solution()
+
+        self.assertEqual(r, room)
+        self.assertEqual(p, player_card)
+        self.assertEqual(w, weapon)
+
 
 
     def test_check_solution(self):
         board = Board()
-        board_objects, rooms, weapons, players, player_cards = board.generate_objects_from_tiles(self.get_json_data())
-        solution = Solution(rooms, player_cards, weapons)
-        r, p, w = solution.get_solution()
-        self.assertEqual(r != False, True)
-        solution.set_solution(r, p, w)
-        self.assertEqual(solution.check_solution(r, p, w), True)
-        self.assertEqual(solution.check_solution('', p, w), False)
+
+        room = random.choice(list(board.rooms.items()))
+        player_card = random.choice(list(board.player_cards.items()))
+        weapon = random.choice(list(board.weapons.items()))
+
+        room = {room[0]: room[1]}
+        player_card = {player_card[0]: player_card[1]}
+        weapon = {weapon[0]: weapon[1]}
+
+        solution = Solution({1: room}, {1: player_card}, {1: weapon})
+
+        b = solution.check_solution(list(room.values())[0], list(player_card.values())[0], list(weapon.values())[0])
+        self.assertEqual(b, True)
+
+        b = solution.check_solution('h', list(player_card.values())[0], list(weapon.values())[0])
+        self.assertEqual(b, True)
 
 
 if __name__ == '__main__':
