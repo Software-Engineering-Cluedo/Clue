@@ -7,6 +7,7 @@ class Player():
     name = None
     symbol = None
     player_id = None
+    out = False
 
 
     def __init__(self, name, player_id, symbol):
@@ -31,6 +32,10 @@ class Player():
             return False
         else:
             return random.choice(card)
+
+    
+    def toggle_out(self):
+        self.out = not self.out
 
     
     def suggest(self, player_card, current_room, weapon, left_player, player_tokens, weapon_tokens, board):
