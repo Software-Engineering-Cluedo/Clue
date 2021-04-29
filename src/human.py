@@ -4,11 +4,11 @@ from src.player import Player
 class Human(Player):
     movements = {'W': [0, -1], 'S': [0, 1], 'A': [-1, 0], 'D': [1, 0]}
     keys = ['W', 'S', 'A', 'D', 'E', '!', '"', '£']
-    option_zero = ['w', 's', 'a', 'd', '!', '£', 'p']
-    option_one = ['e', 'd', '!', '"', '£', 'p']
-    option_two = ['e', 'd', '!', '£', 'p']
-    option_three = ['e', '!', '"', '£', 'p']
-    option_four = ['e', '!', '£', 'p']
+    option_zero = ['W', 'S', 'A', 'D', '!', '£', 'P']
+    option_one = ['E', 'Q', '!', '"', '£', 'P']
+    oprion_two = ['E', 'Q', '!', '£', 'P']
+    option_three = ['E', '!', '"', '£', 'P']
+    option_four = ['E', '!', '£', 'P']
 
     def __init__(self, name, player_id, symbol):
         super().__init__(name, player_id, symbol)
@@ -97,15 +97,13 @@ class Human(Player):
     """
 
 
-    def turn(self, key, extra=None):
+    def turn(self,option, key, extra=None):
         if key not in self.keys:
             return 404
         elif key == 'P':
             return 400
 
         if not self.out:
-            option = self.player_token.get_turn_options()
-
             if option == 0 and key in self.option_zero:
                 off_x, off_y = self.movements[key]  
                 b1, b2 = self.move_by_direction(off_x, off_y)
@@ -126,7 +124,7 @@ class Human(Player):
         if key == 'E':
             self.player_token.exit_door()
             return 202
-        elif key == 'D':
+        elif key == 'Q':
             self.player_token.enter_secret_door()
             return 202
         elif key == '"' or key == '£':

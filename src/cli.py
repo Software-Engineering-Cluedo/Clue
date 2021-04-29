@@ -3,6 +3,7 @@ import sys
 import json
 import time
 import random
+from ai import Ai
 from src.board import Board
 
 
@@ -24,6 +25,14 @@ class Cli():
         while not end:
             for player_char in self.board.players:
                 player_object = self.players[player_char]
+                cont = True
+                
+                while cont:
+                    if type(player_object) is Ai:
+                        print()
+                    else:
+                        key, option = self.menu_refresh()
+
 
 
     def menu_refresh(self, player_token, player_char, remaining_steps):
