@@ -332,10 +332,11 @@ class Board:
 
     def get_card_options(self, is_token):
         """ Only should be ran after setup """
-        options = [[], [], []]
         if is_token:
+            options = [[], []]
             card_categories = [self.player_tokens, self.weapon_tokens]
         else:
+            options = [[], [], []]
             card_categories = [self.player_cards, self.rooms, self.weapons]
 
         for i in range(len(options)):

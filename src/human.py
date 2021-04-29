@@ -22,15 +22,17 @@ class Human(Player):
         cards = [player_card, weapon_token.card, room]
 
         for card in cards:
-            if left_player.hand.has_card(card):
+            if left_player[1].player.hand.has_card(card):
                 correct_cards.append(card)
+        
+        board.update_player_positions()
+        board.update_room_positions()
         
         if correct_cards == []:
             return False
         else:
-            random.choice(correct_cards)
+            return random.choice(correct_cards)
 
     
     def accuse(self, player_card, room, weapon, solution):
-        # Simular to suggest, but sets the state of the player to stopped if incorrect and returns false, if correct returns true and ends the game
-        return
+        return solution.check_solution(room, player_card, weapon)

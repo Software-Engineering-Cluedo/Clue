@@ -24,7 +24,7 @@ class PlayerToken(Token):
     
     def move_to_room(self, room):
         self.accessed_through_other_door = True
-        symbol, room = list(room.items())
+        symbol, room = list(room.items())[0]
         self.current_room = symbol
         temp_x, temp_y = random.choice(self.board.room_positions[symbol])
         self.move(temp_x, temp_y)
