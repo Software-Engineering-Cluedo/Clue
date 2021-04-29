@@ -22,19 +22,30 @@ class MyTestCase(unittest.TestCase):
 
 
     def copy_over_clue(self, path):
-        print(self.secure_temp[1])
+        """
+        1 (default) : /../src/resources/json/clue.json
+        2 (test for line deleted) : /resources/json/lineDeleted.json
+        """
         shutil.copy(self.config_dir + '/clue.json', self.secure_temp[1])
         shutil.copy(os.path.dirname(__file__) + path, self.config_dir + '/clue.json')
         
 
     def restore_from_temp_dir(self):
-        shutil.copy(self.secure_temp[1] + '/clue.json', self.config_dir + '/clue.json')
+        shutil.copy(self.secure_temp[1], self.config_dir + '/clue.json')
 
 
     def test_parse_map_data(self):
+        self.copy_over_clue('/resources/json/clue.json')
+        board = Board()
+        result, data = board.setup_board(force=True)
+        self.restore_from_temp_dir()
+        self.assertEqual(result, True)
+
+        self.copy_over_clue('/resources/json/lineDeleted.json')
         board = Board()
         result, data = board.setup_board()
-        self.assertEqual(result, True)
+        self.restore_from_temp_dir()
+        self.assertEqual(result, False)
 
 
     def test_get_surrounding(self):
