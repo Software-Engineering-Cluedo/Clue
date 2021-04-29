@@ -1,5 +1,6 @@
 import json
 import unittest
+import random
 from pathlib import Path
 
 from src.room import Room
@@ -29,6 +30,9 @@ class MyTestCase(unittest.TestCase):
         #r, p, w = solution.generate_solution(rooms, player_cards, weapons)
         self.assertEqual(r != False, True)
 
+        room = random.choice(board.rooms)
+        player_card = random.choice(board.player_cards)
+        weapon = random.choice(board.weapons)
 
 
     def test_check_solution(self):

@@ -97,9 +97,24 @@ class Cli():
 
                                 player_token_list = list(self.player_tokens.items())
 
-                                for i, p in enumerate(player_token_list):
-                                    if p[0] == player_char:
-                                        p_pos = i
+                                """ Also temp for debugging """
+                                cards = self.board.solution.get_solution()
+                                print('cards: ', cards)
+                                """                         """
+
+                                selection = []
+                                for option_type in options:
+                                    for i, card_details in enumerate(option_type):
+                                        print('%s : %s - %s' % (i, card_details[1], card_details[3]))
+                                    
+                                    cont_three = True
+                                    while cont_three:
+                                        inp = int(input('Select from above: '))
+                                        if inp < len(option_type) and inp >= 0:
+                                            selection.append(option_type[inp])
+                                            cont_three = False
+                                        else:
+                                            print('incorrect number')
                                 
                                 left_player = player_token_list[p_pos - 1 % len(player_token_list)]
                                 player_object.suggest(selection[0], {selection[0]: self.player_cards[selection[0]]}, {player_token.current_room: self.rooms[player_token.current_room]}, selection[2], left_player, self.board)
