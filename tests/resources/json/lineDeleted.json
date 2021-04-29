@@ -1,0 +1,166 @@
+{
+    "map": {
+        "dimensions": {
+            "x": 24,
+            "y": 25
+        },
+
+        "tiles": [
+            ".........Q....W.........",
+            "kkkkk🤠.tttbbbbttt.cccccc",
+            "kkkkkkttbbbbbbbbttcccc6c",
+            "k1kkkkttbbbbbbbbttcccccc",
+            "kkkkkkttbbbbbbbbttDccccc",
+            "kkkkkkttDbbbbbbDtttccc👾.",
+            ".kkkDkttbbbbbbbbtttttttE",
+            "ttttttttbDbbbbDbttttttt.",
+            ".tttttttttttttttttrrrrrr",
+            "dddddtttttttttttttDrrrrr",
+            "ddddddddtt.....tttrrrrrr",
+            "ddddddddtt.....tttrr2rrr",
+            "dddddddDtt.....tttrrrrDr",
+            "ddddddddtt.....tttttttt.",
+            "dd4dddddtt.....tttllDll.",
+            "ddddddDdtt.....ttlllllll",
+            "Rttttttttttttttttlllllll",
+            ".tttttttthhDDhhtttlllll.",
+            "👾oooooDtthhhhhhttttttttT",
+            "oooooootthhhhhhtttttttt.",
+            "oooooootthhhhhhttDsssss🤠",
+            "ooo3oootthhhhhhttsss5sss",
+            "oooooootthhhhhhttsssssss",
+            "oooooooY.hhhhhh.tsssssss"
+        ]
+    },
+
+    "simple tiles": [
+        {
+            "char": ".",
+            "obj": "none"
+        },
+        {
+            "char": "t",
+            "obj": "tile"
+        },
+        {
+            "char": "D",
+            "obj": "door"
+        },
+        {
+            "char": "🤠",
+            "obj": "secret door"
+        }, 
+        {
+            "char": "👾",
+            "obj": "secret door"
+        }
+    ],
+
+    "game tiles": [
+        {
+            "char": "1",
+            "obj": "weapon",
+            "name": "Candlestick"
+        },
+        {
+            "char": "2",
+            "obj": "weapon",
+            "name": "Dagger"
+        },
+        {
+            "char": "3",
+            "obj": "weapon",
+            "name": "Lead Pipe"
+        },
+        {
+            "char": "4",
+            "obj": "weapon",
+            "name": "Revolver"
+        },
+        {
+            "char": "5",
+            "obj": "weapon",
+            "name": "Rope"
+        },
+        {
+            "char": "6",
+            "obj": "weapon",
+            "name": "Wrench"
+        },
+        {
+            "char": "k",
+            "obj": "room",
+            "name": "Kitchen"
+        },
+        {
+            "char": "b",
+            "obj": "room",
+            "name": "Ball Room"
+        },
+        {
+            "char": "c",
+            "obj": "room",
+            "name": "Conservatory"
+        },
+        {
+            "char": "d",
+            "obj": "room",
+            "name": "Dining Room"
+        },
+        {
+            "char": "r",
+            "obj": "room",
+            "name": "Billiard Room"
+        },
+        {
+            "char": "l",
+            "obj": "room",
+            "name": "Library"
+        },
+        {
+            "char": "h",
+            "obj": "room",
+            "name": "Hall"
+        },
+        {
+            "char": "o",
+            "obj": "room",
+            "name": "Lounge"
+        },
+        {
+            "char": "s",
+            "obj": "room",
+            "name": "Study"
+        },
+        {
+            "char": "Q",
+            "obj": "player",
+            "name": "Mrs. White"
+        },
+        {
+            "char": "W",
+            "obj": "player",
+            "name": "Mr. Green"
+        },
+        {
+            "char": "E",
+            "obj": "player",
+            "name": "Mrs. Peacock"
+        },
+        {
+            "char": "R",
+            "obj": "player",
+            "name": "Colonel Mustard"
+        },
+        {
+            "char": "T",
+            "obj": "player",
+            "name": "Professor Plum"
+        },
+        {
+            "char": "Y",
+            "obj": "player",
+            "name": "Miss Scarlett"
+        }
+    ]
+}

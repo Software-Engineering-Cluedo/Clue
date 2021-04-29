@@ -153,7 +153,6 @@ class Cli():
                                     print('wut')
                                     input()
 
-
                             elif key in movements or key in misc_options_one or key in misc_options_two:
                                 if option == 0 and key in movements:
                                     cont_two = True

@@ -1,0 +1,90 @@
+{
+    "title": "Clue Configuration File",
+    "description": "Used to configure what the map layout, the players, the rooms and the weapons",
+    "type": "object",
+    "properties": {
+        "map": {
+            "description": "Contains the tiles and, the dimensions it should be",
+            "type": "object",
+            "properties": {
+                "dimensions": {
+                    "description": "The dimensions it should be",
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "description": "Size of x dimension",
+                            "type": "number",
+                            "multipleOf": 1.0,
+                            "minimum": 10,
+                            "maximum": 40
+                        },
+                        "y": {
+                            "description": "Size of x dimension",
+                            "type": "number",
+                            "multipleOf": 1.0,
+                            "minimum": 10,
+                            "maximum": 40
+                        }
+                    }
+                },
+                "tiles": {
+                    "description": "Contains the tile map",
+                    "type": "array",
+                    "minItems": 1
+                }
+            },
+            "required": ["dimensions", "tiles"]
+        },
+        "simple tiles": {
+            "description": "Array of the characters with associated objects",
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/s-tile"
+            },
+            "minItems": 3
+        },
+
+        "game tiles": {
+            "description": "Array of the characters with associated objects",
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/g-tile"
+            }
+        }
+    },
+    "$defs": {
+        "s-tile": {
+            "type": "object",
+            "properties": {
+                "char": {
+                    "description": "The character to associate the object to",
+                    "type": "string"
+                },
+                "obj": {
+                    "description": "The object type, could be: none, tile, door or secret door",
+                    "type": "string"
+                }
+            },
+            "required": ["char", "obj"]
+        },
+        "g-tile": {
+            "type": "object",
+            "properties": {
+                "char": {
+                    "description": "The character to associate the object to",
+                    "type": "string"
+                },
+                "obj": {
+                    "description": "The object type, could be: weapon, room or player",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The objects name",
+                    "type": "string"
+                }
+            },
+            "required": ["char", "obj", "name"]
+        }
+    },
+    "required": ["map", "simple tiles", "game tiles"]
+}
