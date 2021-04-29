@@ -52,13 +52,13 @@ class MyTestCase(unittest.TestCase):
         player_card = {player_card[0]: player_card[1]}
         weapon = {weapon[0]: weapon[1]}
 
-        solution = Solution({1: room}, {1: player_card}, {1: weapon})
+        solution = Solution(room, player_card, weapon)
 
         b = solution.check_solution(list(room.values())[0], list(player_card.values())[0], list(weapon.values())[0])
         self.assertEqual(b, True)
 
-        b = solution.check_solution('h', list(player_card.values())[0], list(weapon.values())[0])
-        self.assertEqual(b, True)
+        b = solution.check_solution('why', list(player_card.values())[0], list(weapon.values())[0])
+        self.assertEqual(b, False)
 
 
 if __name__ == '__main__':

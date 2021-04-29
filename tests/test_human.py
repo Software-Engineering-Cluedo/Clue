@@ -12,7 +12,7 @@ class MyTestCase(unittest.TestCase):
     def test_something(self):
         self.assertEqual(True, True)
 
-# Broken test
+# Unfinished test
 #
 # def test_suggest(self):
 #         data = self.get_json_data()
