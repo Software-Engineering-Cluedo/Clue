@@ -100,6 +100,11 @@ class MyTestCase(unittest.TestCase):
         result2 = board.get_instance(tile_map[y][x], tile_map, False)
         self.assertEqual(result2 != False, True)
 
+    def test_generate_combined_map(self):
+        board = Board()
+        result1 = board.generate_combined_map(board.tile_map, board.weapon_map, board.player_map, board.door_map)
+        
+        assertEqual(result1, )
 
 if __name__ == '__main__':
     unittest.main()
