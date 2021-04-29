@@ -10,6 +10,7 @@ class Player():
     symbol = None
     player_id = None
     out = False
+    player_token = None
 
 
     def __init__(self, name, player_id, symbol):
@@ -17,6 +18,10 @@ class Player():
         self.symbol = symbol
         self.player_id = player_id
         self.hand = CardDeck()
+
+    
+    def set_player_token(self, player_token):
+        self.player_token = player_token
 
 
     def add_to_hand(self, card_dict):
@@ -51,7 +56,7 @@ class Player():
     def toggle_out(self):
         self.out = not self.out
 
-    
+
     def suggest(self, player_card, current_room, weapon, left_player, player_tokens, weapon_tokens, board):
         """Allows a player to make a suggestion, moving the weapon and player token to the room the player is in.,
             Checks the suggestions in alignment with the game rules and returns either false or the cards that were guessed. 
