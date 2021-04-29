@@ -3,22 +3,37 @@ import json
 from src.board import Board
 from pathlib import Path
 import os
+import shutil
+import tempfile
 
-startup_board = Board()
+
 
 class MyTestCase(unittest.TestCase):
-    def get_json_data(self, path):
+    secure_temp = tempfile.mkstemp()
+    config_dir = str(Path.home()) + "/Clue"
 
-        """
-        1 (default) : /../src/resources/json/clue.json
-        2 (test for line deleted) : /resources/json/lineDeleted.json
-        """
 
+    def get_json_data(self):
         data = []
-        with open(os.path.dirname(__file__) + path, encoding='UTF-8') as file:
+        config_dir = str(Path.home()) + "/Clue"
+        with open(config_dir + '/clue.json', encoding='UTF-8') as file:
             data = json.loads(file.read())
-        
         return data
+
+
+    def copy_over_clue(self, path):
+        print(self.secure_temp[1])
+        shutil.copy(self.config_dir + '/clue.json', self.secure_temp[1])
+        shutil.copy(os.path.dirname(__file__) + path, self.config_dir + '/clue.json')
+        
+
+    def restore_from_temp_dir(self):
+        shutil.copy(self.secure_temp[1] + '/clue.json', self.config_dir + '/clue.json')
+
+
+    def test_copy_over_clue(self):
+        self.copy_over_clue('/resources/json/lineDeleted.json')
+
 
 
     def test_parse_map_data(self):
