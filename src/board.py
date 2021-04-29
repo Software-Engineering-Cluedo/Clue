@@ -726,11 +726,11 @@ class Board:
 
 
 
-    def setup_config_folder(self):
+    def setup_config_folder(self, force=False):
         """ Creates the config directory for Clue and copies the default clue map to the folder if doesn't exist """
 
         Path(self.config_dir).mkdir(parents=True, exist_ok=True)
-        if not Path(self.config_dir + '/clue.json').is_file():
+        if not Path(self.config_dir + '/clue.json').is_file() or force:
             shutil.copy(os.path.dirname(__file__) + '/resources/json/clue.json', self.config_dir + '/clue.json')
 
     
