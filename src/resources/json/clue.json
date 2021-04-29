@@ -135,32 +135,32 @@
         },
         {
             "char": "Q",
-            "obj": "player",
+            "obj": "human",
             "name": "Mrs. White"
         },
         {
             "char": "W",
-            "obj": "player",
+            "obj": "human",
             "name": "Mr. Green"
         },
         {
             "char": "E",
-            "obj": "player",
+            "obj": "human",
             "name": "Mrs. Peacock"
         },
         {
             "char": "R",
-            "obj": "player",
+            "obj": "human",
             "name": "Colonel Mustard"
         },
         {
             "char": "T",
-            "obj": "player",
+            "obj": "human",
             "name": "Professor Plum"
         },
         {
             "char": "Y",
-            "obj": "player",
+            "obj": "human",
             "name": "Miss Scarlett"
         }
     ]

@@ -1,18 +1,26 @@
+# Libraries
+
 import os
 import json
 import shutil
+import random
 import itertools
 import jsonschema
 
+import numpy as np
+
 from pathlib import Path
-from copy import copy, deepcopy
 from collections import Counter
 
+# Our classes
+
+from src.ai import Ai
 from src.dice import Dice
 from src.room import Room
+from src.human import Human
 from src.weapon import Weapon
-from src.player import Player
-from src.boardtoken import Token
+from src.solution import Solution
+from src.carddeck import CardDeck
 from src.playercard import PlayerCard
 from src.weapontoken import WeaponToken
 from src.playertoken import PlayerToken
@@ -52,11 +60,15 @@ class Board:
     secret_door_rooms = None
     door_rooms = None
     default_symbols = None
-    dice = None    
+    dice = None
+    sans_solution_cards = None
+    card_deck = None
+    solution = None
 
     def __init__(self):
         self.setup_config_folder()
         parsed_correctly, r_data = self.setup_board()
+        print(parsed_correctly)
         if parsed_correctly:
             self.data = r_data[0]
             self.tile_map = r_data[1]
@@ -77,7 +89,12 @@ class Board:
             self.secret_door_rooms = r_data[16]
             self.door_rooms = r_data[17]
             self.default_symbols = r_data[18]
+            self.sans_solution_cards = r_data[19]
+            self.card_deck = r_data[20]
+            self.solution = r_data[21]
             self.dice = Dice()
+        else:
+            print(r_data)
 
 
 
@@ -85,13 +102,22 @@ class Board:
 
 
 
-    def refresh_player_positions(self):
+    def update_player_positions(self):
         new_player_map = self.generate_blank_map(self.tile_map)
         for player_token_symbol, player_token_obj in self.player_tokens.items():
             x, y = player_token_obj.get_position()
             new_player_map[y][x] = player_token_symbol
         
         self.player_map = new_player_map
+    
+
+    def update_room_positions(self):
+        new_weapon_map = self.generate_blank_map(self.tile_map)
+        for weapon_token_symbol, weapon_token_obj in self.weapon_tokens.items():
+            x, y = weapon_token_obj.get_position()
+            new_weapon_map[y][x] = weapon_token_symbol
+        
+        self.weapon_map = new_weapon_map
 
 
 
@@ -302,6 +328,28 @@ class Board:
         defaults['secret door'] = secret_doors
 
         return defaults
+    
+
+    def get_card_options(self, is_token):
+        """ Only should be ran after setup """
+        if is_token:
+            options = [[], []]
+            card_categories = [self.player_tokens, self.weapon_tokens]
+        else:
+            options = [[], [], []]
+            card_categories = [self.player_cards, self.rooms, self.weapons]
+
+        for i in range(len(options)):
+            for j, obj in enumerate(card_categories[i]):
+                if is_token:
+                    if type(card_categories[i][obj]) is Room:
+                        options[i].append((j, obj, card_categories[i][obj], card_categories[i][obj].name))
+                    else:
+                        options[i].append((j, obj, card_categories[i][obj], card_categories[i][obj].card.name))
+                else:
+                    options[i].append((j, obj, card_categories[i][obj], card_categories[i][obj].name))
+
+        return options
 
 
 
@@ -317,18 +365,6 @@ class Board:
                 row.append('')
             blank_map.append(row)
         return blank_map
-
-
-    def generate_tokens(self, char_map, object_dict, is_weapon):
-        tokens = {}
-
-        for symbol, object in object_dict.items():
-            x, y = self.get_instance(symbol, char_map, True)
-            if is_weapon:
-                tokens[symbol] = WeaponToken(x, y, object)
-            else:
-                tokens[symbol] = PlayerToken(x, y, object, self)
-        return tokens
 
 
     def generate_combined_map(self, tile_map, weapon_map, player_map, door_map):
@@ -348,8 +384,56 @@ class Board:
         return combined_tiles
 
 
+    def generate_public_cards_and_solution(self, player_cards, rooms, weapons, players):
+        public_cards = player_cards | rooms | weapons
+
+        player_cards_chosen = random.choice(list(player_cards.items()))
+        rooms_chosen = random.choice(list(rooms.items()))
+        weapons_chosen = random.choice(list(weapons.items()))
+
+        del public_cards[player_cards_chosen[0]]
+        del public_cards[rooms_chosen[0]]
+        del public_cards[weapons_chosen[0]]
+
+        solution = Solution({rooms_chosen[0]: rooms_chosen[1]}, {player_cards_chosen[0]: player_cards_chosen[1]}, {weapons_chosen[0]: weapons_chosen[1]})
+        card_deck = CardDeck()
+        card_deck.convert_dict_and_add_to_deck(public_cards)
+
+        # The most simplistic method was a buggy mess for some reason so I just had to improvise with a not so efficient method instead
+
+        cards = []
+        card_dicts = []
+        player_objs = list(players.values())
+
+        for c in range(len(card_deck)):
+            cards.append(card_deck.pop_card())
+        
+        cards_split = np.array_split(cards, len(players))
+        
+        for i in range(len(players)):
+            card_dicts.append({k: v for d in cards_split[i] for k, v in d.items()})
+        
+        for i in range(len(player_objs)):
+            player_objs[i].hand.convert_dict_and_add_to_deck(card_dicts[i])
+
+        return public_cards, card_deck, solution
+        
+
+
     def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
         return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, player_cards, False)
+
+
+    def generate_tokens(self, char_map, object_dict, is_weapon):
+        tokens = {}
+
+        for symbol, object in object_dict.items():
+            x, y = self.get_instance(symbol, char_map, True)
+            if is_weapon:
+                tokens[symbol] = WeaponToken(x, y, object)
+            else:
+                tokens[symbol] = PlayerToken(x, y, object, self, object.player)
+        return tokens
 
 
     def generate_objects_from_tiles(self, data):
@@ -393,8 +477,12 @@ class Board:
                 generated_objects[symbol] = w
                 weapons[symbol] = w
 
-            elif tile['obj'].lower() == 'player':
-                player = Player(name, player_count, symbol)
+            elif tile['obj'].lower() == 'human' or tile['obj'].lower() == 'ai':
+                if tile['obj'].lower() == 'human':
+                    player = Human(name, player_count, symbol)
+                else:
+                    player = Ai(name, player_count, symbol)
+
                 players[symbol] = player
 
                 pc = PlayerCard(name, obj_id, symbol, player)
@@ -405,7 +493,7 @@ class Board:
 
             else:
                 return False, False, False, False, False
-            
+        
         return generated_objects, rooms, weapons, players, player_cards
 
     
@@ -439,7 +527,7 @@ class Board:
         unique_chars = self.get_unique_char_count(data['map']['tiles'])
 
         # Rules
-        rules = {'weapon' : 1, 'player' : 1, 'secret door' : 2}
+        rules = {'weapon' : 1, 'human' : 1, 'ai' : 1, 'secret door' : 2}
 
         # Loops through rules and checks if it appears in unique characters, if it is checks if the count is correct
         for obj, correct_count in rules.items():
@@ -661,7 +749,7 @@ class Board:
         try:
             with open(self.config_dir + '/clue.json', encoding='UTF-8') as file:
                 data = json.loads(file.read())
-            with open(os.path.dirname(__file__) + '/resources/json/clue.schema', encoding='UTF-8') as file:
+            with open(os.path.dirname(__file__) + '/resources/json/clue-schema.json', encoding='UTF-8') as file:
                 data_schema = json.loads(file.read())
 
         except IOError as e:
@@ -703,6 +791,8 @@ class Board:
                         self.place_weapons_in_rooms(weapons, rooms, simple_tiles, data['map']['tiles'])
                         tile_map, player_map, weapon_map, door_map = self.separate_board(data['map']['tiles'], players, weapons, simple_tiles)
                         weapon_tokens, player_tokens = self.generate_all_tokens(player_map, player_cards, weapon_map, weapons) # TODO
+                        public_cards, card_deck, solution = self.generate_public_cards_and_solution(player_cards, rooms, weapons, players)
+                        #self.deal_cards(card_deck, players)
                     else:
                         return False, 'Contains unidentified descriptor for a tile entry'
                 else:
@@ -713,4 +803,4 @@ class Board:
             return False, 'Tile symbols are not unique'
 
 
-        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map), self.get_default_symbols(simple_tiles)]
+        return True, [data, tile_map, player_map, weapon_map, door_map, board_objects, weapons, rooms, players, player_cards, self.generate_combined_map(tile_map, weapon_map, player_map, door_map), weapon_tokens, player_tokens, self.tile_array_to_dict(data, 'simple tiles'), self.tile_array_to_dict(data, 'game tiles'), self.get_all_room_positions(rooms, tile_map), self.get_secret_door_rooms(simple_tiles, door_map, tile_map), self.get_door_rooms(simple_tiles, door_map, tile_map), self.get_default_symbols(simple_tiles), public_cards, card_deck, solution]

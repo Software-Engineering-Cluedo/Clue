@@ -41,7 +41,8 @@
         - Types:
             - `room`
             - `weapon`
-            - `player`
+            - `human`
+            - `ai`
     - `name`
         - The name of the object
 

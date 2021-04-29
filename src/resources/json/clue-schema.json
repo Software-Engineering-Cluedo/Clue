@@ -75,7 +75,7 @@
                     "type": "string"
                 },
                 "obj": {
-                    "description": "The object type, could be: weapon, room or player",
+                    "description": "The object type, could be: weapon, room, human or ai",
                     "type": "string"
                 },
                 "name": {
