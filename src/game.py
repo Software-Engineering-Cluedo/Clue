@@ -23,7 +23,7 @@ class Game:
     suggestButton=None
     childWindowOpen = None
     boardTileImgs = None
-    config_dir = str(Path.home())+"/Clue"
+    config_dir = str(Path.home())+"/Clue-gui"
     
 
     def __init__(self):

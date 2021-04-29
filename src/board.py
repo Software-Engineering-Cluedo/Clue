@@ -29,7 +29,7 @@ class Board:
         symbols: An dictionary with each unique symbol from the tile map storing the associated class
     """
 
-    config_dir = str(Path.home()) + "/Clue"
+    config_dir = str(Path.home()) + "/Clue-gui"
 
     data = None
     simple_tile = None
