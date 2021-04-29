@@ -29,5 +29,4 @@ class Solution:
 
     def check_solution(self, r_guess, p_guess, w_guess):
         """ Checks if the given solution is correct """
-
-        return (w_guess == self.w and p_guess == self.p and r_guess == self.r)
+        return (w_guess == list(self.weapon.values())[0] and p_guess == list(self.player_card.values())[0] and r_guess == list(self.room.values())[0])
