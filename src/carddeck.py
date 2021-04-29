@@ -24,7 +24,7 @@ class CardDeck():
 
 
     def has_card(self, card):
-        return card in self.deck[1]
+        return card in self.deck_rev
 
 
     def pop_card(self):

@@ -109,6 +109,15 @@ class Board:
             new_player_map[y][x] = player_token_symbol
         
         self.player_map = new_player_map
+    
+
+    def update_room_positions(self):
+        new_weapon_map = self.generate_blank_map(self.tile_map)
+        for weapon_token_symbol, weapon_token_obj in self.weapon_tokens.items():
+            x, y = weapon_token_obj.get_position()
+            new_weapon_map[y][x] = weapon_token_symbol
+        
+        self.weapon_map = new_weapon_map
 
 
 
@@ -325,7 +334,7 @@ class Board:
         """ Only should be ran after setup """
         options = [[], [], []]
         if is_token:
-            card_categories = [self.player_tokens, self.rooms, self.weapon_tokens]
+            card_categories = [self.player_tokens, self.weapon_tokens]
         else:
             card_categories = [self.player_cards, self.rooms, self.weapons]
 
@@ -355,18 +364,6 @@ class Board:
                 row.append('')
             blank_map.append(row)
         return blank_map
-
-
-    def generate_tokens(self, char_map, object_dict, is_weapon):
-        tokens = {}
-
-        for symbol, object in object_dict.items():
-            x, y = self.get_instance(symbol, char_map, True)
-            if is_weapon:
-                tokens[symbol] = WeaponToken(x, y, object)
-            else:
-                tokens[symbol] = PlayerToken(x, y, object, self)
-        return tokens
 
 
     def generate_combined_map(self, tile_map, weapon_map, player_map, door_map):
@@ -424,6 +421,18 @@ class Board:
 
     def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
         return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, player_cards, False)
+
+
+    def generate_tokens(self, char_map, object_dict, is_weapon):
+        tokens = {}
+
+        for symbol, object in object_dict.items():
+            x, y = self.get_instance(symbol, char_map, True)
+            if is_weapon:
+                tokens[symbol] = WeaponToken(x, y, object)
+            else:
+                tokens[symbol] = PlayerToken(x, y, object, self, object.player)
+        return tokens
 
 
     def generate_objects_from_tiles(self, data):

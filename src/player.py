@@ -15,6 +15,7 @@ class Player():
         self.player_id = player_id
         self.hand = CardDeck()
 
+
     def add_to_hand(self, card_dict):
         self.hand.add_card(card_dict)
     
@@ -32,7 +33,7 @@ class Player():
             return random.choice(card)
 
     
-    def suggest(self, player_card, current_room, weapon, left_player):
+    def suggest(self, player_card, current_room, weapon, left_player, player_tokens, weapon_tokens, board):
         # Would move the weapon and player token (derrived from player card) to the room the player is currently in
         # It would perform the checks according to the instructions and return either false or the cards correctly guessed
         pass

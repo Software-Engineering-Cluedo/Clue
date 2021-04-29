@@ -34,7 +34,7 @@ class Cli():
         correct = False
         key = ''
 
-        # self.move_players_testing()
+        self.move_players_testing()
         # self.remove_players_testing()
 
         while cont:
@@ -86,20 +86,26 @@ class Cli():
                                 while cont_three:
                                     inp = int(input('Select from above: '))
                                     if inp < len(option_type) and inp >= 0:
-                                        selection.append(inp)
+                                        selection.append(option_type[inp])
                                         cont_three = False
                                     else:
                                         print('incorrect number')
                             
                             if key == '"' and (option == 1 or option == 3):
-                                p_list = list(self.players.items())
-                                print(p_list)
-                                input()
 
-                                player_object.suggest(selection[0], selection[1], selection[2])
+                                # Room for suggest doesn't need to be selected, is derrived from current room of the current player
+
+                                player_token_list = list(self.player_tokens.items())
+
+                                for i, p in enumerate(player_token_list):
+                                    if p[0] == player_char:
+                                        p_pos = i
+                                
+                                left_player = player_token_list[p_pos - 1 % len(player_token_list)]
+                                player_object.suggest(selection[0], {selection[0]: self.player_cards[selection[0]]}, {player_token.current_room: self.rooms[player_token.current_room]}, selection[2], left_player, self.board)
 
                             elif key == '£':
-                                correct = player_object.accuse(selection[0], selection[1], selection[2])
+                                correct = player_object.accuse(selection[0], selection[1], selection[2], self.board.solution)
                                 if correct:
                                     cont = False
                                     player_not_stopped = False

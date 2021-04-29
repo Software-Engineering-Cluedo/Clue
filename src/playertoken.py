@@ -6,19 +6,29 @@ class PlayerToken(Token):
     board = None
     current_room = None
     door_entered = None
-    accessed_through_secret_door = False
+    accessed_through_other_door = False
     has_entered = False
+    player = None
 
 
-    def __init__(self, x, y, card, board):
+    def __init__(self, x, y, card, board, player):
         super().__init__(x, y, card)
         self.board = board
+        self.player = player
 
 
     def move(self, x, y):
         self.x = x
         self.y = y
     
+    
+    def move_to_room(self, room):
+        self.accessed_through_other_door = True
+        symbol, room = list(room.items())
+        self.current_room = symbol
+        temp_x, temp_y = random.choice(self.board.room_positions[symbol])
+        self.move(temp_x, temp_y)
+
 
     def move_by_direction(self, off_x, off_y):
         cur_x, cur_y = self.get_position()
@@ -68,12 +78,12 @@ class PlayerToken(Token):
                     temp_x, temp_y = random.choice(self.board.room_positions[room_symbol])
 
                 self.move(temp_x, temp_y)
-                self.accessed_through_secret_door = True
+                self.accessed_through_other_door = True
                 self.board.update_player_positions()
     
 
     def exit_door(self):
-        if self.accessed_through_secret_door:
+        if self.accessed_through_other_door:
             self.exit_secret_door()
         else:
             self.exit_normal_door()
@@ -89,14 +99,11 @@ class PlayerToken(Token):
     
 
     def exit_secret_door(self):
-        x, y = self.door_entered
         all_tiles_next_to_doors = self.board.get_door_offset(self.current_room, self.board.tile_map, self.board.door_rooms, self.board.default_symbols['tile'])
-
         temp_x, temp_y = random.choice(all_tiles_next_to_doors)
-
         self.move(temp_x, temp_y)
         self.board.update_player_positions()
-        self.accessed_through_secret_door = False
+        self.accessed_through_other_door = False
         self.door_entered = None
         self.current_room = None
     
