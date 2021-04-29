@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import time
 import random
 from src.board import Board
 
@@ -30,7 +31,7 @@ class Cli():
         movements = {'W': [0, -1], 'S': [0, 1], 'A': [-1, 0], 'D': [1, 0]}
         misc_options_one = ['E', 'D']
         misc_options_two = ['E']
-
+        correct = False
         key = ''
 
         # self.move_players_testing()
@@ -46,7 +47,7 @@ class Cli():
                 steps = roll_one + roll_two
                 player_not_stopped = True
                 
-                while player_not_stopped and steps > 0:
+                while player_not_stopped and steps > 0 and not correct:
                     if key == 'P':
                         cont = False
                         player_not_stopped = False
@@ -71,23 +72,43 @@ class Cli():
                         
                         elif key == '£' or (key == '"' and (option == 1 or option == 3)):
                             # options order: player_cards, rooms, weapons
-                            options = self.board.get_card_options()
+                            if key == '£':
+                                options = self.board.get_card_options(False)
+                            if key == '"' and (option == 1 or option == 3):
+                                options = self.board.get_card_options(True)
+                            
                             selection = []
-                            for option in options:
-                                for i, card_details in enumerate(option):
+                            for option_type in options:
+                                for i, card_details in enumerate(option_type):
                                     print('%s : %s' % (i, card_details[3]))
-                                selection.append(int(input('Select from above: ')))
+                                
+                                cont_three = True
+                                while cont_three:
+                                    inp = int(input('Select from above: '))
+                                    if inp < len(option_type) and inp >= 0:
+                                        selection.append(inp)
+                                        cont_three = False
+                                    else:
+                                        print('incorrect number')
                             
                             if key == '"' and (option == 1 or option == 3):
-                                print() 
+                                p_list = list(self.players.items())
+                                print(p_list)
+                                input()
+
+                                player_object.suggest(selection[0], selection[1], selection[2])
 
                             elif key == '£':
-                                print() 
-                        
-                        elif key == '"' and (option == 1 or option == 3):
-                            suggest_options = self.board.get_card_options()
-                            print(suggest_options)
-                            input()
+                                correct = player_object.accuse(selection[0], selection[1], selection[2])
+                                if correct:
+                                    cont = False
+                                    player_not_stopped = False
+                                    key_incorrect = False
+                                    key = 'P'
+                            else:
+                                print('wut')
+                                input()
+
 
                         elif key in movements or key in misc_options_one or key in misc_options_two:
                             if option == 0 and key in movements:
@@ -98,6 +119,7 @@ class Cli():
                                         switch = False
                                     else:
                                         key, temp_option = self.menu_refresh(player_token, player_char, steps)
+
                                     if key == 'P':
                                         cont_two = False
                                         cont = False
@@ -105,15 +127,22 @@ class Cli():
                                         key_incorrect = False
                                     elif key in movements:
                                         off_x, off_y = movements[key]  
-                                        cont_two = not player_token.move_by_direction(off_x, off_y)
-                                steps -= 1
+                                        cont_two, has_entered = player_token.move_by_direction(off_x, off_y)
+                                        cont_two = not cont_two
+
+                                        if has_entered:
+                                            steps = 1
+                                        else:
+                                            steps -= 1
                                 key_incorrect = False
                             elif option == 1 and key in misc_options_one:
                                 if key == 'D':
                                     player_token.enter_secret_door()
+                                    steps = 1
                                 else:
                                     player_token.exit_door()
-                                steps -= 1
+                                    steps -= 1
+                                
                                 key_incorrect = False
                             elif option == 2 and key in misc_options_two:
                                 player_token.exit_door()

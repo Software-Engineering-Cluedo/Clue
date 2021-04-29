@@ -321,14 +321,23 @@ class Board:
         return defaults
     
 
-    def get_card_options(self):
+    def get_card_options(self, is_token):
         """ Only should be ran after setup """
         options = [[], [], []]
-        card_categories = [self.player_cards, self.rooms, self.weapons]
+        if is_token:
+            card_categories = [self.player_tokens, self.rooms, self.weapon_tokens]
+        else:
+            card_categories = [self.player_cards, self.rooms, self.weapons]
 
         for i in range(len(options)):
-            for j, card in enumerate(card_categories[i]):
-                options[i].append((j, card, card_categories[i][card], card_categories[i][card].name))
+            for j, obj in enumerate(card_categories[i]):
+                if is_token:
+                    if type(card_categories[i][obj]) is Room:
+                        options[i].append((j, obj, card_categories[i][obj], card_categories[i][obj].name))
+                    else:
+                        options[i].append((j, obj, card_categories[i][obj], card_categories[i][obj].card.name))
+                else:
+                    options[i].append((j, obj, card_categories[i][obj], card_categories[i][obj].name))
 
         return options
 

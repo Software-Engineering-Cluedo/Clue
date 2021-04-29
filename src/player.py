@@ -32,12 +32,12 @@ class Player():
             return random.choice(card)
 
     
-    def suggest(self, current_room, weapon, player_card):
+    def suggest(self, player_card, current_room, weapon, left_player):
         # Would move the weapon and player token (derrived from player card) to the room the player is currently in
         # It would perform the checks according to the instructions and return either false or the cards correctly guessed
         pass
 
     
-    def accuse(self, room, weapon, player_card):
+    def accuse(self, player_card, room, weapon):
         # Simular to suggest, but sets the state of the player to stopped if incorrect and returns false, if correct returns true and ends the game
         pass

@@ -40,9 +40,9 @@ class PlayerToken(Token):
             elif self.board.tile_map[cur_y][cur_x] == self.board.default_symbols['tile']:
                 self.move(temp_x, temp_y)
                 self.board.update_player_positions()
-            return True
+            return True, self.has_entered
         else:
-            return False
+            return False, False
 
 
     def enter_secret_door(self):
