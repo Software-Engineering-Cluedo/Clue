@@ -117,12 +117,24 @@ class MyTestCase(unittest.TestCase):
     def test_generate_combined_map(self):
         board = Board()
         result1 = board.generate_combined_map(board.tile_map, board.weapon_map, board.player_map, board.door_map)
-        print(result1)
+        result2 = [['.', '.', '.', '.', '.', '.', '.', '.', '.', 'Q', '.', '.', '.', '.', 'W', '.', '.', '.', '.', '.', '.', '.', '.', 
+'.'], ['k', 'k', 'k', 'k', 'k', '🤠', '.', 't', 't', 't', 'b', 'b', 'b', 'b', 
+'t', 't', 't', '.', 'c', 'c', 'c', 'c', 'c', 'c'], ['k', 'k', 'k', 'k', 'k', 'k', 't', 't', 'b', 'b', 'b', 'b', 'b', 
+'b', 'b', 'b', 't', 't', 'c', 'c', 'c', 'c', '6', 'c'], ['k', '1', 'k', 'k', 'k', 'k', 't', 't', 'b', 'b', 'b', 'b', 
+'b', 'b', 'b', 'b', 't', 't', 'c', 'c', 'c', 'c', 'c', 'c'], ['k', 'k', 'k', 'k', 'k', 'k', 't', 't', 'b', 'b', 'b', 
+'b', 'b', 'b', 'b', 'b', 't', 't', 'D', 'c', 'c', 'c', 'c', 'c'], ['k', 'k', 'k', 'k', 'k', 'k', 't', 't', 'D', 'b', 
+'b', 'b', 'b', 'b', 'b', 'D', 't', 't', 't', 'c', 'c', 'c', '👾', '.'], ['.', 
+'k', 'k', 'k', 'D', 'k', 't', 't', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 'b', 't', 't', 't', 't', 't', 't', 't', 'E'], ['t', 't', 't', 't', 't', 't', 't', 't', 'b', 'D', 'b', 'b', 'b', 'b', 'D', 'b', 't', 't', 't', 't', 't', 't', 't', '.'], ['.', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'r', 'r', 'r', 'r', 'r', 'r'], ['d', 'd', 'd', 'd', 'd', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'D', 'r', 'r', 'r', 'r', 'r'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 't', 't', '.', '.', '.', '.', '.', 't', 't', 't', 'r', 'r', 'r', 'r', 'r', 'r'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 't', 't', '.', '.', '.', '.', '.', 't', 't', 't', 'r', 'r', '2', 'r', 'r', 'r'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'D', 't', 't', '.', '.', '.', '.', '.', 't', 't', 't', 'r', 'r', 'r', 'r', 'D', 'r'], ['d', 'd', 'd', 'd', 'd', 'd', 'd', 'd', 't', 't', '.', '.', '.', '.', '.', 't', 't', 't', 't', 't', 't', 't', 't', '.'], ['d', 'd', '4', 'd', 'd', 'd', 'd', 'd', 't', 't', '.', '.', '.', '.', '.', 't', 't', 't', 'l', 'l', 'D', 'l', 'l', '.'], 
+['d', 'd', 'd', 'd', 'd', 'd', 'D', 'd', 't', 't', '.', '.', '.', '.', '.', 't', 't', 'l', 'l', 'l', 'l', 'l', 'l', 'l'], ['.', 't', 't', 't', 't', 't', 't', 't', 't', 't', '.', '.', '.', '.', '.', 't', 't', 'D', 'l', 'l', 'l', 'l', 'l', 'l'], ['R', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 't', 'l', 'l', 'l', 'l', 'l', 'l', 'l'], ['.', 't', 't', 't', 't', 't', 't', 't', 't', 'h', 'h', 'D', 'D', 'h', 'h', 't', 't', 't', 'l', 'l', 'l', 'l', 'l', '.'], ['👾', 'o', 'o', 'o', 'o', 'o', 'D', 't', 't', 'h', 'h', 'h', 'h', 'h', 'h', 't', 't', 't', 't', 
+'t', 't', 't', 't', 'T'], ['o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 't', 'h', 'h', 'h', 'h', 'h', 'h', 't', 't', 't', 
+'t', 't', 't', 't', 't', '.'], ['o', 'o', 'o', 'o', 'o', 'o', 'o', 't', 't', 'h', 'h', 'h', 'h', 'h', 'h', 't', 't', 
+'D', 's', 's', 's', 's', 's', '🤠'], ['o', 'o', 'o', '3', 'o', 'o', 'o', 't', 
+'t', 'h', 'h', 'h', 'h', 'h', 'h', 't', 't', 's', 's', 's', '5', 's', 's', 's'], ['o', 'o', 'o', 'o', 'o', 'o', 'o', 
+'t', 't', 'h', 'h', 'h', 'h', 'h', 'h', 't', 't', 's', 's', 's', 's', 's', 's', 's'], ['o', 'o', 'o', 'o', 'o', 'o', 
+'o', 'Y', '.', 'h', 'h', 'h', 'h', 'h', 'h', '.', 't', 's', 's', 's', 's', 's', 's', 's']]
 
-        # TODO Adam, run this, copy and paste the print output into a new variable for the result1 top be compared to when you actually run it
-        # Once you got it, you can remove the print
-        # ok thamks
-        # assertEqual(result1, )
+        self.assertEqual(result1, result2)
+        
 
 if __name__ == '__main__':
     unittest.main()
