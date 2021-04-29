@@ -1,5 +1,11 @@
 <h1 align="center">Clue</h1>
-<p align="center">Python implimentation of cluedo</p>
+<p align="center">Python implementation of cluedo</p>
+
+# Instillation
+Install dependencies by opening up your favorite terminal and navigating to the root directory and run `pip install -r requirements.txt` and then `pip install -e .`
+
+
+To start navigate into the src folder and run python3 `__main__.py`
 
 # Game Configuration
 - `map`
