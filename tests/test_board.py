@@ -31,11 +31,6 @@ class MyTestCase(unittest.TestCase):
         shutil.copy(self.secure_temp[1] + '/clue.json', self.config_dir + '/clue.json')
 
 
-    def test_copy_over_clue(self):
-        self.copy_over_clue('/resources/json/lineDeleted.json')
-
-
-
     def test_parse_map_data(self):
         board = Board()
         result, data = board.setup_board()
@@ -45,7 +40,7 @@ class MyTestCase(unittest.TestCase):
     def test_get_surrounding(self):
         y = 10
         x = 10
-        data = self.get_json_data('/../src/resources/json/clue.json')
+        data = self.get_json_data()
         board = Board()
         tile_map = data["map"]["tiles"]
         result = board.get_surrounding(x, y, tile_map) != False
@@ -59,7 +54,7 @@ class MyTestCase(unittest.TestCase):
     def test_get_surrounding(self):
         y = 10
         x = 10
-        data = self.get_json_data('/../src/resources/json/clue.json')
+        data = self.get_json_data()
         board = Board()
         tile_map = data["map"]["tiles"]
         result = board.get_surrounding(x, y, tile_map) != False
@@ -67,7 +62,7 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_generate_objects_from_tiles(self):
-        data = self.get_json_data('/../src/resources/json/clue.json')
+        data = self.get_json_data()
         board = Board()
         r1, r2, r3, r4, r5 = board.generate_objects_from_tiles(data)
         result = r1 != False
@@ -75,7 +70,7 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_check_valid_doors(self):
-        data = self.get_json_data('/../src/resources/json/clue.json')
+        data = self.get_json_data()
         board = Board()
         result = board.check_valid_doors(data)
         self.assertEqual(result, True)
@@ -84,7 +79,7 @@ class MyTestCase(unittest.TestCase):
     def test_find_instance(self):
         y = 10
         x = 10
-        data = self.get_json_data('/../src/resources/json/clue.json')
+        data = self.get_json_data()
         board = Board()
         tile_map = data["map"]["tiles"]
 
