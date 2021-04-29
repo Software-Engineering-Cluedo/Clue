@@ -12,7 +12,7 @@ class MyTestCase(unittest.TestCase):
     secure_temp = tempfile.mkstemp()
     config_dir = str(Path.home()) + "/Clue"
 
-
+    
     def get_json_data(self):
         data = []
         config_dir = str(Path.home()) + "/Clue"
@@ -114,6 +114,7 @@ class MyTestCase(unittest.TestCase):
         result2 = board.get_instance(tile_map[y][x], tile_map, False)
         self.assertEqual(result2 != False, True)
 
+
     def test_generate_combined_map(self):
         board = Board()
         result1 = board.generate_combined_map(board.tile_map, board.weapon_map, board.player_map, board.door_map)
@@ -135,5 +136,7 @@ class MyTestCase(unittest.TestCase):
 
         self.assertEqual(result1, result2)
         
+
 if __name__ == '__main__':
     unittest.main()
+
