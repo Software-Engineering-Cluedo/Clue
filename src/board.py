@@ -725,7 +725,7 @@ class Board:
 
 
 
-    def setup_config_folder(self, force):
+    def setup_config_folder(self, force=False):
         """ Creates the config directory for Clue and copies the default clue map to the folder if doesn't exist """
 
         Path(self.config_dir).mkdir(parents=True, exist_ok=True)
