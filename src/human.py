@@ -68,10 +68,12 @@ class Human(Player):
     200: won
     400: player out
     242: suggested
+    201: moved
+    401: could not move
     """
 
 
-    def turn(self, key, dice, extra=None):
+    def turn(self, key, extra=None):
         if key not in self.keys:
             return 404
         elif key == 'P':
@@ -81,8 +83,13 @@ class Human(Player):
             option = self.player_token.get_turn_options()
 
             if option == 0 and key in self.option_zero:
-                roll_one, roll_two = dice.roll()
-                steps = roll_one + roll_two
+                off_x, off_y = self.movements[key]  
+                b1, b2 = self.move_by_direction(off_x, off_y)
+                
+                if b1:
+                    return 201, b1, b2
+                else:
+                    return 401, b1, b2
 
             elif (option == 1 and key in self.option_one) or (option == 2 and key in self.option_two) or (option == 3 and key in self.option_three) or (option == 4 and key in self.option_four):
                 return self.in_room(key, extra)
@@ -107,7 +114,7 @@ class Human(Player):
     def accuse_or_suggest(self, key, extra):
         # extra[0] : suggest, 
         #   option order : player_cards, rooms, weapons
-        # extra[1] : player
+        # extra[1] : player_tokens
 
         selection = extra[0]
         if key == '£':
@@ -119,7 +126,6 @@ class Human(Player):
                 return 400
 
         elif key == '"':
-            #player_token_list = list(self.player_tokens.items())
             player_token_list = list(extra[1].items())
 
             for i, p in enumerate(player_token_list):
@@ -136,4 +142,3 @@ class Human(Player):
 
     def wait_or_stop(self, key):
         print()
-
