@@ -8,6 +8,7 @@ class Player():
     symbol = None
     player_id = None
     out = False
+    player_token = None
 
 
     def __init__(self, name, player_id, symbol):
@@ -15,6 +16,10 @@ class Player():
         self.symbol = symbol
         self.player_id = player_id
         self.hand = CardDeck()
+
+    
+    def set_player_token(self, player_token):
+        self.player_token = player_token
 
 
     def add_to_hand(self, card_dict):
@@ -37,7 +42,7 @@ class Player():
     def toggle_out(self):
         self.out = not self.out
 
-    
+
     def suggest(self, player_card, current_room, weapon, left_player, player_tokens, weapon_tokens, board):
         # Would move the weapon and player token (derrived from player card) to the room the player is currently in
         # It would perform the checks according to the instructions and return either false or the cards correctly guessed
