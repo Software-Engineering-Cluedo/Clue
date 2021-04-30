@@ -103,6 +103,7 @@ class Board:
 
 
     def update_player_positions(self):
+        """ Updates the player map with the current player positions """
         new_player_map = self.generate_blank_map(self.tile_map)
         for player_token_symbol, player_token_obj in self.player_tokens.items():
             x, y = player_token_obj.get_position()
@@ -112,6 +113,7 @@ class Board:
     
 
     def update_room_positions(self):
+        """ Updates the room map with the current player positions """
         new_weapon_map = self.generate_blank_map(self.tile_map)
         for weapon_token_symbol, weapon_token_obj in self.weapon_tokens.items():
             x, y = weapon_token_obj.get_position()
@@ -126,6 +128,12 @@ class Board:
 
 
     def tile_array_to_dict(self, data, tile_type):
+        """Converts the tile array into a dictionary
+
+        Args:
+            data: the raw data
+            tile_type: the type of tile array to convert to dict
+        """
         temp_dict = {}
         tiles = data[tile_type]
         for tile in tiles:
@@ -199,6 +207,15 @@ class Board:
 
 
     def get_all_room_positions(self, rooms, tile_map):
+        """Gets all the x, y positions for each room type
+        
+        Args:
+            rooms: the dictionary of rooms
+            tile_map: the tile map
+
+        Returns:
+            Dict: A dictionary of rooms with positions
+        """
         positions = {}
         for y in range(len(tile_map)):
             for x in range(len(tile_map[y])):
@@ -212,7 +229,16 @@ class Board:
 
 
     def get_secret_door_rooms(self, simple_tiles, door_map, tile_map):
+        """Gets all the secret doors and assigns them to the room they are in
 
+        Args:
+            simple_tiles: the array of simple_tiles
+            door_map: the door tile map
+            tile_map: the base tile map
+
+        Returns:
+            Dict: the positions of the secret doors with the key room
+        """
         ### could be simplified with self.default_symbols ###
         secret_doors = []
         for tile_type in simple_tiles:
@@ -233,7 +259,16 @@ class Board:
     
 
     def get_door_rooms(self, simple_tiles, door_map, tile_map):
+        """Gets all the doors with associated rooms
 
+        Args:
+            simple_tiles: the array of simple_tiles
+            door_map: the door tile map
+            tile_map: the base tile map
+        
+        Returns:
+            Dict: the positions of the doors with the key room
+        """
         ### could be simplified with self.default_symbols ###
         for tile_type in simple_tiles:
             if tile_type['obj'].lower() == 'door':
@@ -287,6 +322,17 @@ class Board:
 
 
     def get_door_offset(self, room_symbol, tile_map, door_positions, tile):
+        """Gets the offsets for the possible directions around the door where there are spare plain tiles
+
+        Args:
+            room_symbol: the symbol for the room you are searching
+            tile_map: base tile map
+            door_positions: all the door positions with associated room symbol for their location
+            tile: the symbol for tile
+
+        Returns:
+            Array of coordanates located within the whole board, not just the local area
+        """
         room_door_positions = door_positions[room_symbol]
 
         for door_position in room_door_positions:
@@ -314,6 +360,14 @@ class Board:
 
 
     def get_default_symbols(self, simple_tiles):
+        """Gets the default symbols for some of the simple tiles
+
+        Args:
+            simple_tiles: the array of simple_tiles to search
+        
+        Returns:
+            Dict: the symbols associated with key of object type
+        """
         defaults = {}
         secret_doors = []
 
@@ -331,6 +385,15 @@ class Board:
     
 
     def get_card_options(self, is_token):
+        """Gets all possible options of card from the separate categories, used for cli to show options if accused or suggested is called
+
+        Args:
+            is_token: to check if to search through tokens rather than cards
+
+        Returns:
+            Arr: array of the options divided into the sections depending on is_token
+        """
+
         """ Only should be ran after setup """
         if is_token:
             options = [[], []]
@@ -358,6 +421,14 @@ class Board:
 
 
     def generate_blank_map(self, tile_map):
+        """Generates a blank map the size of the tile_map inputted
+
+        Args:
+            tile_map: the tile_map of the game
+
+        Returns:
+            Arr: a blank tile map size of tile_map
+        """
         blank_map = []
         for i in range(len(tile_map)):
             row = []
@@ -368,6 +439,17 @@ class Board:
 
 
     def generate_combined_map(self, tile_map, weapon_map, player_map, door_map):
+        """Combines all the tile map types together in order of priority
+
+        Args:
+            tile_map: Base map
+            weapon_map: weapon positions
+            player_map: player positions
+            door_map: door positions
+
+        Returns:
+            Arr: array size of tile_map with every other tile map type combined
+        """
         combined_tiles = []
         for y in range(len(tile_map)):
             temp = []
@@ -385,6 +467,20 @@ class Board:
 
 
     def generate_public_cards_and_solution(self, player_cards, rooms, weapons, players):
+        """Generates the card deck and the solution to the game, deals out the cards to the players
+        
+        Args:
+            player_cards: the dict of player_cards
+            rooms: the dict of rooms
+            weapons: the dict of weapons
+            players: the dict of players
+
+        Returns:
+            Arr: all the cards which can be taken by the players
+            CardDeck: the empty card deck for some reason ( I should of removed this as a return )
+            Solution: the solution to the game
+
+        """
         public_cards = player_cards | rooms | weapons
 
         player_cards_chosen = random.choice(list(player_cards.items()))
@@ -421,10 +517,31 @@ class Board:
 
 
     def generate_all_tokens(self, player_map, player_cards, weapon_map, weapons):
+        """Generates the tokens for each type: player and weapon
+        
+        Args:
+            player_map: the player positions
+            player_cards: the player cards
+            weapon_map: the weapon positions
+            weapons: the weapons
+
+        Returns:
+            Dict: dictionary of weapon tokens
+            Dict: dictionary of player tokens
+        """
         return self.generate_tokens(weapon_map, weapons, True), self.generate_tokens(player_map, player_cards, False)
 
 
     def generate_tokens(self, char_map, object_dict, is_weapon):
+        """Generates the tokens for a specific type
+
+        Args:
+            char_map: the particular position map for the type
+            object_dict: the dictionary of the object type
+            is_weapon: if being used to generate weapons
+        Returns:
+            Dict: all tokens with associated symbols
+        """
         tokens = {}
 
         for symbol, object in object_dict.items():
@@ -443,7 +560,7 @@ class Board:
             data: The whole json data
         
         Returns:
-            generated_objects: All objetcs with associated symbols
+            generated_objects: All objects with associated symbols
             rooms: All rooms with associated symbols
             weapons: All weapons with associated symbols
             players: All players with associated symbols
@@ -521,6 +638,9 @@ class Board:
         
         Args:
             data: The whole json data, used to count the amount a character appears to check if appears correct amount of times
+        
+        Returns:
+            Boolean: True if count is right
         """
 
         combo_tiles = {tile['char']:tile['obj'] for tile in data['simple tiles'] + data['game tiles']}

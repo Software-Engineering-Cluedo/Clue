@@ -63,8 +63,6 @@ class Cli():
 
                         key_incorrect = True
                         while key_incorrect:
-
-                        
                             key, option = self.menu_refresh(player_token, player_char, steps)
 
                             if key == 'P':
@@ -72,6 +70,11 @@ class Cli():
                                 player_not_stopped = False
                                 key_incorrect = False
                                 break
+
+                            elif key == 'H':
+                                for s, pl in player_object.hand.deck.items():
+                                    print('%s : %s' % (s, pl.name))
+                                input('Continue?')
 
                             elif key == '!':
                                 player_not_stopped = False
@@ -206,15 +209,15 @@ class Cli():
         option = player_token.get_turn_options()
 
         if option == 0:
-            key = input('up (w), down (s), left (a), right (d), wait(!), accuse(£), stop (p)\n')
+            key = input('look at hand(h), up (w), down (s), left (a), right (d), wait(!), accuse(£), stop (p)\n')
         elif option == 1:
-            key = input('exit(e), secret door(d), wait(!), suggest("), accuse(£), stop (p)\n')
+            key = input('look at hand(h), exit(e), secret door(d), wait(!), suggest("), accuse(£), stop (p)\n')
         elif option == 2:
-            key = input('exit(e), secret door(d), wait(!), accuse(£), stop (p)\n')
+            key = input('look at hand(h), exit(e), secret door(d), wait(!), accuse(£), stop (p)\n')
         elif option == 3:
-            key = input('exit(e), wait(!), suggest("), accuse(£), stop (p)\n')
+            key = input('look at hand(h), exit(e), wait(!), suggest("), accuse(£), stop (p)\n')
         elif option == 4:
-            key = input('exit(e), wait(!), accuse(£), stop (p)\n')
+            key = input('look at hand(h), exit(e), wait(!), accuse(£), stop (p)\n')
 
         key = key.upper()
 

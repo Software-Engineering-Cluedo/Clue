@@ -14,18 +14,40 @@ class Token:
 
 
     def set_position(self, x, y):
+        """Sets position of token
+
+        Args:
+            x: x position
+            y: t position
+        """
         self.x = x
         self.y = y
 
 
     def get_position(self):
+        """Gets position of token
+        
+        Returns:
+            int: x position
+            int: y position
+        """
         return self.x, self.y
 
 
     def set_card(self, card):
+        """Sets card
+        
+        Args:
+            card: the card to set
+        """
         self.card = card
 
     
     def get_card(self):
+        """Get card
+        
+        Returns:
+            Card: the tokens associated card object
+        """
         return self.card
     
