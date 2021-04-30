@@ -7,6 +7,11 @@ Install dependencies by opening up your favorite terminal and navigating to the 
 
 To start navigate into the src folder and run python3 `__main__.py`
 
+
+Your local config file is stored either in:
+- Windows: `C:\Users\your_username\Clue-gui\clue.json`
+- Linux: `~/Clue-gui/clue.json`
+
 # Game Configuration
 - `map`
     - `dimentions`
