@@ -10,6 +10,8 @@ Classes
    src.board.Board
    src.ai.Ai
    src.card.Card
+   src.cli.Cli
+   src.dice.Dice
    src.carddeck.CardDeck
    src.human.Human
    src.player.Player

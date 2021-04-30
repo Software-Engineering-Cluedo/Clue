@@ -7,6 +7,20 @@ class Human(Player):
     
 
     def suggest(self, player_token_all, player_card_dict, current_room, weapon_token_all, left_player, board):
+        """Suggest clue gameplay method
+
+        Args:
+            player_token_all: The player token chosen with additional details as tuple
+            player_card_dict: The associated card to player token
+            current_room: The room our player is in
+            weapon_token_all: The weapon token chosen with additional details as tuple
+            left_player: The player to the left of ours
+            board: The game board
+        Returns:
+            bool: if no cards are correct
+            card: returns a random card if any were correct
+        """
+        
         # Would move the weapon and player token (derrived from player card) to the room the player is currently in
         # It would perform the checks according to the instructions and return either false or the cards correctly guessed
         player_card = list(player_card_dict.values())[0]
@@ -35,4 +49,14 @@ class Human(Player):
 
     
     def accuse(self, player_card, room, weapon, solution):
+        """Accuses player
+
+        Args:
+            player_card: the guessed player card
+            room: the guessed room
+            weapon: the guessed weapon
+            solution: the games solution
+        Returns:
+            boolean: if solution is correct
+        """
         return solution.check_solution(room, player_card, weapon)

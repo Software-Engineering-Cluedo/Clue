@@ -3,6 +3,8 @@ from src.carddeck import CardDeck
 
 
 class Player():
+    """
+    """
     hand = None
     name = None
     symbol = None
@@ -18,11 +20,23 @@ class Player():
 
 
     def add_to_hand(self, card_dict):
+        """Adds specified card to players hand
+            Args: 
+                card_dict: reference to the card in the card dictionary
+        """
         self.hand.add_card(card_dict)
     
 
     def check_hand(self, cards):
-        # Used for the user to the left who is being questioned to check if they have a card mentioned
+        """ Checks to see if a user that is being questioned has a card that is mentioned
+            Args: 
+                cards: the cards that were mentioned
+            Returns: 
+                either: 
+                boolean: false if card does not appear in hand 
+                or:
+                card: a random card from their hand
+        """
         correct_cards = []
         for card in cards:
             if self.hand.has_card(card):
@@ -39,11 +53,33 @@ class Player():
 
     
     def suggest(self, player_card, current_room, weapon, left_player, player_tokens, weapon_tokens, board):
-        # Would move the weapon and player token (derrived from player card) to the room the player is currently in
-        # It would perform the checks according to the instructions and return either false or the cards correctly guessed
+        """Allows a player to make a suggestion, moving the weapon and player token to the room the player is in.,
+            Checks the suggestions in alignment with the game rules and returns either false or the cards that were guessed. 
+            Args:
+                player_card: the player suggested 
+                current_room: the room the player is in 
+                weapon: the weapon suggested 
+                left_player: player making the suggestion 
+                player_tokens: all players in the current game
+                weapon_tokens: all weapons
+                board: array of the current set up of the board 
+            Returns: 
+                either: 
+                boolean: false if none of the suggested cards were correct 
+                or: 
+                cards: the cards that were correct
+        """ 
         pass
 
     
     def accuse(self, player_card, room, weapon):
-        # Simular to suggest, but sets the state of the player to stopped if incorrect and returns false, if correct returns true and ends the game
+        """Allows a player to make an accusation, but if the player is incorrect they can no longer play, if they are correct the game is ended. 
+            Args:
+                player_card: the accused player
+                room: the accused room
+                weapon: the accused weapon 
+            Returns: 
+                boolean: true if the accusation is correct, false otherwise. 
+        
+        """
         pass
