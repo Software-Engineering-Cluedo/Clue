@@ -33,6 +33,7 @@ class Cli():
         misc_options_two = ['E']
         correct = False
         key = ''
+        out_count = 0
 
         self.move_players_testing()
         # self.remove_players_testing()
@@ -42,9 +43,21 @@ class Cli():
                 player_token = self.player_tokens[player_char]
                 player_object = self.players[player_char]
                 
-                # input(player_object.out)
-
-                # Need to check if all players are out and stop the program
+                out_count = 0
+                for p in self.players:
+                    if self.players[player_char].out:
+                        out_count += 1
+                
+                if out_count == len(self.players):
+                    cards = self.board.solution.get_solution()
+                    print('You all lost!')
+                    print('The solution was:')
+                    for card in cards:
+                        sym, a_card = list(card.items())[0]
+                        print('%s : %s' % (sym, a_card.name))
+                    input('Press enter to quit')
+                    cont = False
+                    break
 
                 if not player_object.out:
                     if key == 'P':
@@ -79,6 +92,7 @@ class Cli():
                             elif key == '!':
                                 player_not_stopped = False
                                 key_incorrect = False
+                                player_token.reset_has_entered()
                             
                             elif key == '£' or (key == '"' and (option == 1 or option == 3)):
                                 # options order: player_cards, rooms, weapons
@@ -109,8 +123,15 @@ class Cli():
                                     
                                     cont_three = True
                                     while cont_three:
-                                        inp = int(input('Select from above: '))
-                                        if inp < len(option_type) and inp >= 0:
+                                        inp = input('Select from above: ')
+
+                                        try: 
+                                            inp = int(inp)
+                                            is_int = True
+                                        except ValueError:
+                                            is_int = False
+
+                                        if is_int and inp < len(option_type) and inp >= 0:
                                             selection.append(option_type[inp])
                                             cont_three = False
                                         else:
@@ -122,6 +143,7 @@ class Cli():
                                     key_incorrect = False
                                     player_not_stopped = False
                                     player_token_list = list(self.player_tokens.items())
+                                    player_token.reset_has_entered()
 
                                     for i, p in enumerate(player_token_list):
                                         if p[0] == player_char:
@@ -184,17 +206,21 @@ class Cli():
                                     key_incorrect = False
                                 elif option in [1, 2] and key in misc_options_one:
                                     if key == 'D':
+                                        player_token.reset_has_entered()
                                         player_token.enter_secret_door()
                                         steps = 1
                                     else:
                                         player_token.exit_door()
+                                        player_token.reset_has_entered()
                                         steps -= 1
                                     
                                     key_incorrect = False
                                 elif option in [3, 4] and key in misc_options_two:
                                     player_token.exit_door()
+                                    player_token.reset_has_entered()
                                     steps -= 1
                                     key_incorrect = False
+                                    player_token.reset_has_entered()
 
 
     def menu_refresh(self, player_token, player_char, remaining_steps):

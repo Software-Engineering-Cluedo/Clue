@@ -58,6 +58,6 @@ class Card:
         """Sets the associated symbol
 
         Args:
-            Str: symbol
+            Str: symbol 
         """
         self.symbol = symbol
