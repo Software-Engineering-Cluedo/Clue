@@ -57,7 +57,7 @@ class MyTestCase(unittest.TestCase):
         b = solution.check_solution(list(room.values())[0], list(player_card.values())[0], list(weapon.values())[0])
         self.assertEqual(b, True)
 
-        b = solution.check_solution('why', list(player_card.values())[0], list(weapon.values())[0])
+        b = solution.check_solution('h', list(player_card.values())[0], list(weapon.values())[0])
         self.assertEqual(b, False)
 
 
