@@ -2,6 +2,14 @@ import random
 from src.player import Player
 
 class Human(Player):
+    movements = {'W': [0, -1], 'S': [0, 1], 'A': [-1, 0], 'D': [1, 0]}
+    keys = ['W', 'S', 'A', 'D', 'E', '!', '"', '£']
+    option_zero = ['W', 'S', 'A', 'D', '!', '£', 'P']
+    option_one = ['E', 'Q', '!', '"', '£', 'P']
+    oprion_two = ['E', 'Q', '!', '£', 'P']
+    option_three = ['E', '!', '"', '£', 'P']
+    option_four = ['E', '!', '£', 'P']
+
     def __init__(self, name, player_id, symbol):
         super().__init__(name, player_id, symbol)
     
@@ -60,3 +68,99 @@ class Human(Player):
             boolean: if solution is correct
         """
         return solution.check_solution(room, player_card, weapon)
+    
+    
+
+    """
+        if option == 0:
+            key = input('up (w), down (s), left (a), right (d), wait(!), accuse(£), stop (p)\n')
+        elif option == 1:
+            key = input('exit(e), secret door(d), wait(!), suggest("), accuse(£), stop (p)\n')
+        elif option == 2:
+            key = input('exit(e), secret door(d), wait(!), accuse(£), stop (p)\n')
+        elif option == 3:
+            key = input('exit(e), wait(!), suggest("), accuse(£), stop (p)\n')
+        elif option == 4:
+            key = input('exit(e), wait(!), accuse(£), stop (p)\n')
+    """
+
+
+    """
+    404: try again
+    400: quit
+    202: entered door
+    200: won
+    400: player out
+    242: suggested
+    201: moved
+    401: could not move
+    """
+
+
+    def turn(self,option, key, extra=None):
+        if key not in self.keys:
+            return 404
+        elif key == 'P':
+            return 400
+
+        if not self.out:
+            if option == 0 and key in self.option_zero:
+                off_x, off_y = self.movements[key]  
+                b1, b2 = self.move_by_direction(off_x, off_y)
+                
+                if b1:
+                    return 201, b1, b2
+                else:
+                    return 401, b1, b2
+
+            elif (option == 1 and key in self.option_one) or (option == 2 and key in self.option_two) or (option == 3 and key in self.option_three) or (option == 4 and key in self.option_four):
+                return self.in_room(key, extra)
+
+            else:
+                return 404
+
+
+    def in_room(self, key, extra):
+        if key == 'E':
+            self.player_token.exit_door()
+            return 202
+        elif key == 'Q':
+            self.player_token.enter_secret_door()
+            return 202
+        elif key == '"' or key == '£':
+            return self.accuse_or_suggest(key, extra)
+        elif key == '!' or key == 'p':
+            return self.wait_or_stop(key)
+    
+
+    def accuse_or_suggest(self, key, extra):
+        # extra[0] : suggest, 
+        #   option order : player_cards, rooms, weapons
+        # extra[1] : player_tokens
+
+        selection = extra[0]
+        if key == '£':
+            correct = self.accuse(selection[0][2], selection[1][2], selection[2][2], self.board.solution)
+            if correct:
+                return 200
+            else:
+                self.toggle_out()
+                return 400
+
+        elif key == '"':
+            player_token_list = list(extra[1].items())
+
+            for i, p in enumerate(player_token_list):
+                if p[0] == self.symbol:
+                    p_pos = i
+            
+            left_player = player_token_list[p_pos - 1 % len(player_token_list)]
+            result = self.player_object.suggest(selection[0], {selection[0][1]: self.player_cards[selection[0][1]]}, {self.current_room: self.rooms[self.current_room]}, selection[1], left_player, self.board)
+            return 242, result
+
+        else:
+            return 404
+        
+
+    def wait_or_stop(self, key):
+        print()

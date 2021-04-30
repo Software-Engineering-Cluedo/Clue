@@ -1,6 +1,11 @@
 <h1 align="center">Clue</h1>
 <p align="center">Python implimentation of cluedo</p>
 
+
+# Warning this is non-functioning
+We are still developing the ai, but as it needs a complete overhaul of the cli, we will not have time
+
+
 # Instillation and Running
 Install dependencies by opening up your favorite terminal and navigating to the root directory and run `pip install -r requirements.txt` and then `pip install -e .`
 
