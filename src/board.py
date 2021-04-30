@@ -32,7 +32,7 @@ class Board:
     TODO: check for false for methods when calling
     TODO: Add comments
     
-    Attributes:
+    Args:
         config_dir: A string which is the path to the Clue config directory
         tile_map: An two dimensional array which stores the tile map for the board where each object is
         symbols: An dictionary with each unique symbol from the tile map storing the associated class
