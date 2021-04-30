@@ -35,7 +35,7 @@ class Cli():
         key = ''
         out_count = 0
 
-        self.move_players_testing()
+        # self.move_players_testing()
         # self.remove_players_testing()
 
         while cont:
