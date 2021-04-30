@@ -25,16 +25,18 @@ class MyTestCase(unittest.TestCase):
 
     def test_add_card(self):
         deck = CardDeck()
-        card1 = Card("card1", 1, "symbol1")
-        card2 = Card("card2", 2, "symbol2")
-        card3 = Card("card3", 3, "symbol3")
-        cards = {card1.get_symbol(): card1, card2.get_symbol(): card2, card3.get_symbol(): card3}
-        deck.add_card(cards)
-        self.assertEqual(first, second)
+        card1 = {'symbol1': Card("card1", 1, "symbol1")}
+        card2 = {'symbol2': Card("card2", 2, "symbol2")}
+        card3 = {'symbol3': Card("card3", 3, "symbol3")}
+        deck.add_card(card1)
+        deck.add_card(card2)
+        deck.add_card(card3)
+        cards = card1 | card2 | card3
+        self.assertEqual(cards, deck.deck)
 
-    def test_has_card(self):
+    # def test_has_card(self):
 
-    def test_pop_card(self):
+    # def test_pop_card(self):
 
     def test_is_empty(self):
         deck = CardDeck()

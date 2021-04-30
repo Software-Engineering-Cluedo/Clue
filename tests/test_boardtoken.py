@@ -19,6 +19,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(y, 2)
 
     def test_get_position(self):
+        card = Card("card1", 1, "w")
         token = Token(1, 1, card)
         x, y = token.get_position()
         self.assertEqual(x, 1)
@@ -27,7 +28,7 @@ class MyTestCase(unittest.TestCase):
     def test_set_card(self):
         card = Card("card", 1, "w")
         card1 = Card("card1", 2, "c")
-        token = Token(x, y, card)
+        token = Token(1, 1, card)
         token.set_card(card1)
         self.assertEqual(token.get_card(), card1)
 
