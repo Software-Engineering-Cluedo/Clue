@@ -48,8 +48,8 @@ class Player():
             return random.choice(card)
 
     
-    def toggle_out(self):
-        self.out = not self.out
+    def make_out(self):
+        self.out = True
 
     
     def suggest(self, player_card, current_room, weapon, left_player, player_tokens, weapon_tokens, board):

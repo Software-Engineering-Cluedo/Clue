@@ -33,7 +33,6 @@ class Cli():
         misc_options_two = ['E']
         correct = False
         key = ''
-        out_count = 0
 
         # self.move_players_testing()
         # self.remove_players_testing()
@@ -42,12 +41,12 @@ class Cli():
             for player_char in self.players: 
                 player_token = self.player_tokens[player_char]
                 player_object = self.players[player_char]
-                
+
                 out_count = 0
                 for p in self.players:
-                    if self.players[player_char].out:
+                    if self.players[p].out:
                         out_count += 1
-                
+
                 if out_count == len(self.players):
                     cards = self.board.solution.get_solution()
                     print('You all lost!')
@@ -74,6 +73,7 @@ class Cli():
                             player_not_stopped = False
                             break
 
+
                         key_incorrect = True
                         while key_incorrect:
                             key, option = self.menu_refresh(player_token, player_char, steps)
@@ -83,6 +83,13 @@ class Cli():
                                 player_not_stopped = False
                                 key_incorrect = False
                                 break
+                                
+                            if key =='/':
+                                cards = self.board.solution.get_solution()
+                                for card in cards:
+                                    sym, a_card = list(card.items())[0]
+                                    print('%s : %s' % (sym, a_card.name))
+                                input()
 
                             elif key == 'H':
                                 for s, pl in player_object.hand.deck.items():
@@ -95,6 +102,7 @@ class Cli():
                                 player_token.reset_has_entered()
                             
                             elif key == '£' or (key == '"' and (option == 1 or option == 3)):
+                                player_not_stopped = False
                                 # options order: player_cards, rooms, weapons
                                 if key == '£':
                                     options = self.board.get_card_options(False)
@@ -166,7 +174,7 @@ class Cli():
                                         key = 'P'
                                     else:
                                         # print(player_object.out)
-                                        player_object.toggle_out()
+                                        player_object.make_out()
                                         # print(player_object.out)
                                         # input()
                                         print('Oof, you are out')
