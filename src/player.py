@@ -18,6 +18,9 @@ class Player():
 
 
     def add_to_hand(self, card_dict):
+        """Add card to hand
+
+        """
         self.hand.add_card(card_dict)
     
 
