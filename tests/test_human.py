@@ -12,6 +12,8 @@ class MyTestCase(unittest.TestCase):
     def test_something(self):
         self.assertEqual(True, True)
 
+# Unfinished test
+#
 # def test_suggest(self):
 #         data = self.get_json_data()
 #         board = Board()

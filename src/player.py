@@ -3,10 +3,13 @@ from src.carddeck import CardDeck
 
 
 class Player():
+    """
+    """
     hand = None
     name = None
     symbol = None
     player_id = None
+    out = False
 
 
     def __init__(self, name, player_id, symbol):
@@ -17,6 +20,9 @@ class Player():
 
 
     def add_to_hand(self, card_dict):
+        """Add card to hand
+
+        """
         self.hand.add_card(card_dict)
     
 
@@ -31,6 +37,10 @@ class Player():
             return False
         else:
             return random.choice(card)
+
+    
+    def toggle_out(self):
+        self.out = not self.out
 
     
     def suggest(self, player_card, current_room, weapon, left_player, player_tokens, weapon_tokens, board):
