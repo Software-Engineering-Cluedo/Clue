@@ -2,6 +2,14 @@ from src.playercard import PlayerCard
 
 
 class Token:
+    """Board token
+
+    Args:
+        x: x position
+        y: y position
+        card: associated card
+        room: room symbol if in one
+    """
     x = None
     y = None
     card = None

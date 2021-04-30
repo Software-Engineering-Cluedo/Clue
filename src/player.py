@@ -3,6 +3,8 @@ from src.carddeck import CardDeck
 
 
 class Player():
+    """
+    """
     hand = None
     name = None
     symbol = None
